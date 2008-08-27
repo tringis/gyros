@@ -1,0 +1,3 @@
+Import("*")
+
+SConscript(['src/SConscript'])

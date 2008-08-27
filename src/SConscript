@@ -1,0 +1,7 @@
+Import("*")
+
+gyros_srcs = [ target_env.File('task.c') ]
+
+Export("gyros_srcs")
+
+SConscript(['target/SConscript'])
