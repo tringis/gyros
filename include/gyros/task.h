@@ -10,6 +10,7 @@ typedef struct
 	struct gyros_task_regs regs;
 
 	struct gyros_list_node main_list;
+	struct gyros_list_node cond_list;
 
 	int id;
 	int priority;

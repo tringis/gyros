@@ -14,11 +14,11 @@ static gyros_task_t s_idle_task;
 static int s_next_task_id;
 
 void
-gyros__add_task_to_running(gyros_task_t *task)
+gyros__add_task_to_list(struct gyros_list_node *list, gyros_task_t *task)
 {
 	struct gyros_list_node *i;
 
-	GYROS_LIST_FOR_EACH(i, &gyros__running)
+	GYROS_LIST_FOR_EACH(i, list)
 	{
 		if (task->priority > TASK(i)->priority)
 		{
@@ -27,7 +27,13 @@ gyros__add_task_to_running(gyros_task_t *task)
 		}
 	}
 
-	gyros_list_add_last(&task->main_list, &gyros__running);
+	gyros_list_add_last(&task->main_list, list);
+}
+
+void
+gyros__add_task_to_running(gyros_task_t *task)
+{
+    gyros__add_task_to_list(&gyros__running, task);
 }
 
 void
@@ -54,6 +60,7 @@ gyros_task_create(gyros_task_t *task,
 
 	gyros_interrupts_disable();
 	gyros__add_task_to_running(task);
+	GYROS_INIT_LIST_NODE(&task->cond_list);
 	gyros_interrupts_enable();
 }
 

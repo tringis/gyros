@@ -34,6 +34,7 @@ gyros__wake_sleeping_tasks(void)
 	{
 		i = s_sleeping.next;
 		gyros_list_remove(i);
+		gyros_list_remove(&TASK(i)->cond_list);
 		gyros__add_task_to_running(TASK(i));
 	}
 }
