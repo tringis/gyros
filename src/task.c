@@ -1,26 +1,24 @@
+#include <gyros/task.h>
+
 #include <string.h>
 
 #include <gyros/target/interrupt.h>
-#include <gyros/task.h>
-/* #include <gyros/time.h> */
-/* #include <gyros/compiler.h> */
 
-#define TASK(t) GYROS_LIST_ENTRY(t, gyros_task_t, main_list)
+#include "private.h"
 
-struct gyros_list_node gyros_running;
-static int s_next_task_id;
+struct gyros_list_node gyros__running = { &gyros__running, &gyros__running };
+gyros_task_t *gyros__current_task;
 
 static gyros_task_t s_idle_task;
 
-gyros_task_t *gyros_current_task;
-//int gyros_need_reschedule = 0;
+static int s_next_task_id;
 
-static void
-add_task_to_running(gyros_task_t *task)
+void
+gyros__add_task_to_running(gyros_task_t *task)
 {
 	struct gyros_list_node *i;
 
-	GYROS_LIST_FOR_EACH(i, &gyros_running)
+	GYROS_LIST_FOR_EACH(i, &gyros__running)
 	{
 		if (task->priority > TASK(i)->priority)
 		{
@@ -29,7 +27,7 @@ add_task_to_running(gyros_task_t *task)
 		}
 	}
 
-	gyros_list_add_last(&task->main_list, &gyros_running);
+	gyros_list_add_last(&task->main_list, &gyros__running);
 }
 
 void
@@ -55,28 +53,33 @@ gyros_task_create(gyros_task_t *task,
 	gyros_target_task_init(task, entry, arg, stack, stack_size);
 
 	gyros_interrupts_disable();
-	add_task_to_running(task);
+	gyros__add_task_to_running(task);
 	gyros_interrupts_enable();
 }
 
 void
 gyros_init(void)
 {
-	GYROS_INIT_LIST_NODE(&gyros_running);
-
     /* Make the current "task" the idle task */
     s_next_task_id = 0;
     s_idle_task.id = s_next_task_id;
 	s_idle_task.priority = 0;
 
-    gyros_current_task = &s_idle_task;
+	gyros__add_task_to_running(&s_idle_task);
+    gyros__current_task = &s_idle_task;
 
-	add_task_to_running(&s_idle_task);
+    gyros__tick_enable();
+
+    gyros_interrupts_enable();
 }
 
 void
-gyros__yield(void)
+gyros_yield(void)
 {
-    gyros_list_remove(&gyros_current_task->main_list);
-	add_task_to_running(gyros_current_task);
+    gyros_interrupts_disable();
+    gyros_list_remove(&gyros__current_task->main_list);
+	gyros__add_task_to_running(gyros__current_task);
+    gyros_interrupts_enable();
+
+    gyros__reschedule();
 }

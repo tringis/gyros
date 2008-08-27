@@ -23,7 +23,7 @@
 	/* Push lr to the SVC mode stack */
 	stmdb		sp!, {lr}
 	/* Load address of current task_t to lr */
-	ldr		lr, =gyros_current_task
+	ldr		lr, =gyros__current_task
 	ldr		lr, [lr]
 	/* Push SYS mode r0-lr to current task_t */
 	stmia		lr, {r0-lr}^
@@ -38,10 +38,10 @@
 .macro restore_context
 	// Set the lr to the address of the task at the head of the
 	// running list.
-	ldr		r1, =gyros_running
+	ldr		r1, =gyros__running
 	ldr		r0, [r1]
 	sub		lr, r0, #17*4
-	ldr		r1, =gyros_current_task
+	ldr		r1, =gyros__current_task
 	str		lr, [r1]
 	/* Get the SPSR from the task struct. */ 
 	ldr		r0, [lr, #16*4]
@@ -206,9 +206,6 @@ __undefined_instruction_handler:
 __swi_handler:
 	add	lr, lr, #4
 	save_context
-	ldr	r0, =gyros__yield
-	mov	lr, pc
-	bx	r0
 	restore_context
 
 	.weak	__abort_prefetch_handler

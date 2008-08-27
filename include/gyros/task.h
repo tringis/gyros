@@ -30,8 +30,4 @@ int  gyros_task_id(void);
 
 void gyros_yield(void);
 
-void gyros_sleep(unsigned long ticks);
-
-void gyros_sleep_until(unsigned long ticks);
-
 #endif

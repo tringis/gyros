@@ -1,6 +1,6 @@
 Import("*")
 
-srcs = [ '../arm/arm_task.c' ]
+srcs = [ '../arm/arm_task.c', 'tick.c' ]
 
 Default(target_env.StaticLibrary('gyros', gyros_srcs + srcs))
 

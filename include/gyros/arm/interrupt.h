@@ -29,9 +29,9 @@ gyros_interrupts_disable(void)
 		: "=r" (temp) :: "memory");
 }
 
-/* Yield. */
+/* Reschedule, i.e. make sure the right task is running. */
 static __inline void
-gyros_yield(void)
+gyros__reschedule(void)
 {
 	__asm__ __volatile__("swi" ::: "memory");
 }
