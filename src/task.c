@@ -50,6 +50,8 @@ gyros_task_create(gyros_task_t *task,
                   int stack_size,
                   int priority)
 {
+    unsigned long flags;
+
 	memset(task, 0, sizeof(gyros_task_t));
 
 	task->id = s_next_task_id++;
@@ -58,10 +60,10 @@ gyros_task_create(gyros_task_t *task,
 	/* Perform architecture specific initalization */
 	gyros_target_task_init(task, entry, arg, stack, stack_size);
 
-	gyros_interrupts_disable();
+	flags = gyros_interrupt_disable();
 	gyros__add_task_to_running(task);
 	GYROS_INIT_LIST_NODE(&task->cond_list);
-	gyros_interrupts_enable();
+	gyros_interrupt_restore(flags);
 }
 
 void
@@ -74,19 +76,26 @@ gyros_init(void)
 
 	gyros__add_task_to_running(&s_idle_task);
     gyros__current_task = &s_idle_task;
+}
 
+void
+gyros_start(void)
+{
     gyros__tick_enable();
+    gyros__interrupt_enable();
 
-    gyros_interrupts_enable();
+    for (;;)
+        ;
 }
 
 void
 gyros_yield(void)
 {
-    gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
     gyros_list_remove(&gyros__current_task->main_list);
 	gyros__add_task_to_running(gyros__current_task);
-    gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
     gyros__reschedule();
 }

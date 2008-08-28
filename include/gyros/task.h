@@ -20,6 +20,8 @@ typedef struct
 
 void gyros_init(void);
 
+void gyros_start(void) __attribute__((__noreturn__));
+
 void gyros_task_create(gyros_task_t *task,
                        void (*entry)(void *arg),
                        void *arg,

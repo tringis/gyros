@@ -14,14 +14,14 @@ gyros_mutex_init(gyros_mutex_t *m)
 int
 gyros_mutex_trylock(gyros_mutex_t *m)
 {
+    unsigned long flags = gyros_interrupt_disable();
     int ok;
 
-    gyros_interrupts_disable();
 	if (m->owner)
 		ok = 0;
     else
         m->owner = gyros__current_task;
-    gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
 	return ok;
 }
@@ -29,7 +29,8 @@ gyros_mutex_trylock(gyros_mutex_t *m)
 void
 gyros_mutex_lock(gyros_mutex_t *m)
 {
-    gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	while (m->owner)
 	{
 		gyros_list_remove(&gyros__current_task->main_list);
@@ -38,13 +39,14 @@ gyros_mutex_lock(gyros_mutex_t *m)
 	}
 
 	m->owner = gyros__current_task;
-    gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 }
 
 void
 gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 {
-    gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	m->owner = NULL;
 	if (!gyros_list_empty(&m->task_list))
 	{
@@ -55,6 +57,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 		if (reschedule)
 			gyros__reschedule();
 	}
+    gyros_interrupt_restore(flags);
 }
 
 void

@@ -10,8 +10,6 @@ extern gyros_task_t *gyros__current_task;
 extern struct gyros_list_node gyros__running;
 extern unsigned long gyros__ticks;
 
-void gyros__tick_enable(void);
-
 void gyros__add_task_to_list(struct gyros_list_node *list, gyros_task_t *task);
 
 void gyros__add_task_to_running(gyros_task_t *task);
@@ -19,5 +17,9 @@ void gyros__add_task_to_running(gyros_task_t *task);
 void gyros__wake_sleeping_tasks(void);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
+
+/* The following functions must be implemented by the target */
+
+void gyros__tick_enable(void);
 
 #endif

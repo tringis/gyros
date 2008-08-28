@@ -32,11 +32,12 @@ gyros_cond_init(gyros_cond_t *c)
 void
 gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 {
-	gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	gyros__mutex_unlock(m, 0);
 	gyros_list_remove(&gyros__current_task->main_list);
 	add_task_to_cond_list(c, gyros__current_task);
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
 	gyros__reschedule();
 
@@ -46,11 +47,12 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 void
 gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 {
-	gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	gyros__mutex_unlock(m, 0);
 	gyros_list_remove(&gyros__current_task->main_list);
 	add_task_to_cond_list(c, gyros__current_task);
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
 	gyros_sleep(timeout);
 
@@ -60,7 +62,8 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 void
 gyros_cond_signal_one(gyros_cond_t *c)
 {
-	gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	if (!gyros_list_empty(&c->task_list))
 	{
 		struct gyros_list_node *task = c->task_list.next;
@@ -70,13 +73,14 @@ gyros_cond_signal_one(gyros_cond_t *c)
 		gyros__add_task_to_running(COND_TASK(task));
 		gyros__reschedule();
 	}
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 }
 
 void
 gyros_cond_signal_all(gyros_cond_t *c)
 {
-	gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	if (!gyros_list_empty(&c->task_list))
 	{
 		while (!gyros_list_empty(&c->task_list))
@@ -89,5 +93,5 @@ gyros_cond_signal_all(gyros_cond_t *c)
 		}
 		gyros__reschedule();
 	}
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 }

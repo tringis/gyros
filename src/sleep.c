@@ -42,14 +42,16 @@ gyros__wake_sleeping_tasks(void)
 void
 gyros_sleep(unsigned long ticks)
 {
+    unsigned long flags;
+
     if (ticks == 0)
         return;
 
-	gyros_interrupts_disable();
+    flags = gyros_interrupt_disable();
     gyros__current_task->wakeup = gyros__ticks + ticks + 1;
     gyros_list_remove(&gyros__current_task->main_list);
     add_task_to_sleeping(gyros__current_task);
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
 	gyros__reschedule();
 }
@@ -57,11 +59,12 @@ gyros_sleep(unsigned long ticks)
 void
 gyros_sleep_until(unsigned long ticks)
 {
-	gyros_interrupts_disable();
+    unsigned long flags = gyros_interrupt_disable();
+
 	gyros__current_task->wakeup = ticks;
 	gyros_list_remove(&gyros__current_task->main_list);
 	add_task_to_sleeping(gyros__current_task);
-	gyros_interrupts_enable();
+    gyros_interrupt_restore(flags);
 
 	gyros__reschedule();
 }
