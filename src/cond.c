@@ -54,7 +54,7 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 	add_task_to_cond_list(c, gyros__current_task);
     gyros_interrupt_restore(flags);
 
-	gyros_sleep(timeout);
+	gyros_sleep_until(timeout);
 
 	gyros_mutex_lock(m);
 }
