@@ -57,6 +57,8 @@ gyros_list_remove(struct gyros_list_node *node)
 {
     node->prev->next = node->next;
     node->next->prev = node->prev;
+    node->next = node;
+    node->prev = node;
 }
 
 #define GYROS_LIST_ENTRY(node, type, member) \

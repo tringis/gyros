@@ -5,5 +5,6 @@
 #include <gyros/sleep.h>
 #include <gyros/mutex.h>
 #include <gyros/cond.h>
+#include <gyros/sem.h>
 
 #endif

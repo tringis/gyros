@@ -13,7 +13,7 @@ add_task_to_sleeping(gyros_task_t *task)
 
     GYROS_LIST_FOR_EACH(i, &s_sleeping)
     {
-        if ((long)(task->wakeup - TASK(i)->wakeup) < 0)
+        if ((long)(task->wakeup - MAIN_TASK(i)->wakeup) < 0)
         {
             gyros_list_insert(&task->main_list, i->prev, i);
             return;
@@ -30,12 +30,15 @@ gyros__wake_sleeping_tasks(void)
     struct gyros_list_node *i;
 
     while (!gyros_list_empty(&s_sleeping) &&
-           (long)(now - TASK(s_sleeping.next)->wakeup) >= 0)
+           (long)(now - MAIN_TASK(s_sleeping.next)->wakeup) >= 0)
     {
         i = s_sleeping.next;
         gyros_list_remove(i);
-        gyros_list_remove(&TASK(i)->cond_list);
-        gyros__add_task_to_running(TASK(i));
+        /* Sleeping tasks may also be on another task list using the
+         * secondary list, so we remove the task from that list
+         * too. */
+        gyros_list_remove(&MAIN_TASK(i)->sec_list);
+        gyros__add_task_to_running(MAIN_TASK(i));
     }
 }
 

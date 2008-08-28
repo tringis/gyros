@@ -11,6 +11,8 @@ void gyros_cond_init(gyros_cond_t *c);
 
 void gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m);
 
+void gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout);
+
 void gyros_cond_signal_one(gyros_cond_t *c);
 
 void gyros_cond_signal_all(gyros_cond_t *c);
