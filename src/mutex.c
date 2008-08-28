@@ -15,15 +15,17 @@ int
 gyros_mutex_trylock(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
-    int ok;
 
 	if (m->owner)
-		ok = 0;
-    else
-        m->owner = gyros__current_task;
+    {
+        gyros_interrupt_restore(flags);
+        return 0;
+    }
+
+    m->owner = gyros__current_task;
     gyros_interrupt_restore(flags);
 
-	return ok;
+	return 1;
 }
 
 void
