@@ -16,7 +16,7 @@ add_task_to_sleeping(gyros_task_t *task)
         if ((long)(task->wakeup - MAIN_TASK(i)->wakeup) < 0)
             break;
     }
-    gyros_list_insert(&task->main_list, i->prev, i);
+    gyros_list_insert_before(&task->main_list, i);
 }
 
 void

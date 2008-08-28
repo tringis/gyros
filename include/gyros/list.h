@@ -17,14 +17,15 @@ gyros_list_empty(struct gyros_list_node *list)
 }
 
 static __inline void
-gyros_list_insert(struct gyros_list_node *node,
-                  struct gyros_list_node *prev,
-                  struct gyros_list_node *next)
+gyros_list_insert_before(struct gyros_list_node *new_node,
+                         struct gyros_list_node *list_node)
 {
-    next->prev = node;
-    node->next = next;
-    node->prev = prev;
-    prev->next = node;
+    struct gyros_list_node *prev_node = list_node->prev;
+
+    new_node->next = list_node;
+    new_node->prev = prev_node;
+    list_node->prev = new_node;
+    prev_node->next = new_node;
 }
 
 static __inline void
@@ -32,6 +33,7 @@ gyros_list_remove(struct gyros_list_node *node)
 {
     node->prev->next = node->next;
     node->next->prev = node->prev;
+    /* Make the removed node point to itself */
     node->next = node;
     node->prev = node;
 }
