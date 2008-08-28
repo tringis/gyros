@@ -4,7 +4,7 @@
 #include <gyros/mutex.h>
 
 typedef struct gyros_cond {
-	struct gyros_list_node task_list;
+    struct gyros_list_node task_list;
 } gyros_cond_t;
 
 void gyros_cond_init(gyros_cond_t *c);

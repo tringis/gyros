@@ -5,8 +5,8 @@
 
 typedef struct gyros_mutex
 {
-	gyros_task_t *owner;
-	struct gyros_list_node task_list;
+    gyros_task_t *owner;
+    struct gyros_list_node task_list;
 } gyros_mutex_t;
 
 void gyros_mutex_init(gyros_mutex_t *m);

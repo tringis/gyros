@@ -7,15 +7,15 @@
 
 typedef struct
 {
-	struct gyros_task_regs regs;
+    struct gyros_task_regs regs;
 
-	struct gyros_list_node main_list;
-	struct gyros_list_node cond_list;
+    struct gyros_list_node main_list;
+    struct gyros_list_node cond_list;
 
-	int id;
-	int priority;
+    int id;
+    int priority;
 
-	unsigned long wakeup;
+    unsigned long wakeup;
 } gyros_task_t;
 
 void gyros_init(void);

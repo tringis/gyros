@@ -33,14 +33,14 @@ gyros_interrupt_restore(unsigned long flags)
 static __inline__ void
 gyros__interrupt_enable(void)
 {
-	unsigned long temp;
+    unsigned long temp;
 
-	/* Inline assembly to clear the IRQ and FIQ bits in CPSR. */
-	__asm__ __volatile__(
-		"mrs	%0, cpsr\n\t"
-		"bic	%0, %0, #0xc0\n\t"
-		"msr	cpsr_c, %0"
-		: "=r" (temp) :: "memory");
+    /* Inline assembly to clear the IRQ and FIQ bits in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %0, cpsr\n\t"
+        "bic    %0, %0, #0xc0\n\t"
+        "msr    cpsr_c, %0"
+        : "=r" (temp) :: "memory");
 }
 
 static __inline__ int
