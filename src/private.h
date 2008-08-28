@@ -25,6 +25,12 @@ void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
 /* The following functions must be implemented by the target */
 
+void gyros__target_task_init(gyros_task_t *task,
+                             void (*entry)(void *arg),
+                             void *arg,
+                             void *stack,
+                             int stack_size);
+
 void gyros__tick_enable(void);
 
 #endif

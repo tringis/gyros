@@ -53,12 +53,6 @@ gyros__add_task_to_running(gyros_task_t *task)
 }
 
 void
-gyros_target_task_init(gyros_task_t *task,
-                       void (*entry)(void *arg),
-                       void *arg,
-                       void *stack,
-                       int stack_size);
-void
 gyros_task_create(gyros_task_t *task,
                   void (*entry)(void *arg),
                   void *arg,
@@ -74,7 +68,7 @@ gyros_task_create(gyros_task_t *task,
     task->priority = priority;
 
     /* Perform architecture specific initalization */
-    gyros_target_task_init(task, entry, arg, stack, stack_size);
+    gyros__target_task_init(task, entry, arg, stack, stack_size);
 
     flags = gyros_interrupt_disable();
     gyros__add_task_to_running(task);

@@ -2,12 +2,15 @@
 
 #include <gyros/arm/arm_defs.h>
 
+#include "../private.h"
+
+
 void
-gyros_target_task_init(gyros_task_t *task,
-                       void (*entry)(void *arg),
-                       void *arg,
-                       void *stack,
-                       int stack_size)
+gyros__target_task_init(gyros_task_t *task,
+                        void (*entry)(void *arg),
+                        void *arg,
+                        void *stack,
+                        int stack_size)
 {
     task->regs.r[0] = (uint32_t)arg;
     task->regs.sp = (uint32_t)stack + stack_size;
