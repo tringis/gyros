@@ -33,4 +33,16 @@ int  gyros_task_id(void);
 
 void gyros_yield(void);
 
+static __inline__ unsigned long
+gyros_time(void)
+{
+    extern unsigned long gyros__ticks;
+
+    return gyros__ticks;
+}
+
+void gyros_sleep(unsigned long ticks);
+
+void gyros_sleep_until(unsigned long ticks);
+
 #endif

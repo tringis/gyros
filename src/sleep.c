@@ -1,5 +1,3 @@
-#include <gyros/sleep.h>
-
 #include <gyros/task.h>
 
 #include "private.h"

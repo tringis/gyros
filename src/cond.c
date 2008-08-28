@@ -1,7 +1,5 @@
 #include <gyros/cond.h>
 
-#include <gyros/sleep.h>
-
 #include "private.h"
 
 void

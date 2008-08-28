@@ -1,7 +1,5 @@
 #include <gyros/sem.h>
 
-#include <gyros/sleep.h>
-
 #include <limits.h>
 
 #include "private.h"
