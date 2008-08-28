@@ -7,7 +7,7 @@
 void
 gyros_cond_init(gyros_cond_t *c)
 {
-    GYROS_INIT_LIST_NODE(&c->task_list);
+    GYROS_LIST_NODE_INIT(&c->task_list);
 }
 
 void

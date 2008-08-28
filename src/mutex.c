@@ -10,7 +10,7 @@ void
 gyros_mutex_init(gyros_mutex_t *m)
 {
     m->owner = NULL;
-    GYROS_INIT_LIST_NODE(&m->task_list);
+    GYROS_LIST_NODE_INIT(&m->task_list);
 }
 
 int

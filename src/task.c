@@ -18,16 +18,12 @@ gyros__add_task_to_main_list(struct gyros_list_node *list, gyros_task_t *task)
 {
     struct gyros_list_node *i;
 
-    GYROS_LIST_FOR_EACH(i, list)
+    for (i = list->next; i != list; i = i->next)
     {
         if (task->priority > MAIN_TASK(i)->priority)
-        {
-            gyros_list_insert(&task->main_list, i->prev, i);
-            return;
-        }
+            break;
     }
-
-    gyros_list_add_last(&task->main_list, list);
+    gyros_list_insert(&task->main_list, i->prev, i);
 }
 
 void
@@ -35,16 +31,12 @@ gyros__add_task_to_sec_list(struct gyros_list_node *list, gyros_task_t *task)
 {
     struct gyros_list_node *i;
 
-    GYROS_LIST_FOR_EACH(i, list)
+    for (i = list->next; i != list; i = i->next)
     {
         if (task->priority > SEC_TASK(i)->priority)
-        {
-            gyros_list_insert(&task->sec_list, i->prev, i);
-            return;
-        }
+            break;
     }
-
-    gyros_list_add_last(&task->sec_list, list);
+    gyros_list_insert(&task->sec_list, i->prev, i);
 }
 
 void
@@ -52,16 +44,12 @@ gyros__add_task_to_running(gyros_task_t *task)
 {
     struct gyros_list_node *i;
 
-    GYROS_LIST_FOR_EACH(i, &gyros__running)
+    for (i = gyros__running.next; i != &gyros__running; i = i->next)
     {
         if (task->priority > MAIN_TASK(i)->priority)
-        {
-            gyros_list_insert(&task->main_list, i->prev, i);
-            return;
-        }
+            break;
     }
-
-    gyros_list_add_last(&task->main_list, &gyros__running);
+    gyros_list_insert(&task->main_list, i->prev, i);
 }
 
 void
@@ -90,7 +78,7 @@ gyros_task_create(gyros_task_t *task,
 
     flags = gyros_interrupt_disable();
     gyros__add_task_to_running(task);
-    GYROS_INIT_LIST_NODE(&task->sec_list);
+    GYROS_LIST_NODE_INIT(&task->sec_list);
     gyros_interrupt_restore(flags);
 }
 

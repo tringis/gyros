@@ -11,16 +11,12 @@ add_task_to_sleeping(gyros_task_t *task)
 {
     struct gyros_list_node *i;
 
-    GYROS_LIST_FOR_EACH(i, &s_sleeping)
+    for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
         if ((long)(task->wakeup - MAIN_TASK(i)->wakeup) < 0)
-        {
-            gyros_list_insert(&task->main_list, i->prev, i);
-            return;
-        }
+            break;
     }
-
-    gyros_list_add_last(&task->main_list, &s_sleeping);
+    gyros_list_insert(&task->main_list, i->prev, i);
 }
 
 void

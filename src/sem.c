@@ -11,7 +11,7 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 {
     s->value = start_value;
     s->max_value = UINT_MAX;
-    GYROS_INIT_LIST_NODE(&s->task_list);
+    GYROS_LIST_NODE_INIT(&s->task_list);
 }
 
 void
@@ -19,7 +19,7 @@ gyros_sem_init_binary(gyros_sem_t *s)
 {
     s->value = 0;
     s->max_value = 1;
-    GYROS_INIT_LIST_NODE(&s->task_list);
+    GYROS_LIST_NODE_INIT(&s->task_list);
 }
 
 void
