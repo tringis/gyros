@@ -4,37 +4,33 @@
 
 #include "private.h"
 
+#define TIMEOUT_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, timeout_list)
+
 static struct gyros_list_node s_sleeping = { &s_sleeping, &s_sleeping };
 
-static void
-add_task_to_sleeping(gyros_task_t *task)
+void
+gyros__task_set_timeout(unsigned long timeout)
 {
     struct gyros_list_node *i;
 
     for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
-        if ((long)(task->wakeup - MAIN_TASK(i)->wakeup) < 0)
+        if ((long)(gyros__current_task->wakeup - TIMEOUT_TASK(i)->wakeup) < 0)
             break;
     }
-    gyros_list_insert_before(&task->main_list, i);
+    gyros_list_insert_before(&gyros__current_task->timeout_list, i);
+    gyros__current_task->wakeup = timeout;
 }
 
 void
 gyros__wake_sleeping_tasks(void)
 {
     unsigned long now = gyros__ticks;
-    struct gyros_list_node *i;
 
     while (!gyros_list_empty(&s_sleeping) &&
-           (long)(now - MAIN_TASK(s_sleeping.next)->wakeup) >= 0)
+           (long)(now - TIMEOUT_TASK(s_sleeping.next)->wakeup) >= 0)
     {
-        i = s_sleeping.next;
-        gyros_list_remove(i);
-        /* Sleeping tasks may also be on another task list using the
-         * secondary list, so we remove the task from that list
-         * too. */
-        gyros_list_remove(&MAIN_TASK(i)->sec_list);
-        gyros__add_task_to_running(MAIN_TASK(i));
+        gyros__task_wake(TIMEOUT_TASK(s_sleeping.next));
     }
 }
 
@@ -47,23 +43,19 @@ gyros_sleep(unsigned long ticks)
         return;
 
     flags = gyros_interrupt_disable();
-    gyros__current_task->wakeup = gyros__ticks + ticks + 1;
-    gyros_list_remove(&gyros__current_task->main_list);
-    add_task_to_sleeping(gyros__current_task);
+    gyros_list_remove(&gyros__current_task->list);
+    gyros__task_set_timeout(gyros__ticks + ticks + 1);
     gyros_interrupt_restore(flags);
-
     gyros__reschedule();
 }
 
 void
-gyros_sleep_until(unsigned long ticks)
+gyros_sleep_until(unsigned long timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    gyros__current_task->wakeup = ticks;
-    gyros_list_remove(&gyros__current_task->main_list);
-    add_task_to_sleeping(gyros__current_task);
+    gyros_list_remove(&gyros__current_task->list);
+    gyros__task_set_timeout(timeout);
     gyros_interrupt_restore(flags);
-
     gyros__reschedule();
 }

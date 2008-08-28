@@ -9,8 +9,8 @@ typedef struct
 {
     struct gyros_task_regs regs;
 
-    struct gyros_list_node main_list;
-    struct gyros_list_node sec_list;
+    struct gyros_list_node list;
+    struct gyros_list_node timeout_list;
 
     int id;
     int priority;

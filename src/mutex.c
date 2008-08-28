@@ -37,8 +37,8 @@ gyros_mutex_lock(gyros_mutex_t *m)
 
     while (m->owner)
     {
-        gyros_list_remove(&gyros__current_task->main_list);
-        gyros__add_task_to_main_list(&m->task_list, gyros__current_task);
+        gyros_list_remove(&gyros__current_task->list);
+        gyros__add_task_to_list(&m->task_list, gyros__current_task);
         gyros__reschedule();
     }
 
@@ -54,10 +54,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     m->owner = NULL;
     if (!gyros_list_empty(&m->task_list))
     {
-        struct gyros_list_node *task = m->task_list.next;
-
-        gyros_list_remove(task);
-        gyros__add_task_to_running(MAIN_TASK(task));
+        gyros__task_wake(TASK(m->task_list.next));
         if (reschedule)
             gyros__reschedule();
     }

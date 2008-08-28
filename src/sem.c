@@ -29,8 +29,8 @@ gyros_sem_wait(gyros_sem_t *s)
 
     while (s->value == 0)
     {
-        gyros_list_remove(&gyros__current_task->main_list);
-        gyros__add_task_to_sec_list(&s->task_list, gyros__current_task);
+        gyros_list_remove(&gyros__current_task->list);
+        gyros__add_task_to_list(&s->task_list, gyros__current_task);
         gyros__reschedule();
     }
     s->value--;
@@ -44,8 +44,9 @@ gyros_sem_timedwait(gyros_sem_t *s, int timeout)
 
     if (s->value == 0)
     {
-        gyros__add_task_to_sec_list(&s->task_list, gyros__current_task);
-        gyros_sleep_until(timeout);
+        gyros__add_task_to_list(&s->task_list, gyros__current_task);
+        gyros__task_set_timeout(timeout);
+        gyros__reschedule();
         if (s->value == 0)
         {
             gyros_interrupt_restore(flags);
@@ -68,11 +69,7 @@ gyros_sem_signal(gyros_sem_t *s)
         s->value++;
         if (!gyros_list_empty(&s->task_list))
         {
-            struct gyros_list_node *task = s->task_list.next;
-
-            gyros_list_remove(&SEC_TASK(task)->main_list);
-            gyros_list_remove(task);
-            gyros__add_task_to_running(SEC_TASK(task));
+            gyros__task_wake(TASK(s->task_list.next));
             gyros__reschedule();
         }
     }
