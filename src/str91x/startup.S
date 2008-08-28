@@ -132,8 +132,8 @@ __reset_handler:
 	msr	cpsr_c, #MODE_SYS | IRQ_BIT | FIQ_BIT
 	mov	sp, r0
 
-	// Go back to supervisor mode with IRQ and FIQ disabled
-	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SVC
+	// Go to system mode with IRQ and FIQ disabled
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SYS
 
 	// Copy .text.ram section
 	ldr	r0, =__text_ram_start
