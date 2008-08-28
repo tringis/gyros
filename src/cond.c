@@ -31,7 +31,6 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
     unsigned long flags = gyros_interrupt_disable();
 
     gyros__mutex_unlock(m, 0);
-    gyros_list_remove(&gyros__current_task->main_list);
     gyros__add_task_to_sec_list(&c->task_list, gyros__current_task);
     gyros_interrupt_restore(flags);
 

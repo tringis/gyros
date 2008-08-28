@@ -44,7 +44,6 @@ gyros_sem_timedwait(gyros_sem_t *s, int timeout)
 
     if (s->value == 0)
     {
-        gyros_list_remove(&gyros__current_task->main_list);
         gyros__add_task_to_sec_list(&s->task_list, gyros__current_task);
         gyros_sleep_until(timeout);
         if (s->value == 0)
