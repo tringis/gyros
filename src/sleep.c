@@ -13,7 +13,7 @@ gyros__task_set_timeout(unsigned long timeout)
 
     for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
-        if ((long)(gyros__current_task->wakeup - TIMEOUT_TASK(i)->wakeup) < 0)
+        if ((long)(timeout - TIMEOUT_TASK(i)->wakeup) < 0)
             break;
     }
     gyros_list_insert_before(&gyros__current_task->timeout_list, i);
