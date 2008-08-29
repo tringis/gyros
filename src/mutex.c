@@ -37,8 +37,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
 
     while (m->owner)
     {
-        gyros_list_remove(&gyros__current_task->list);
-        gyros__add_task_to_list(&m->task_list, gyros__current_task);
+        gyros__task_move(gyros__current_task, &m->task_list);
         gyros__reschedule();
     }
 

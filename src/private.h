@@ -9,8 +9,7 @@
 extern gyros_task_t *gyros__current_task;
 extern unsigned long gyros__ticks;
 
-void gyros__add_task_to_list(struct gyros_list_node *list,
-                             gyros_task_t *task);
+void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
 

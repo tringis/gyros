@@ -13,8 +13,8 @@ static gyros_task_t s_idle_task;
 
 static int s_next_task_id;
 
-void
-gyros__add_task_to_list(struct gyros_list_node *list, gyros_task_t *task)
+static void
+add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 {
     struct gyros_list_node *i;
 
@@ -27,12 +27,19 @@ gyros__add_task_to_list(struct gyros_list_node *list, gyros_task_t *task)
 }
 
 void
+gyros__task_move(gyros_task_t *task, struct gyros_list_node *list)
+{
+    gyros_list_remove(&task->list);
+    add_task_to_list(task, list);
+}
+
+void
 gyros__task_wake(gyros_task_t *task)
 {
     gyros_list_remove(&task->list);
     gyros_list_remove(&task->timeout_list);
 
-    gyros__add_task_to_list(&gyros__running, task);
+    add_task_to_list(task, &gyros__running);
 }
 
 void
@@ -54,7 +61,7 @@ gyros_task_create(gyros_task_t *task,
     gyros__target_task_init(task, entry, arg, stack, stack_size);
 
     flags = gyros_interrupt_disable();
-    gyros__add_task_to_list(&gyros__running, task);
+    add_task_to_list(task, &gyros__running);
     GYROS_LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
 }
@@ -67,7 +74,7 @@ gyros_init(void)
     s_idle_task.id = s_next_task_id;
     s_idle_task.priority = 0;
 
-    gyros__add_task_to_list(&gyros__running, &s_idle_task);
+    add_task_to_list(&s_idle_task, &gyros__running);
     gyros__current_task = &s_idle_task;
 }
 
@@ -87,7 +94,7 @@ gyros_yield(void)
     unsigned long flags = gyros_interrupt_disable();
 
     gyros_list_remove(&gyros__current_task->list);
-    gyros__add_task_to_list(&gyros__running, gyros__current_task);
+    add_task_to_list(gyros__current_task, &gyros__running);
     gyros_interrupt_restore(flags);
 
     gyros__reschedule();
