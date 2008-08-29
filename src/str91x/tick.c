@@ -1,8 +1,9 @@
-#include "../private.h"
-
+#include <gyros/str91x/vic.h>
 #include <91x_scu.h>
 #include <91x_tim.h>
 #include <91x_vic.h>
+
+#include "../private.h"
 
 #define TIM_PERIOD 48000 /* PCLK / 1000 => 1 kHz */
 
@@ -31,11 +32,7 @@ gyros__tick_enable(void)
     SCU->PCGRO |= __VIC;
     SCU->PRR0 |= __VIC;
 
-    VIC0->VAiR[5] = (uint32_t)tick_isr;
-    VIC0->VCiR[5] = 0x20 | TIM3_ITLine;
-
-    VIC0->INTSR &= ~(1 << TIM3_ITLine);
-    VIC0->INTER |= (1 << TIM3_ITLine);
+    vic_set_isr(TIM3_ITLine, 5, tick_isr);
 
     TIM3->CR2 = 0; /* PBLK */
     TIM3->CR2 |= 0x4000;        /* enable OC1 interrupt */
