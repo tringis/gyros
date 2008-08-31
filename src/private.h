@@ -6,6 +6,7 @@
 #include <gyros/task.h>
 #include <gyros/mutex.h>
 
+extern struct gyros_list_node gyros__running;
 extern gyros_task_t *gyros__current_task;
 extern unsigned long gyros__ticks;
 

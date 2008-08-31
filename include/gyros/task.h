@@ -29,6 +29,10 @@ void gyros_task_create(gyros_task_t *task,
                        int stack_size,
                        int priority);
 
+void gyros_task_suspend(gyros_task_t *task);
+
+void gyros_task_resume(gyros_task_t *task);
+
 void gyros_yield(void);
 
 static __inline__ unsigned long

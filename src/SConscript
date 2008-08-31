@@ -1,6 +1,6 @@
 Import("*")
 
-gyros_srcs = map(target_env.File, [ 'task.c', 'sleep.c',
+gyros_srcs = map(target_env.File, [ 'task.c', 'suspend.c', 'sleep.c',
                                     'mutex.c', 'cond.c', 'sem.c' ])
 
 Export("gyros_srcs")
