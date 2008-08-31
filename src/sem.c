@@ -42,8 +42,7 @@ gyros_sem_timedwait(gyros_sem_t *s, int timeout)
     if (s->value == 0)
     {
         gyros__task_move(gyros__current_task, &s->task_list);
-        gyros__task_set_timeout(timeout);
-        gyros__cond_reschedule();
+        gyros__task_timeout(timeout);
         if (s->value == 0)
         {
             gyros_interrupt_restore(flags);

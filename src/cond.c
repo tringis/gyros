@@ -29,10 +29,8 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__current_task, &c->task_list);
-    gyros__task_set_timeout(timeout);
+    gyros__task_timeout(timeout);
     gyros_interrupt_restore(flags);
-
-    gyros__reschedule();
 
     gyros_mutex_lock(m);
 }
