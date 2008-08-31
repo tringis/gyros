@@ -10,11 +10,12 @@ typedef struct
     struct gyros_task_regs regs;
 
     struct gyros_list_node list;
+
     struct gyros_list_node timeout_list;
+    unsigned long timeout;
 
     int priority;
 
-    unsigned long wakeup;
 } gyros_task_t;
 
 void gyros_init(void);

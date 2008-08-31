@@ -13,11 +13,11 @@ gyros__task_set_timeout(unsigned long timeout)
 
     for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
-        if ((long)(timeout - TIMEOUT_TASK(i)->wakeup) < 0)
+        if ((long)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
     gyros_list_insert_before(&gyros__current_task->timeout_list, i);
-    gyros__current_task->wakeup = timeout;
+    gyros__current_task->timeout = timeout;
 }
 
 void
@@ -26,7 +26,7 @@ gyros__wake_sleeping_tasks(void)
     unsigned long now = gyros__ticks;
 
     while (!gyros_list_empty(&s_sleeping) &&
-           (long)(now - TIMEOUT_TASK(s_sleeping.next)->wakeup) >= 0)
+           (long)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
     {
         gyros__task_wake(TIMEOUT_TASK(s_sleeping.next));
     }
