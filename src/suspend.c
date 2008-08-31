@@ -22,7 +22,6 @@ gyros_task_resume(gyros_task_t *task)
     unsigned long flags = gyros_interrupt_disable();
 
     gyros__task_move(task, &gyros__running);
-    if (task->priority > gyros__current_task->priority)
-        gyros__reschedule();
+    gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }

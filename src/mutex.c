@@ -55,7 +55,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     {
         gyros__task_wake(TASK(m->task_list.next));
         if (reschedule)
-            gyros__reschedule();
+            gyros__cond_reschedule();
     }
     gyros_interrupt_restore(flags);
 }

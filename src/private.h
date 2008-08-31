@@ -20,6 +20,13 @@ void gyros__wake_sleeping_tasks(void);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
+static __inline__ void
+gyros__cond_reschedule(void)
+{
+    if (TASK(gyros__running.next) != gyros__current_task)
+        gyros__reschedule();
+}
+
 /* The following functions must be implemented by the target */
 
 void gyros__target_task_init(gyros_task_t *task,

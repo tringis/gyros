@@ -43,7 +43,7 @@ gyros_sem_timedwait(gyros_sem_t *s, int timeout)
     {
         gyros__task_move(gyros__current_task, &s->task_list);
         gyros__task_set_timeout(timeout);
-        gyros__reschedule();
+        gyros__cond_reschedule();
         if (s->value == 0)
         {
             gyros_interrupt_restore(flags);
@@ -67,7 +67,7 @@ gyros_sem_signal(gyros_sem_t *s)
         if (!gyros_list_empty(&s->task_list))
         {
             gyros__task_wake(TASK(s->task_list.next));
-            gyros__reschedule();
+            gyros__cond_reschedule();
         }
     }
     gyros_interrupt_restore(flags);

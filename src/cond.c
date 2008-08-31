@@ -45,7 +45,7 @@ gyros_cond_signal_one(gyros_cond_t *c)
     if (!gyros_list_empty(&c->task_list))
     {
         gyros__task_wake(TASK(c->task_list.next));
-        gyros__reschedule();
+        gyros__cond_reschedule();
     }
     gyros_interrupt_restore(flags);
 }
@@ -61,7 +61,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
          * the tasks (of equal priority) in the list. */
         while (!gyros_list_empty(&c->task_list))
             gyros__task_wake(TASK(c->task_list.prev));
-        gyros__reschedule();
+        gyros__cond_reschedule();
     }
     gyros_interrupt_restore(flags);
 }
