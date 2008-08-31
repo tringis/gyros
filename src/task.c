@@ -11,8 +11,6 @@ gyros_task_t *gyros__current_task;
 
 static gyros_task_t s_idle_task;
 
-static int s_next_task_id;
-
 static void
 add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 {
@@ -54,7 +52,6 @@ gyros_task_create(gyros_task_t *task,
 
     memset(task, 0, sizeof(gyros_task_t));
 
-    task->id = s_next_task_id++;
     task->priority = priority;
 
     /* Perform architecture specific initalization */
@@ -70,8 +67,6 @@ void
 gyros_init(void)
 {
     /* Make the current "task" the idle task */
-    s_next_task_id = 0;
-    s_idle_task.id = s_next_task_id;
     s_idle_task.priority = 0;
 
     add_task_to_list(&s_idle_task, &gyros__running);

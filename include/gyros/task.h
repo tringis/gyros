@@ -12,7 +12,6 @@ typedef struct
     struct gyros_list_node list;
     struct gyros_list_node timeout_list;
 
-    int id;
     int priority;
 
     unsigned long wakeup;
@@ -28,8 +27,6 @@ void gyros_task_create(gyros_task_t *task,
                        void *stack,
                        int stack_size,
                        int priority);
-
-int  gyros_task_id(void);
 
 void gyros_yield(void);
 
