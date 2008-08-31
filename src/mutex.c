@@ -25,6 +25,7 @@ gyros_mutex_trylock(gyros_mutex_t *m)
     }
 
     m->owner = gyros__current_task;
+    m->owner_priority = gyros__current_task->priority;
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -38,10 +39,15 @@ gyros_mutex_lock(gyros_mutex_t *m)
     while (m->owner)
     {
         gyros__task_move(gyros__current_task, &m->task_list);
+        /* Implement priority inheritance to prevent priority
+         * inversion. */
+        if (m->owner->priority < gyros__current_task->priority)
+            m->owner->priority = gyros__current_task->priority;
         gyros__reschedule();
     }
 
     m->owner = gyros__current_task;
+    m->owner_priority = gyros__current_task->priority;
     gyros_interrupt_restore(flags);
 }
 
@@ -51,6 +57,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     unsigned long flags = gyros_interrupt_disable();
 
     m->owner = NULL;
+    gyros__current_task->priority = m->owner->priority;
     if (!gyros_list_empty(&m->task_list))
     {
         gyros__task_wake(TASK(m->task_list.next));
