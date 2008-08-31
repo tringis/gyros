@@ -48,6 +48,26 @@ gyros__task_wake(gyros_task_t *task)
 }
 
 void
+gyros_init(void)
+{
+    /* Make the current "task" the idle task */
+    s_idle_task.priority = 0;
+
+    add_task_to_list(&s_idle_task, &gyros__running);
+    gyros__current_task = &s_idle_task;
+}
+
+void
+gyros_start(void)
+{
+    gyros__tick_enable();
+    gyros__interrupt_enable();
+
+    for (;;)
+        ;
+}
+
+void
 gyros_task_create(gyros_task_t *task,
                   void (*entry)(void *arg),
                   void *arg,
@@ -68,26 +88,6 @@ gyros_task_create(gyros_task_t *task,
     add_task_to_list(task, &gyros__running);
     GYROS_LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
-}
-
-void
-gyros_init(void)
-{
-    /* Make the current "task" the idle task */
-    s_idle_task.priority = 0;
-
-    add_task_to_list(&s_idle_task, &gyros__running);
-    gyros__current_task = &s_idle_task;
-}
-
-void
-gyros_start(void)
-{
-    gyros__tick_enable();
-    gyros__interrupt_enable();
-
-    for (;;)
-        ;
 }
 
 void
