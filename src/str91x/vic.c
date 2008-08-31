@@ -1,11 +1,11 @@
 #include <gyros/str91x/vic.h>
 
-#include <91x_vic.h>
+#include "str91x.h"
 
 void
 vic_set_isr(int irq, int priority, void (*isr)(void))
 {
-    VIC_TypeDef *vic;
+    struct VIC_regs *vic;
         
     if (irq < 16)
         vic = VIC0;
