@@ -15,7 +15,6 @@ typedef struct
     unsigned long timeout;
 
     int priority;
-
 } gyros_task_t;
 
 void gyros_init(void);
@@ -28,6 +27,8 @@ void gyros_task_create(gyros_task_t *task,
                        void *stack,
                        int stack_size,
                        int priority);
+
+void gyros_task_delete(gyros_task_t *task);
 
 void gyros_task_suspend(gyros_task_t *task);
 
