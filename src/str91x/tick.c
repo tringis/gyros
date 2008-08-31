@@ -29,9 +29,6 @@ gyros__tick_enable(void)
     TIM3->CR2 = 0;
     TIM3->SR  = 0;          /* clear any interrupt events */
 
-    SCU->PCGRO |= __VIC;
-    SCU->PRR0 |= __VIC;
-
     vic_set_isr(TIM3_ITLine, 5, tick_isr);
 
     TIM3->CR2 = 0; /* PBLK */

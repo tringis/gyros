@@ -50,6 +50,8 @@ gyros__task_wake(gyros_task_t *task)
 void
 gyros_init(void)
 {
+    gyros__target_init();
+
     /* Make the current "task" the idle task */
     s_idle_task.priority = 0;
 

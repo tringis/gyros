@@ -31,6 +31,8 @@ gyros__cond_reschedule(void)
 
 /* The following functions must be implemented by the target */
 
+void gyros__target_init(void);
+
 void gyros__target_task_init(gyros_task_t *task,
                              void (*entry)(void *arg),
                              void *arg,
