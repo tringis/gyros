@@ -1,7 +1,7 @@
 #ifndef INCLUDED__gyros_private_h__200808271854
 #define INCLUDED__gyros_private_h__200808271854
 
-#define TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, list)
+#define TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, main_list)
 
 #include <gyros/task.h>
 #include <gyros/mutex.h>

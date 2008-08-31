@@ -41,7 +41,7 @@ gyros_sleep(unsigned long ticks)
         return;
 
     flags = gyros_interrupt_disable();
-    gyros_list_remove(&gyros__current_task->list);
+    gyros_list_remove(&gyros__current_task->main_list);
     gyros__task_set_timeout(gyros__ticks + ticks + 1);
     gyros_interrupt_restore(flags);
     gyros__reschedule();
@@ -52,7 +52,7 @@ gyros_sleep_until(unsigned long timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    gyros_list_remove(&gyros__current_task->list);
+    gyros_list_remove(&gyros__current_task->main_list);
     gyros__task_set_timeout(timeout);
     gyros_interrupt_restore(flags);
     gyros__reschedule();

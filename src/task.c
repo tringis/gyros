@@ -21,20 +21,20 @@ add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
         if (task->priority > TASK(i)->priority)
             break;
     }
-    gyros_list_insert_before(&task->list, i);
+    gyros_list_insert_before(&task->main_list, i);
 }
 
 void
 gyros__task_move(gyros_task_t *task, struct gyros_list_node *list)
 {
-    gyros_list_remove(&task->list);
+    gyros_list_remove(&task->main_list);
     add_task_to_list(task, list);
 }
 
 void
 gyros__task_wake(gyros_task_t *task)
 {
-    gyros_list_remove(&task->list);
+    gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
 
     add_task_to_list(task, &gyros__running);
@@ -88,7 +88,7 @@ gyros_yield(void)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    gyros_list_remove(&gyros__current_task->list);
+    gyros_list_remove(&gyros__current_task->main_list);
     add_task_to_list(gyros__current_task, &gyros__running);
     gyros_interrupt_restore(flags);
 
