@@ -1,0 +1,7 @@
+Import("*")
+
+srcs = [ '../arm/arm_task.c', 'init.c', 'tick.c', 'aic.c' ]
+
+Default(target_env.StaticLibrary('gyros', gyros_srcs + srcs))
+
+Default(target_env.StaticObject('startup.S'))
