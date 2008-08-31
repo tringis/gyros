@@ -25,6 +25,13 @@ add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 }
 
 void
+gyros__task_exit(void)
+{
+    gyros_list_remove(&gyros__current_task->main_list);
+    gyros__reschedule();
+}
+
+void
 gyros__task_move(gyros_task_t *task, struct gyros_list_node *list)
 {
     gyros_list_remove(&task->main_list);

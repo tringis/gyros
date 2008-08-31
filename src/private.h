@@ -10,6 +10,8 @@ extern struct gyros_list_node gyros__running;
 extern gyros_task_t *gyros__current_task;
 extern unsigned long gyros__ticks;
 
+void gyros__task_exit(void);
+
 void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
