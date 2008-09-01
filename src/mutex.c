@@ -57,7 +57,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     unsigned long flags = gyros_interrupt_disable();
 
     m->owner = NULL;
-    gyros__current_task->priority = m->owner->priority;
+    gyros__current_task->priority = m->owner_priority;
     if (!gyros_list_empty(&m->task_list))
     {
         gyros__task_wake(TASK(m->task_list.next));
