@@ -38,6 +38,10 @@ void gyros_task_resume(gyros_task_t *task);
 
 void gyros_yield(void);
 
+void gyros_lock(void);
+
+void gyros_unlock(void);
+
 static __inline__ unsigned long
 gyros_time(void)
 {

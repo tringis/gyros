@@ -11,7 +11,7 @@ gyros_task_suspend(gyros_task_t *task)
 
     gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
-    if (task == gyros__current_task)
+    if (task == gyros__state.current)
         gyros__reschedule();
     gyros_interrupt_restore(flags);
 }
@@ -21,7 +21,7 @@ gyros_task_resume(gyros_task_t *task)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    gyros__task_move(task, &gyros__running);
+    gyros__task_move(task, &gyros__state.running);
     gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }

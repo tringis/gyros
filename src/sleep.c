@@ -16,12 +16,12 @@ gyros__task_timeout(unsigned long timeout)
         if ((long)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
-    gyros_list_insert_before(&gyros__current_task->timeout_list, i);
-    gyros__current_task->timeout = timeout;
-    gyros__current_task->timed_out = 0;
+    gyros_list_insert_before(&gyros__state.current->timeout_list, i);
+    gyros__state.current->timeout = timeout;
+    gyros__state.current->timed_out = 0;
     gyros__reschedule();
 
-    return gyros__current_task->timed_out;
+    return gyros__state.current->timed_out;
 }
 
 void
@@ -49,7 +49,7 @@ gyros_sleep(unsigned long ticks)
         return 1;
 
     flags = gyros_interrupt_disable();
-    gyros_list_remove(&gyros__current_task->main_list);
+    gyros_list_remove(&gyros__state.current->main_list);
     timed_out = gyros__task_timeout(gyros__ticks + ticks + 1);
     gyros_interrupt_restore(flags);
 
@@ -62,7 +62,7 @@ gyros_sleep_until(unsigned long timeout)
     unsigned long flags = gyros_interrupt_disable();
     int timed_out;
 
-    gyros_list_remove(&gyros__current_task->main_list);
+    gyros_list_remove(&gyros__state.current->main_list);
     timed_out = gyros__task_timeout(timeout);
     gyros_interrupt_restore(flags);
 

@@ -6,8 +6,14 @@
 #include <gyros/task.h>
 #include <gyros/mutex.h>
 
-extern struct gyros_list_node gyros__running;
-extern gyros_task_t *gyros__current_task;
+typedef struct
+{
+    int locked;
+    gyros_task_t *current;
+    struct gyros_list_node running;
+} gyros__state_t;
+
+extern gyros__state_t gyros__state;
 extern unsigned long gyros__ticks;
 
 void gyros__task_exit(void);
@@ -25,7 +31,7 @@ void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 static __inline__ void
 gyros__cond_reschedule(void)
 {
-    if (TASK(gyros__running.next) != gyros__current_task)
+    if (TASK(gyros__state.running.next) != gyros__state.current)
         gyros__reschedule();
 }
 

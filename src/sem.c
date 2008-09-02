@@ -27,7 +27,7 @@ gyros_sem_wait(gyros_sem_t *s)
 
     while (s->value == 0)
     {
-        gyros__task_move(gyros__current_task, &s->task_list);
+        gyros__task_move(gyros__state.current, &s->task_list);
         gyros__reschedule();
     }
     s->value--;
@@ -41,7 +41,7 @@ gyros_sem_timedwait(gyros_sem_t *s, int timeout)
 
     if (s->value == 0)
     {
-        gyros__task_move(gyros__current_task, &s->task_list);
+        gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_timeout(timeout);
         if (s->value == 0)
         {

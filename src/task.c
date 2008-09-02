@@ -6,8 +6,7 @@
 
 #include "private.h"
 
-struct gyros_list_node gyros__running = { &gyros__running, &gyros__running };
-gyros_task_t *gyros__current_task;
+gyros__state_t gyros__state;
 
 static gyros_task_t s_idle_task;
 
@@ -27,7 +26,7 @@ add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 void
 gyros__task_exit(void)
 {
-    gyros_list_remove(&gyros__current_task->main_list);
+    gyros_list_remove(&gyros__state.current->main_list);
     gyros__reschedule();
 }
 
@@ -44,19 +43,21 @@ gyros__task_wake(gyros_task_t *task)
     gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
 
-    add_task_to_list(task, &gyros__running);
+    add_task_to_list(task, &gyros__state.running);
 }
 
 void
 gyros_init(void)
 {
+    GYROS_LIST_NODE_INIT(&gyros__state.running);
+
     gyros__target_init();
 
     /* Make the current "task" the idle task */
     s_idle_task.priority = 0;
 
-    add_task_to_list(&s_idle_task, &gyros__running);
-    gyros__current_task = &s_idle_task;
+    add_task_to_list(&s_idle_task, &gyros__state.running);
+    gyros__state.current = &s_idle_task;
 }
 
 void
@@ -87,7 +88,7 @@ gyros_task_create(gyros_task_t *task,
     gyros__target_task_init(task, entry, arg, stack, stack_size);
 
     flags = gyros_interrupt_disable();
-    add_task_to_list(task, &gyros__running);
+    add_task_to_list(task, &gyros__state.running);
     GYROS_LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
 }
@@ -97,8 +98,8 @@ gyros_yield(void)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    gyros_list_remove(&gyros__current_task->main_list);
-    add_task_to_list(gyros__current_task, &gyros__running);
+    gyros_list_remove(&gyros__state.current->main_list);
+    add_task_to_list(gyros__state.current, &gyros__state.running);
     gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }
