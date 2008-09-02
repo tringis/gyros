@@ -16,7 +16,7 @@ void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
 
-void gyros__task_timeout(unsigned long timeout);
+int gyros__task_timeout(unsigned long timeout);
 
 void gyros__wake_sleeping_tasks(void);
 

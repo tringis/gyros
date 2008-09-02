@@ -9,12 +9,13 @@ typedef struct
 {
     struct gyros_task_regs regs;
 
+    int priority;
+
     struct gyros_list_node main_list;
 
     struct gyros_list_node timeout_list;
     unsigned long timeout;
-
-    int priority;
+    short timed_out;
 } gyros_task_t;
 
 void gyros_init(void);
@@ -46,8 +47,8 @@ gyros_time(void)
     return gyros__ticks;
 }
 
-void gyros_sleep(unsigned long ticks);
+int gyros_sleep(unsigned long ticks);
 
-void gyros_sleep_until(unsigned long ticks);
+int gyros_sleep_until(unsigned long ticks);
 
 #endif

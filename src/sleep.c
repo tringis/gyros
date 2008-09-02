@@ -6,7 +6,7 @@
 
 static struct gyros_list_node s_sleeping = { &s_sleeping, &s_sleeping };
 
-void
+int
 gyros__task_timeout(unsigned long timeout)
 {
     struct gyros_list_node *i;
@@ -18,7 +18,10 @@ gyros__task_timeout(unsigned long timeout)
     }
     gyros_list_insert_before(&gyros__current_task->timeout_list, i);
     gyros__current_task->timeout = timeout;
+    gyros__current_task->timed_out = 0;
     gyros__reschedule();
+
+    return gyros__current_task->timed_out;
 }
 
 void
@@ -29,30 +32,39 @@ gyros__wake_sleeping_tasks(void)
     while (!gyros_list_empty(&s_sleeping) &&
            (long)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
     {
-        gyros__task_wake(TIMEOUT_TASK(s_sleeping.next));
+        gyros_task_t *task = TIMEOUT_TASK(s_sleeping.next);
+
+        task->timed_out = 1;
+        gyros__task_wake(task);
     }
 }
 
-void
+int
 gyros_sleep(unsigned long ticks)
 {
     unsigned long flags;
+    int timed_out;
 
     if (ticks == 0)
-        return;
+        return 1;
 
     flags = gyros_interrupt_disable();
     gyros_list_remove(&gyros__current_task->main_list);
-    gyros__task_timeout(gyros__ticks + ticks + 1);
+    timed_out = gyros__task_timeout(gyros__ticks + ticks + 1);
     gyros_interrupt_restore(flags);
+
+    return timed_out;
 }
 
-void
+int
 gyros_sleep_until(unsigned long timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
+    int timed_out;
 
     gyros_list_remove(&gyros__current_task->main_list);
-    gyros__task_timeout(timeout);
+    timed_out = gyros__task_timeout(timeout);
     gyros_interrupt_restore(flags);
+
+    return timed_out;
 }
