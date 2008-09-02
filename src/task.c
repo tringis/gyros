@@ -26,6 +26,9 @@ add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 void
 gyros__task_exit(void)
 {
+    /* Note that we do not need to call gyros_interrupt_restore()
+     * because gyros__reschedule below never returns. */
+    gyros_interrupt_disable();
     gyros_list_remove(&gyros__state.current->main_list);
     gyros__reschedule();
 }
