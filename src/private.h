@@ -13,6 +13,7 @@ typedef struct
     struct gyros_list_node running;
 } gyros__state_t;
 
+extern struct gyros_list_node gyros__tasks;
 extern gyros__state_t gyros__state;
 extern unsigned long gyros__ticks;
 

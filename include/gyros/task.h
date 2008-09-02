@@ -14,6 +14,8 @@ typedef struct
     unsigned long timeout;
     short timed_out;
 
+    struct gyros_list_node task_list;
+
     int priority;
 
     const char *name;
@@ -46,6 +48,8 @@ void gyros_yield(void);
 void gyros_lock(void);
 
 void gyros_unlock(void);
+
+gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
 
 int gyros_task_stack_used(gyros_task_t *task);
 

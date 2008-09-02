@@ -7,7 +7,7 @@
 #include "private.h"
 
 gyros__state_t gyros__state;
-
+struct gyros_list_node gyros__tasks = { &gyros__tasks, &gyros__tasks };
 static gyros_task_t s_idle_task;
 
 static void
@@ -30,6 +30,7 @@ gyros__task_exit(void)
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
     gyros_list_remove(&gyros__state.current->main_list);
+    gyros_list_remove(&gyros__state.current->task_list);
     gyros__reschedule();
 }
 
@@ -63,6 +64,7 @@ gyros_init(void)
     s_idle_task.stack = 0;
     s_idle_task.stack_size = 0;
 
+    gyros_list_insert_before(&s_idle_task.task_list, &gyros__tasks);
     add_task_to_list(&s_idle_task, &gyros__state.running);
     gyros__state.current = &s_idle_task;
 }
@@ -100,6 +102,7 @@ gyros_task_create(gyros_task_t *task,
     gyros__target_task_init(task, entry, arg, stack, stack_size);
 
     flags = gyros_interrupt_disable();
+    gyros_list_insert_before(&task->task_list, &gyros__tasks);
     add_task_to_list(task, &gyros__state.running);
     GYROS_LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
