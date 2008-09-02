@@ -17,6 +17,8 @@ typedef struct
     int priority;
 
     const char *name;
+    void *stack;
+    int stack_size;
 } gyros_task_t;
 
 void gyros_init(void);
@@ -44,6 +46,8 @@ void gyros_yield(void);
 void gyros_lock(void);
 
 void gyros_unlock(void);
+
+int gyros_task_stack_used(gyros_task_t *task);
 
 static __inline__ unsigned long
 gyros_time(void)
