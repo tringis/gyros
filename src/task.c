@@ -59,6 +59,10 @@ gyros_init(void)
     /* Make the current "task" the idle task */
     s_idle_task.priority = 0;
 
+    s_idle_task.name = "[idle]";
+    s_idle_task.stack = 0;
+    s_idle_task.stack_size = 0;
+
     add_task_to_list(&s_idle_task, &gyros__state.running);
     gyros__state.current = &s_idle_task;
 }
@@ -87,7 +91,10 @@ gyros_task_create(gyros_task_t *task,
     memset(task, 0, sizeof(gyros_task_t));
 
     task->priority = priority;
+
     task->name = name;
+    task->stack = stack;
+    task->stack_size = stack_size;
 
     /* Perform architecture specific initalization */
     gyros__target_task_init(task, entry, arg, stack, stack_size);
