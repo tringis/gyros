@@ -75,6 +75,7 @@ gyros_start(void)
 
 void
 gyros_task_create(gyros_task_t *task,
+                  const char *name,
                   void (*entry)(void *arg),
                   void *arg,
                   void *stack,
@@ -86,6 +87,7 @@ gyros_task_create(gyros_task_t *task,
     memset(task, 0, sizeof(gyros_task_t));
 
     task->priority = priority;
+    task->name = name;
 
     /* Perform architecture specific initalization */
     gyros__target_task_init(task, entry, arg, stack, stack_size);

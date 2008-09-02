@@ -15,6 +15,8 @@ typedef struct
     short timed_out;
 
     int priority;
+
+    const char *name;
 } gyros_task_t;
 
 void gyros_init(void);
@@ -22,6 +24,7 @@ void gyros_init(void);
 void gyros_start(void) __attribute__((__noreturn__));
 
 void gyros_task_create(gyros_task_t *task,
+                       const char *name,
                        void (*entry)(void *arg),
                        void *arg,
                        void *stack,
