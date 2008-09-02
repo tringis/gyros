@@ -8,14 +8,13 @@
 typedef struct
 {
     struct gyros_task_regs regs;
-
-    int priority;
-
     struct gyros_list_node main_list;
 
     struct gyros_list_node timeout_list;
     unsigned long timeout;
     short timed_out;
+
+    int priority;
 } gyros_task_t;
 
 void gyros_init(void);
