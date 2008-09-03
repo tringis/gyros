@@ -57,26 +57,7 @@ void gyros__wake_sleeping_tasks(void);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
-static __inline__ void
-gyros__cond_reschedule(void)
-{
-    if (!gyros_in_interrupt())
-    {
-        unsigned long flags = gyros_interrupt_disable();
-
-        if (gyros__state.locked)
-        {
-            while (TASK(gyros__state.running.next) != gyros__state.current)
-            {
-                gyros_interrupt_restore(flags);
-                flags = gyros_interrupt_disable();
-            }
-        }
-        if (TASK(gyros__state.running.next) != gyros__state.current)
-            gyros__reschedule();
-        gyros_interrupt_restore(flags);
-    }
-}
+void gyros__cond_reschedule(void);
 
 /* The following functions must be implemented by the target */
 

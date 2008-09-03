@@ -79,6 +79,27 @@ gyros__task_wake(gyros_task_t *task)
 }
 
 void
+gyros__cond_reschedule(void)
+{
+    if (!gyros_in_interrupt())
+    {
+        unsigned long flags = gyros_interrupt_disable();
+
+        if (gyros__state.locked)
+        {
+            while (TASK(gyros__state.running.next) != gyros__state.current)
+            {
+                gyros_interrupt_restore(flags);
+                flags = gyros_interrupt_disable();
+            }
+        }
+        if (TASK(gyros__state.running.next) != gyros__state.current)
+            gyros__reschedule();
+        gyros_interrupt_restore(flags);
+    }
+}
+
+void
 gyros_init(void)
 {
     GYROS_LIST_NODE_INIT(&gyros__state.running);
