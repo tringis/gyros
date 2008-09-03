@@ -54,16 +54,16 @@ int
 gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
-    int timed_out;
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
-    timed_out = gyros__task_timeout(timeout);
+    gyros__task_set_timeout(timeout);
     gyros_interrupt_restore(flags);
+    gyros__cond_reschedule();
 
     gyros_mutex_lock(m);
 
-    return timed_out;
+    return gyros__state.current->timed_out;
 }
 
 void

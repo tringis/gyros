@@ -51,7 +51,7 @@ void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
 
-int gyros__task_timeout(unsigned long timeout);
+void gyros__task_set_timeout(unsigned long timeout);
 
 void gyros__wake_sleeping_tasks(void);
 
@@ -64,6 +64,14 @@ gyros__cond_reschedule(void)
     {
         unsigned long flags = gyros_interrupt_disable();
 
+        if (gyros__state.locked)
+        {
+            while (TASK(gyros__state.running.next) != gyros__state.current)
+            {
+                gyros_interrupt_restore(flags);
+                flags = gyros_interrupt_disable();
+            }
+        }
         if (TASK(gyros__state.running.next) != gyros__state.current)
             gyros__reschedule();
         gyros_interrupt_restore(flags);
