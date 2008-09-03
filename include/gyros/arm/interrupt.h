@@ -88,8 +88,7 @@ gyros_in_interrupt(void)
 static __inline void
 gyros__reschedule(void)
 {
-    if (!gyros_in_interrupt())
-        __asm__ __volatile__("swi" ::: "memory");
+    __asm__ __volatile__("swi" ::: "memory");
 }
 
 #endif

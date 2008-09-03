@@ -143,6 +143,6 @@ gyros_yield(void)
 
     gyros_list_remove(&gyros__state.current->main_list);
     add_task_to_list(gyros__state.current, &gyros__state.running);
-    gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
+    gyros__cond_reschedule();
 }

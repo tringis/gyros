@@ -40,9 +40,9 @@ gyros_lock(void)
 void
 gyros_unlock(void)
 {
-    unsigned long flags = gyros_interrupt_disable();
-
+    /* We don't need to disable interrupts because the interrupt does
+     * not touch gyros__state.locked, and since we are locked, no
+     * other tasks can either. */
     if (--gyros__state.locked == 0)
         gyros__cond_reschedule();
-    gyros_interrupt_restore(flags);
 }

@@ -45,7 +45,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
     gyros__task_move(gyros__state.current, &c->task_list);
     gyros_interrupt_restore(flags);
 
-    gyros__reschedule();
+    gyros__cond_reschedule();
 
     gyros_mutex_lock(m);
 }
@@ -71,12 +71,14 @@ gyros_cond_signal_one(gyros_cond_t *c)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    if (!gyros_list_empty(&c->task_list))
+    if (gyros_list_empty(&c->task_list))
+        gyros_interrupt_restore(flags);
+    else
     {
         gyros__task_wake(TASK(c->task_list.next));
+        gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
     }
-    gyros_interrupt_restore(flags);
 }
 
 void
@@ -84,13 +86,15 @@ gyros_cond_signal_all(gyros_cond_t *c)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    if (!gyros_list_empty(&c->task_list))
+    if (gyros_list_empty(&c->task_list))
+        gyros_interrupt_restore(flags);
+    else
     {
         /* Move the tasks in reverse order to preserve the order of
          * the tasks (of equal priority) in the list. */
         while (!gyros_list_empty(&c->task_list))
             gyros__task_wake(TASK(c->task_list.prev));
+        gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
     }
-    gyros_interrupt_restore(flags);
 }

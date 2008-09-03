@@ -47,7 +47,7 @@ gyros__task_timeout(unsigned long timeout)
     gyros_list_insert_before(&gyros__state.current->timeout_list, i);
     gyros__state.current->timeout = timeout;
     gyros__state.current->timed_out = 0;
-    gyros__reschedule();
+    gyros__cond_reschedule();
 
     return gyros__state.current->timed_out;
 }

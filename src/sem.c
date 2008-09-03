@@ -56,7 +56,9 @@ gyros_sem_wait(gyros_sem_t *s)
     while (s->value == 0)
     {
         gyros__task_move(gyros__state.current, &s->task_list);
-        gyros__reschedule();
+        gyros_interrupt_restore(flags);
+        gyros__cond_reschedule();
+        flags = gyros_interrupt_disable();
     }
     s->value--;
     gyros_interrupt_restore(flags);
@@ -88,14 +90,18 @@ gyros_sem_signal(gyros_sem_t *s)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-    if (s->value < s->max_value)
+    if (s->value >= s->max_value)
+        gyros_interrupt_restore(flags);
+    else
     {
         s->value++;
-        if (!gyros_list_empty(&s->task_list))
+        if (gyros_list_empty(&s->task_list))
+            gyros_interrupt_restore(flags);
+        else
         {
             gyros__task_wake(TASK(s->task_list.next));
+            gyros_interrupt_restore(flags);
             gyros__cond_reschedule();
         }
     }
-    gyros_interrupt_restore(flags);
 }

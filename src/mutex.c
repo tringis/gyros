@@ -71,7 +71,9 @@ gyros_mutex_lock(gyros_mutex_t *m)
          * inversion. */
         if (m->owner->priority < gyros__state.current->priority)
             m->owner->priority = gyros__state.current->priority;
-        gyros__reschedule();
+        gyros_interrupt_restore(flags);
+        gyros__cond_reschedule();
+        flags = gyros_interrupt_disable();
     }
 
     m->owner = gyros__state.current;
@@ -86,13 +88,15 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 
     m->owner = NULL;
     gyros__state.current->priority = m->owner_priority;
-    if (!gyros_list_empty(&m->task_list))
+    if (gyros_list_empty(&m->task_list))
+        gyros_interrupt_restore(flags);
+    else
     {
         gyros__task_wake(TASK(m->task_list.next));
+        gyros_interrupt_restore(flags);
         if (reschedule)
             gyros__cond_reschedule();
     }
-    gyros_interrupt_restore(flags);
 }
 
 void
