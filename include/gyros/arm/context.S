@@ -1,0 +1,83 @@
+/**************************************************************************
+ * Copyright (c) 2002-2008, Tobias Ringström <tobias@ringis.se>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *    - Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *
+ *    - Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in
+ *      the documentation and/or other materials provided with the
+ *      distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ **************************************************************************/
+
+/**************************************************************************
+ * Macros                                                                 *
+ **************************************************************************/	
+
+/*------------------------------------------------------------------------*
+ | save_context - stores current task state in task struct                |
+ |              - must not be run in user or system mode                  |
+ *------------------------------------------------------------------------*/
+.macro save_context
+	/* Push lr to the SVC mode stack */
+	stmdb		sp!, {lr}
+	/* Load address of current task_t to lr */
+	ldr		lr, =gyros__state
+	ldr		lr, [lr, #4]
+	/* Push SYS mode r0-lr to current task_t */
+	stmia		lr, {r0-lr}^
+	nop
+	mrs		r0, spsr
+	str		r0, [lr, #16*4]
+	/* Pop lr from the SVC mode stack and write it to the current task_t */
+	ldmia		sp!, {r0}
+	str		r0, [lr, #15*4]
+.endm
+
+/*------------------------------------------------------------------------*
+ | restore_context - restores state of next task from its task struct     |
+ |                 - must not be run in user or system mode               |
+ *------------------------------------------------------------------------*/
+.macro restore_context
+	// Load address of gyros__state to r0
+	ldr		r0, =gyros__state
+	// Load gyros__state.locked to r1, and if it is not zero, load
+	// gyros__state.current to lr and branch to 1f.
+	ldr		r1, [r0]
+	cmp		r1, #0
+	ldrne		lr, [r0, #4]
+	bne		1f
+	// Load gyros__state.running.next to lr
+	ldr		r1, [r0, #8]
+	// Set gyros__state.current
+	sub		lr, r1, #17*4
+	str		lr, [r0, #4]
+	/* Get the SPSR from the task struct. */ 
+1:	ldr		r0, [lr, #16*4]
+	msr		spsr_cxsf, r0
+	/* Restore all system mode registers for the task. */ 
+	ldmia		lr, {r0-r14}^
+	nop
+	/* Restore the return address. */ 
+	ldr		lr, [lr, #15*4]
+	/* And return - correcting the offset in the LR to obtain the */ 
+	/* correct address. */ 
+	subs		pc, lr, #4
+.endm

@@ -26,9 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-	.equ	AIC_IVR,	0xFFFFF100
-	.equ	AIC_EIOCR,	0xFFFFF130
-
 	.equ    MODE_USR,	0x10
 	.equ    MODE_FIQ,	0x11
 	.equ    MODE_IRQ,	0x12
@@ -47,79 +44,12 @@
 	.set  IRQ_STACK_SIZE,	0X00001000
 	.set  SVC_STACK_SIZE,	0x00002000
 
-.macro save_context
-	/* Push lr to the SVC mode stack */
-	stmdb		sp!, {lr}
-	/* Load address of current task_t to lr */
-	ldr		lr, =gyros__state
-	ldr		lr, [lr, #4]
-	/* Push SYS mode r0-lr to current task_t */
-	stmia		lr, {r0-lr}^
-	nop
-	mrs		r0, spsr
-	str		r0, [lr, #16*4]
-	/* Pop lr from the SVC mode stack and write it to the current task_t */
-	ldmia		sp!, {r0}
-	str		r0, [lr, #15*4]
-.endm
-
-.macro restore_context
-	// Load address of gyros__state to r0
-	ldr		r0, =gyros__state
-	// Load gyros__state.locked to r1, and if it is not zero, load
-	// gyros__state.current to lr and branch to 1f.
-	ldr		r1, [r0]
-	cmp		r1, #0
-	ldrne		lr, [r0, #4]
-	bne		1f
-	// Load gyros__state.running.next to lr
-	ldr		r1, [r0, #8]
-	// Set gyros__state.current
-	sub		lr, r1, #17*4
-	str		lr, [r0, #4]
-	/* Get the SPSR from the task struct. */ 
-1:	ldr		r0, [lr, #16*4]
-	msr		spsr_cxsf, r0
-	/* Restore all system mode registers for the task. */ 
-	ldmia		lr, {r0-r14}^
-	nop
-	/* Restore the return address. */ 
-	ldr		lr, [lr, #15*4]
-	/* And return - correcting the offset in the LR to obtain the */ 
-	/* correct address. */ 
-	subs		pc, lr, #4
-.endm
-
 	.arm
-
-	.section	.text.vectors, "ax"
+	.text
 	.balign		4
 
-	.global __real_exception_vectors
-__real_exception_vectors:
-	ldr	pc, [pc, #0x18]		// __reset_handler		       
-	ldr	pc, [pc, #0x18]		// __undefined_instruction_handler
-	ldr	pc, [pc, #0x18]		// __swi_handler		       
-	ldr	pc, [pc, #0x18]		// __abort_prefetch_handler	  
-	ldr	pc, [pc, #0x18]		// __abort_data_handler
-	b	.			// RESERVED
-	ldr	pc, [pc, #0x18]		// AIC_IVR
-	ldr	pc, [pc, #0x18]		// AIC_FVR
-
-	.global		__exception_vectors
-	.type		__exception_vectors, %object
-__exception_vectors:
-	.word	__reset_handler
-	.word	__undefined_instruction_handler
-	.word	__swi_handler
-	.word	__abort_prefetch_handler
-	.word	__abort_data_handler
-	.word	0
-	.word	__irq_handler
-	.word	__fiq_handler
-
-	.global	__reset_handler
-__reset_handler:
+	.global	gyros__reset_handler
+gyros__reset_handler:
 	// Go to supervisor mode with IRQ and FIQ disabled
 	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SVC
 
@@ -230,44 +160,6 @@ __crt_memcpy:
 	str	r3, [r0], #4
 	bne	1b
 	mov	pc, lr
-
-	.weak	__undefined_instruction_handler
-	.type	__undefined_instruction_handler, %function
-__undefined_instruction_handler:
-	b	.
-
-	.type	__swi_handler, %function
-__swi_handler:
-	add	lr, lr, #4
-	save_context
-	restore_context
-
-	.weak	__abort_prefetch_handler
-	.type	__abort_prefetch_handler, %function
-__abort_prefetch_handler:
-	b	.
-
-	.weak	__abort_data_handler
-	.type	__abort_data_handler, %function
-__abort_data_handler:
-	b	.
-
-	.type	__irq_handler, %function
-__irq_handler:
-	save_context
-	ldr	r0, =AIC_IVR
-	ldr	r0, [r0]
-	mov	lr, pc
-	bx	r0
-	/* Write to AIC_EIOCR to signal end of ISR */
-	ldr	r0, =AIC_EIOCR
-	str	r0, [r0]
-	restore_context
-
-	.weak	__fiq_handler
-	.type	__fiq_handler, %function
-__fiq_handler:
-	b	.
 
 	.weak	__gccmain
 	.type	__gccmain, %function
