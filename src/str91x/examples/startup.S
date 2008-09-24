@@ -26,6 +26,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+	.equ    MODE_USR,	0x10
+	.equ    MODE_FIQ,	0x11
+	.equ    MODE_IRQ,	0x12
+	.equ    MODE_SVC,	0x13
+	.equ    MODE_ABT,	0x17
+	.equ    MODE_UND,	0x1b
+	.equ    MODE_SYS,	0x1f
+
+	.equ    FIQ_BIT,	0x40
+	.equ    IRQ_BIT,	0x80
+
+	/* Stack Sizes */
+	.set  UND_STACK_SIZE,	0x00000020
+	.set  ABT_STACK_SIZE,	0x00000020
+	.set  FIQ_STACK_SIZE,	0x00000004
+	.set  IRQ_STACK_SIZE,	0X00001000
+	.set  SVC_STACK_SIZE,	0x00002000
+
 	.arm
 	.section	.text.vectors, "ax"
 	.balign		4
@@ -44,7 +62,7 @@ __real_exception_vectors:
 	.global		__exception_vectors
 	.type		__exception_vectors, %object
 __exception_vectors:
-	.word	gyros__reset_handler
+	.word	__reset_handler
 	.word	__undefined_instruction_handler
 	.word	gyros__swi_handler
 	.word	__abort_prefetch_handler
@@ -72,3 +90,125 @@ __abort_data_handler:
 	.type	__fiq_handler, %function
 __fiq_handler:
 	b	.
+
+	.arm
+	.text
+	.balign		4
+
+	.global	__reset_handler
+__reset_handler:
+	// Go to supervisor mode with IRQ and FIQ disabled
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SVC
+
+	// Setup main stack pointer
+	ldr	sp, =__hwinit_stack_top
+
+#ifdef __thumb__
+	// Switch to thumb mode
+	adr	r0, 1f + 1
+	bx	r0
+	.thumb
+1:
+#endif
+
+	// Call gyros__hwinit
+	bl	gyros__hwinit
+
+#ifdef __thumb__
+	// Switch back to ARM mode
+	adr	r0, 1f
+	bx	r0
+	.align
+	.arm
+1:
+#endif
+
+	// Setup stack pointers
+	ldr	r0, =__stack_top
+	msr	cpsr_c, #MODE_UND | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+	sub	r0, r0, #UND_STACK_SIZE
+	msr	cpsr_c, #MODE_ABT | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+	sub	r0, r0, #ABT_STACK_SIZE
+	msr	cpsr_c, #MODE_FIQ | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+	sub	r0, r0, #FIQ_STACK_SIZE
+	msr	cpsr_c, #MODE_IRQ | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+	sub	r0, r0, #IRQ_STACK_SIZE
+	msr	cpsr_c, #MODE_SVC | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+	sub	r0, r0, #SVC_STACK_SIZE
+	msr	cpsr_c, #MODE_SYS | IRQ_BIT | FIQ_BIT
+	mov	sp, r0
+
+	// Go to system mode with IRQ and FIQ disabled
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SYS
+
+	// Copy .text.ram section
+	ldr	r0, =__text_ram_start
+	ldr	r1, =__text_ram_load
+	ldr	r2, =__text_ram_size
+	bl	__crt_memcpy
+
+	// Copy .data section
+	ldr	r0, =__data_start
+	ldr	r1, =__data_load
+	ldr	r2, =__data_size
+	bl	__crt_memcpy
+
+	// Zero .bss
+	mov	r0, #0
+	ldr	r1, =__bss_start
+	ldr	r2, =__bss_size
+	cmp	r0, r2
+	beq	2f
+1:	subs	r2, r2, #4
+	str	r0, [r1], #4
+	bne	1b
+2:
+
+#ifdef __thumb__
+	// Switch to thumb mode
+	adr	r0, 1f + 1
+	bx	r0
+	.thumb
+1:
+#endif
+
+	// Call main
+	mov	r0, #0
+	bl	main
+
+	// Loop forever
+	b	.
+
+	// ARM code below
+	.align
+	.arm
+
+	// __crt_memcpy:
+	// r0 - destination address
+	// r1 - source address
+	// r2 - size in bytes (Must be a multiple of 4)
+	.type	__crt_memcpy, %function
+__crt_memcpy:
+	subs	r2, r2, #32
+	bmi	2f		// r0 was < 32
+1:	ldmfd	r1!, {r3-r10}
+	subs	r2, r2, #32
+	stmea	r0!, {r3-r10}
+	bpl	1b
+2:	adds	r2, r2, #32
+	moveq	pc, lr          // r0 was a multiple of 32
+1:	ldr	r3, [r1], #4    // Copy the rest
+	subs	r2, r2, #4
+	str	r3, [r0], #4
+	bne	1b
+	mov	pc, lr
+
+	.weak	__gccmain
+	.type	__gccmain, %function
+__gccmain:
+	mov	pc, lr
