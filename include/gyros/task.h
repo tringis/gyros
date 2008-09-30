@@ -65,6 +65,10 @@ void gyros_task_create(gyros_task_t *task,
 
 void gyros_task_delete(gyros_task_t *task);
 
+gyros_task_t *gyros_task_wait(gyros_task_t *task);
+
+gyros_task_t *gyros_task_timedwait(gyros_task_t *task, int timeout);
+
 gyros_task_t *gyros_task_current(void);
 
 void gyros_task_suspend(gyros_task_t *task);

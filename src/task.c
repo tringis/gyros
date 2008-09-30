@@ -36,6 +36,8 @@
 
 gyros__state_t gyros__state;
 struct gyros_list_node gyros__tasks = { &gyros__tasks, &gyros__tasks };
+struct gyros_list_node gyros__zombies = { &gyros__zombies, &gyros__zombies };
+struct gyros_list_node gyros__reapers = { &gyros__reapers, &gyros__reapers };
 static gyros_task_t s_idle_task;
 
 static void
@@ -52,13 +54,26 @@ add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
 }
 
 void
+gyros__task_zombify(gyros_task_t *task)
+{
+    gyros_list_remove(&gyros__state.current->main_list);
+    gyros_list_remove(&gyros__state.current->timeout_list);
+    gyros_list_remove(&gyros__state.current->task_list);
+    gyros_list_insert_before(&task->task_list, &gyros__zombies);
+
+    /* Wake the tasks in reverse order to preserve the order of the
+     * tasks (of equal priority) in the list. */
+    while (gyros__reapers.prev != &gyros__reapers)
+        gyros__task_wake(TASK(gyros__reapers.prev));
+}
+
+void
 gyros__task_exit(void)
 {
     /* Note that we do not need to call gyros_interrupt_restore()
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
-    gyros_list_remove(&gyros__state.current->main_list);
-    gyros_list_remove(&gyros__state.current->task_list);
+    gyros__task_zombify(gyros__state.current);
     gyros__reschedule();
 }
 
