@@ -165,14 +165,3 @@ gyros_task_create(gyros_task_t *task,
     GYROS_LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
 }
-
-void
-gyros_yield(void)
-{
-    unsigned long flags = gyros_interrupt_disable();
-
-    gyros_list_remove(&gyros__state.current->main_list);
-    add_task_to_list(gyros__state.current, &gyros__state.running);
-    gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
-}
