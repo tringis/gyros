@@ -73,6 +73,4 @@ void gyros__target_task_init(gyros_task_t *task,
                              void *stack,
                              int stack_size);
 
-void gyros__tick_enable(void);
-
 #endif
