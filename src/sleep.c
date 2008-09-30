@@ -67,18 +67,7 @@ gyros__wake_sleeping_tasks(void)
 int
 gyros_sleep(unsigned long ticks)
 {
-    unsigned long flags;
-
-    if (ticks == 0)
-        return 1;
-
-    flags = gyros_interrupt_disable();
-    gyros_list_remove(&gyros__state.current->main_list);
-    gyros__task_set_timeout(gyros__ticks + ticks + 1);
-    gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
-
-    return gyros__state.current->timed_out;
+    return ticks == 0 ? 1 : gyros_sleep_until(gyros_time() + ticks + 1);
 }
 
 int

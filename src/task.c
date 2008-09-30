@@ -89,10 +89,8 @@ gyros__task_move(gyros_task_t *task, struct gyros_list_node *list)
 void
 gyros__task_wake(gyros_task_t *task)
 {
-    gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
-
-    add_task_to_list(task, &gyros__state.running);
+    gyros__task_move(task, &gyros__state.running);
 }
 
 void
