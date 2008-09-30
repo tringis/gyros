@@ -34,11 +34,13 @@
 
 #include "private.h"
 
-gyros__state_t gyros__state;
 struct gyros_list_node gyros__tasks = { &gyros__tasks, &gyros__tasks };
 struct gyros_list_node gyros__zombies = { &gyros__zombies, &gyros__zombies };
 struct gyros_list_node gyros__reapers = { &gyros__reapers, &gyros__reapers };
 static gyros_task_t s_idle_task;
+gyros__state_t gyros__state = {
+    .running = { &gyros__state.running, &gyros__state.running }
+};
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros_list_node *list)
@@ -115,15 +117,10 @@ gyros__cond_reschedule(void)
 }
 
 void
-gyros_init(void)
+gyros_start(void)
 {
-    GYROS_LIST_NODE_INIT(&gyros__state.running);
-
-    gyros__target_init();
-
     /* Make the current "task" the idle task */
     s_idle_task.priority = 0;
-
     s_idle_task.name = "[idle]";
     s_idle_task.stack = 0;
     s_idle_task.stack_size = 0;
@@ -131,11 +128,8 @@ gyros_init(void)
     gyros_list_insert_before(&s_idle_task.task_list, &gyros__tasks);
     add_task_to_list(&s_idle_task, &gyros__state.running);
     gyros__state.current = &s_idle_task;
-}
 
-void
-gyros_start(void)
-{
+    gyros__target_init();
     gyros__tick_enable();
     gyros__interrupt_enable();
 
