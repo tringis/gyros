@@ -32,57 +32,48 @@
 
 #define TASK_LIST_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, task_list)
 
-static gyros_task_t*
-find_zombie(gyros_task_t *task)
-{
-    struct gyros_list_node *i;
-
-    for (i = gyros__zombies.next; i != &gyros__zombies; i = i->next)
-    {
-        if (!task || task == TASK_LIST_TASK(i))
-            return TASK_LIST_TASK(i);
-    }
-
-    return 0;
-}
-
 gyros_task_t*
-gyros_task_wait(gyros_task_t *task)
+gyros_task_wait(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    gyros_task_t *t;
+    gyros_task_t *task;
 
-    while ((t = find_zombie(task)) == 0)
+    while (gyros__zombies.next == &gyros__zombies)
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
-    gyros_list_remove(&t->task_list);
+    task = TASK_LIST_TASK(gyros__zombies.next);
+    gyros_list_remove(&task->task_list);
     gyros_interrupt_restore(flags);
 
-    return t;
+    return task;
 }
 
 gyros_task_t*
-gyros_task_timedwait(gyros_task_t *task, int timeout)
+gyros_task_timedwait(int timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
-    gyros_task_t *t = find_zombie(task);
+    gyros_task_t *task;
 
-    if (!t)
+    if (gyros__zombies.next == &gyros__zombies)
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros__task_set_timeout(timeout);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
-        t = find_zombie(task);
     }
-    if (t)
-        gyros_list_remove(&t->task_list);
+    if (gyros__zombies.next == &gyros__zombies)
+        task = 0;
+    else
+    {
+        task = TASK_LIST_TASK(gyros__zombies.next);
+        gyros_list_remove(&task->task_list);
+    }
     gyros_interrupt_restore(flags);
 
-    return t;
+    return task;
 }
