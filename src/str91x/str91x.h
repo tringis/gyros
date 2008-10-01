@@ -123,39 +123,6 @@ struct TIM_regs
     reg16 EMPTY8;
 };
 
-#define TIM_SRC_WDG        0
-#define TIM_SRC_SW         1
-#define TIM_SRC_ARMRX      2
-#define TIM_SRC_ARMTX      3
-#define TIM_SRC_TIM0       4
-#define TIM_SRC_TIM1       5
-#define TIM_SRC_TIM2       6
-#define TIM_SRC_TIM3       7
-#define TIM_SRC_USBHP      8
-#define TIM_SRC_USBLP      9
-#define TIM_SRC_SCU        10
-#define TIM_SRC_ENET       11
-#define TIM_SRC_DMA        12
-#define TIM_SRC_CAN        13
-#define TIM_SRC_MC         14
-#define TIM_SRC_ADC        15
-#define TIM_SRC_UART0      16
-#define TIM_SRC_UART1      17
-#define TIM_SRC_UART2      18
-#define TIM_SRC_I2C0       19
-#define TIM_SRC_I2C1       20
-#define TIM_SRC_SSP0       21
-#define TIM_SRC_SSP1       22
-#define TIM_SRC_LVD        23
-#define TIM_SRC_RTC        24
-#define TIM_SRC_WIU        25
-#define TIM_SRC_EXTIT0     26
-#define TIM_SRC_EXTIT1     27
-#define TIM_SRC_EXTIT2     28
-#define TIM_SRC_EXTIT3     29
-#define TIM_SRC_USBWU      30
-#define TIM_SRC_PFQBC      31
-
 struct VIC_regs
 {
     reg32 ISR;

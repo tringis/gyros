@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/vic.h>
+#include <gyros/str91x/interrupt.h>
 
 #include "str91x.h"
 #include "../private.h"
@@ -60,7 +60,7 @@ gyros__target_init(void)
     TIM(3)->CR2 = 0;
     TIM(3)->SR  = 0;          /* clear any interrupt events */
 
-    vic_set_isr(TIM_SRC_TIM3, 5, tick_isr);
+    gyros_target_set_isr(GYROS_IRQ_TIM3, 5, tick_isr);
 
     TIM(3)->CR2 = 0; /* PBLK */
     TIM(3)->CR2 |= 0x4000;        /* enable OC1 interrupt */

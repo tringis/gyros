@@ -26,4 +26,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#ifndef INCLUDE__interrupt_h__200808291459
+#define INCLUDE__interrupt_h__200808291459
+
 #include <gyros/arm/interrupt.h>
+
+#define GYROS_IRQ_WDG          0
+#define GYROS_IRQ_SW           1
+#define GYROS_IRQ_ARMRX        2
+#define GYROS_IRQ_ARMTX        3
+#define GYROS_IRQ_TIM0         4
+#define GYROS_IRQ_TIM1         5
+#define GYROS_IRQ_TIM2         6
+#define GYROS_IRQ_TIM3         7
+#define GYROS_IRQ_USBHP        8
+#define GYROS_IRQ_USBLP        9
+#define GYROS_IRQ_SCU         10
+#define GYROS_IRQ_EMAC        11
+#define GYROS_IRQ_DMA         12
+#define GYROS_IRQ_CAN         13
+#define GYROS_IRQ_MC          14
+#define GYROS_IRQ_ADC         15
+
+#define GYROS_IRQ_UART0       16
+#define GYROS_IRQ_UART1       17
+#define GYROS_IRQ_UART2       18
+#define GYROS_IRQ_I2C0        19
+#define GYROS_IRQ_I2C1        20
+#define GYROS_IRQ_SSP0        21
+#define GYROS_IRQ_SSP1        22
+#define GYROS_IRQ_LVD         23
+#define GYROS_IRQ_RTC         24
+#define GYROS_IRQ_WIU         25
+#define GYROS_IRQ_EXTIT0      26
+#define GYROS_IRQ_EXTIT1      27
+#define GYROS_IRQ_EXTIT2      28
+#define GYROS_IRQ_EXTIT3      29
+#define GYROS_IRQ_USBWU       30
+#define GYROS_IRQ_PFQBC       31
+
+void gyros_target_set_isr(int irq, int priority, void (*isr)(void));
+
+#endif

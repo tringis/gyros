@@ -26,12 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/vic.h>
+#include <gyros/str91x/interrupt.h>
 
 #include "str91x.h"
 
 void
-vic_set_isr(int irq, int priority, void (*isr)(void))
+gyros_target_set_isr(int irq, int priority, void (*isr)(void))
 {
     struct VIC_regs *vic;
         

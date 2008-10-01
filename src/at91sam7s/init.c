@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/at91sam7s/aic.h>
+#include <gyros/at91sam7s/interrupt.h>
 
 #include "../private.h"
 #include "at91sam7s.h"
@@ -55,12 +55,10 @@ gyros__target_init(void)
 {
     uint32_t dummy;
 
-    aic_init();
-    aic_irq_add_sys_isr(pit_isr);
+    gyros_target_aic_init();
+    gyros_target_add_sys_isr(pit_isr);
 
     dummy = AT91C_BASE_PITC->PITC_PIVR;
     AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
         (PIT_PERIOD - 1);
-
-    *AT91C_AIC_IECR = (1 << AT91C_ID_SYS);
 }

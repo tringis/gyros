@@ -26,4 +26,59 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#ifndef INCLUDED__aic_h__112128919811112399
+#define INCLUDED__aic_h__112128919811112399
+
+#include <stdint.h>
+
 #include <gyros/arm/interrupt.h>
+
+#define GYROS_IRQ_FIQ                0 // Advanced Interrupt Controller (FIQ)
+#define GYROS_IRQ_SYS                1 // System Peripheral
+#define GYROS_IRQ_PIOA               2 // Parallel IO Controller
+#define GYROS_IRQ_ADC                4 // Analog-to-Digital Converter
+#define GYROS_IRQ_SPI                5 // Serial Peripheral Interface
+#define GYROS_IRQ_US0                6 // USART 0
+#define GYROS_IRQ_US1                7 // USART 1
+#define GYROS_IRQ_SSC                8 // Serial Synchronous Controller
+#define GYROS_IRQ_TWI                9 // Two-Wire Interface
+#define GYROS_IRQ_PWMC              10 // PWM Controller
+#define GYROS_IRQ_UDP               11 // USB Device Port
+#define GYROS_IRQ_TC0               12 // Timer Counter 0
+#define GYROS_IRQ_TC1               13 // Timer Counter 1
+#define GYROS_IRQ_TC2               14 // Timer Counter 2
+#define GYROS_IRQ_IRQ0              30 // Advanced Interrupt Controller (IRQ0)
+#define GYROS_IRQ_IRQ1              31 // Advanced Interrupt Controller (IRQ1)
+
+/* Internal interrupts: */
+#define GYROS_IRQ_MODE_INT_LEVEL    (0 << 5)
+#define GYROS_IRQ_MODE_INT_EDGE     (1 << 5)
+
+/* External interrupt modes: */
+#define GYROS_IRQ_MODE_LOW_LEVEL    (0 << 5)
+#define GYROS_IRQ_MODE_NEG_EDGE     (1 << 5)
+#define GYROS_IRQ_MODE_HIGH_LEVEL   (2 << 5)
+#define GYROS_IRQ_MODE_POS_EDGE     (3 << 5)
+
+typedef void (gyros_target_aic_isr_t)(void);
+
+/* Initialize the AIC, disable all interrupts in the AIC but enable
+ * interrupts in the ARM core. */
+void gyros_target_aic_init(void);
+
+/* Set the priority of an interrupt. */
+int gyros_target_set_irq_prio(int irq, int prio);
+
+/* Add an interrupt handler. The function isr is a normal C function
+ * with normal prologue and epilogue and calling convention.  The
+ * interrupt must be enabled with aic_irq_enable(). */
+int gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr);
+
+/* Add a system interrupt handler.  Because the system interrupt is
+ * shared by several peripherals, we need to have several handlers.
+ * The function isr is a normal C function with normal prologue and
+ * epilogue and calling convention.  The interrupt must be enabled
+ * with aic_irq_enable(). */
+int gyros_target_add_sys_isr(gyros_target_aic_isr_t isr);
+
+#endif
