@@ -63,7 +63,7 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
 
     gyros_mutex_lock(m);
 
-    return gyros__state.current->timed_out;
+    return !gyros__state.current->timed_out;
 }
 
 void
