@@ -75,9 +75,9 @@ void gyros_task_resume(gyros_task_t *task);
 
 void gyros_yield(void);
 
-void gyros_lock(void);
+void gyros_task_lock(void);
 
-void gyros_unlock(void);
+void gyros_task_unlock(void);
 
 gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
 

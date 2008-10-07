@@ -29,7 +29,7 @@
 #include "private.h"
 
 void
-gyros_lock(void)
+gyros_task_lock(void)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -38,7 +38,7 @@ gyros_lock(void)
 }
 
 void
-gyros_unlock(void)
+gyros_task_unlock(void)
 {
     /* We don't need to disable interrupts because the interrupt does
      * not touch gyros__state.locked, and since we are locked, no
