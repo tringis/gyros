@@ -45,7 +45,7 @@ extern struct gyros_list_node gyros__tasks;
 extern struct gyros_list_node gyros__zombies;
 extern struct gyros_list_node gyros__reapers;
 extern gyros__state_t gyros__state;
-extern unsigned long gyros__ticks;
+extern volatile unsigned long gyros__ticks;
 
 void gyros__task_zombify(gyros_task_t *task);
 

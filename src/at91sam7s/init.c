@@ -36,7 +36,7 @@
 #define PIT_FREQ     (MCLK_FREQ / 16)
 #define PIT_PERIOD   (PIT_FREQ / 1000)  /* cycles per 1 ms */
 
-unsigned long gyros__ticks;
+volatile unsigned long gyros__ticks;
 
 static void
 pit_isr(void)

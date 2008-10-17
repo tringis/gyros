@@ -33,7 +33,7 @@
 
 #define TIM_PERIOD 48000 /* PCLK / 1000 => 1 kHz */
 
-unsigned long gyros__ticks;
+volatile unsigned long gyros__ticks;
 
 static void
 tick_isr(void)

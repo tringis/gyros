@@ -86,7 +86,7 @@ int gyros_task_stack_used(gyros_task_t *task);
 static __inline__ unsigned long
 gyros_time(void)
 {
-    extern unsigned long gyros__ticks;
+    extern volatile unsigned long gyros__ticks;
 
     return gyros__ticks;
 }
