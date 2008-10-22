@@ -70,7 +70,10 @@ gyros_mutex_lock(gyros_mutex_t *m)
         /* Implement priority inheritance to prevent priority
          * inversion. */
         if (m->owner->priority < gyros__state.current->priority)
+        {
+            m->owner->raised_priority = 1;
             m->owner->priority = gyros__state.current->priority;
+        }
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -87,7 +90,11 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     unsigned long flags = gyros_interrupt_disable();
 
     m->owner = NULL;
-    gyros__state.current->priority = m->owner_priority;
+    if (gyros__state.current->raised_priority)
+    {
+        gyros__state.current->raised_priority = 0;
+        gyros__state.current->priority = m->owner_priority;
+    }
     if (gyros_list_empty(&m->task_list))
         gyros_interrupt_restore(flags);
     else

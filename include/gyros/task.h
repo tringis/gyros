@@ -40,8 +40,9 @@ typedef struct
 
     struct gyros_list_node timeout_list;
     unsigned long timeout;
-    short timed_out;
+    unsigned char timed_out;
 
+    unsigned char raised_priority;
     unsigned short priority;
 
     struct gyros_list_node task_list;
@@ -68,6 +69,10 @@ gyros_task_t *gyros_task_wait(void);
 gyros_task_t *gyros_task_timedwait(int timeout);
 
 gyros_task_t *gyros_task_current(void);
+
+unsigned short gyros_get_task_priority(gyros_task_t *task);
+
+void gyros_set_task_priority(gyros_task_t *task, unsigned short priority);
 
 void gyros_task_suspend(gyros_task_t *task);
 
