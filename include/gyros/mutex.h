@@ -34,7 +34,7 @@
 typedef struct gyros_mutex
 {
     gyros_task_t *owner;
-    int owner_priority;
+    unsigned short owner_priority;
     struct gyros_list_node task_list;
 } gyros_mutex_t;
 

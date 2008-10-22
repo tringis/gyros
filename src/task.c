@@ -141,7 +141,7 @@ gyros_task_create(gyros_task_t *task,
                   void *arg,
                   void *stack,
                   int stack_size,
-                  int priority)
+                  unsigned short priority)
 {
     unsigned long flags;
 

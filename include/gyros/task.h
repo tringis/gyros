@@ -42,9 +42,9 @@ typedef struct
     unsigned long timeout;
     short timed_out;
 
-    struct gyros_list_node task_list;
+    unsigned short priority;
 
-    int priority;
+    struct gyros_list_node task_list;
 
     const char *name;
     void *stack;
@@ -59,7 +59,7 @@ void gyros_task_create(gyros_task_t *task,
                        void *arg,
                        void *stack,
                        int stack_size,
-                       int priority);
+                       unsigned short priority);
 
 void gyros_task_delete(gyros_task_t *task);
 
