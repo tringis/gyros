@@ -31,13 +31,13 @@
 #include "private.h"
 
 unsigned short
-gyros_get_task_priority(gyros_task_t *task)
+gyros_task_get_priority(gyros_task_t *task)
 {
     return task->priority;
 }
 
 void
-gyros_set_task_priority(gyros_task_t *task, unsigned short priority)
+gyros_task_set_priority(gyros_task_t *task, unsigned short priority)
 {
     unsigned long flags = gyros_interrupt_disable();
 

@@ -70,9 +70,9 @@ gyros_task_t *gyros_task_timedwait(int timeout);
 
 gyros_task_t *gyros_task_current(void);
 
-unsigned short gyros_get_task_priority(gyros_task_t *task);
+unsigned short gyros_task_get_priority(gyros_task_t *task);
 
-void gyros_set_task_priority(gyros_task_t *task, unsigned short priority);
+void gyros_task_set_priority(gyros_task_t *task, unsigned short priority);
 
 void gyros_task_suspend(gyros_task_t *task);
 
