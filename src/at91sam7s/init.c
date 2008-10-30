@@ -30,11 +30,7 @@
 
 #include "../private.h"
 #include "at91sam7s.h"
-
-#define MCLK_FREQ    47923200
-
-#define PIT_FREQ     (MCLK_FREQ / 16)
-#define PIT_PERIOD   (PIT_FREQ / 1000)  /* cycles per 1 ms */
+#include "private.h"
 
 volatile unsigned long gyros__ticks;
 

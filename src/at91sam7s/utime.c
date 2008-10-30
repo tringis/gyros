@@ -26,44 +26,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/interrupt.h>
+#include <gyros/at91sam7s/interrupt.h>
 
-#include "str91x.h"
 #include "../private.h"
+#include "at91sam7s.h"
 #include "private.h"
 
-volatile unsigned long gyros__ticks;
-
-static void
-tick_isr(void)
+unsigned long
+gyros_utime(void)
 {
-    TIM(3)->OC1R += TIM_PERIOD;
-    TIM(3)->SR &= ~(1U << 14);
+    unsigned long flags = gyros_interrupt_disable();
+    uint32_t piir = AT91C_BASE_PITC->PITC_PIIR;
+    unsigned long t = (gyros__ticks + (piir >> 20)) * 1000 +
+        (piir & 0xfffff) * 1000000 / PIT_FREQ;
 
-    ++gyros__ticks;
-    gyros__wake_sleeping_tasks();
-}
+    gyros_interrupt_restore(flags);
 
-void
-gyros__target_init(void)
-{
-    /* Enable the VIC */
-    SCU->PCGR0 |= SCU_P0_VIC;
-    SCU->PRR0 |= SCU_P0_VIC;
-
-    /* Enable TIM2 and TIM3 */
-    SCU->PCGR1 |= SCU_P1_TIM23;
-    SCU->PRR1 |= SCU_P1_TIM23;
-
-    TIM(3)->CR1 = 0;          /* disable timer */
-    TIM(3)->CR2 = 0;
-    TIM(3)->SR  = 0;          /* clear any interrupt events */
-
-    gyros_target_set_isr(GYROS_IRQ_TIM3, 5, tick_isr);
-
-    TIM(3)->CR2 = 0; /* PBLK */
-    TIM(3)->CR2 |= 0x4000;        /* enable OC1 interrupt */
-    TIM(3)->OC1R = TIM_PERIOD;    /* set period */
-    TIM(3)->CNTR = 0;         /* reset count (exact value ignored) */
-    TIM(3)->CR1 |= 0x8000;            /* start timer */
+    return t;
 }

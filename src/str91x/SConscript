@@ -1,5 +1,6 @@
 Import("*")
 
-srcs = [ 'exceptions.S', '../arm/arm_task.c', 'init.c', 'interrupt.c' ]
+srcs = [ 'exceptions.S', '../arm/arm_task.c', 'init.c', 'interrupt.c',
+         'utime.c' ]
 
 Default(target_env.StaticLibrary('gyros', gyros_srcs + srcs))

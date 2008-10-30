@@ -4,7 +4,7 @@ gyros_srcs = map(target_env.File, [ 'task.c', 'delete.c', 'current.c',
                                     'yield.c', 'wait.c', 'priority.c',
                                     'lock.c', 'suspend.c', 'sleep.c',
                                     'mutex.c', 'cond.c', 'sem.c',
-                                    'iterate.c' ])
+                                    'iterate.c', 'udelay.c' ])
 
 Export("gyros_srcs")
 

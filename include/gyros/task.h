@@ -96,8 +96,12 @@ gyros_time(void)
     return gyros__ticks;
 }
 
+unsigned long gyros_utime();
+
 int gyros_sleep(unsigned long ticks);
 
 int gyros_sleep_until(unsigned long ticks);
+
+void gyros_udelay(unsigned long microseconds);
 
 #endif

@@ -26,44 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/interrupt.h>
+#ifndef INCLUDED__gyros_at91sam7s_private_h__200810271613
+#define INCLUDED__gyros_at91sam7s_private_h__200810271613
 
-#include "str91x.h"
-#include "../private.h"
-#include "private.h"
+#define MCLK_FREQ    47923200
 
-volatile unsigned long gyros__ticks;
+#define PIT_FREQ     (MCLK_FREQ / 16)
+#define PIT_PERIOD   (PIT_FREQ / 1000)  /* cycles per 1 ms */
 
-static void
-tick_isr(void)
-{
-    TIM(3)->OC1R += TIM_PERIOD;
-    TIM(3)->SR &= ~(1U << 14);
-
-    ++gyros__ticks;
-    gyros__wake_sleeping_tasks();
-}
-
-void
-gyros__target_init(void)
-{
-    /* Enable the VIC */
-    SCU->PCGR0 |= SCU_P0_VIC;
-    SCU->PRR0 |= SCU_P0_VIC;
-
-    /* Enable TIM2 and TIM3 */
-    SCU->PCGR1 |= SCU_P1_TIM23;
-    SCU->PRR1 |= SCU_P1_TIM23;
-
-    TIM(3)->CR1 = 0;          /* disable timer */
-    TIM(3)->CR2 = 0;
-    TIM(3)->SR  = 0;          /* clear any interrupt events */
-
-    gyros_target_set_isr(GYROS_IRQ_TIM3, 5, tick_isr);
-
-    TIM(3)->CR2 = 0; /* PBLK */
-    TIM(3)->CR2 |= 0x4000;        /* enable OC1 interrupt */
-    TIM(3)->OC1R = TIM_PERIOD;    /* set period */
-    TIM(3)->CNTR = 0;         /* reset count (exact value ignored) */
-    TIM(3)->CR1 |= 0x8000;            /* start timer */
-}
+#endif
