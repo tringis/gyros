@@ -65,6 +65,6 @@
 #define GYROS_IRQ_USBWU       30
 #define GYROS_IRQ_PFQBC       31
 
-void gyros_target_set_isr(int irq, int priority, void (*isr)(void));
+void gyros_target_set_isr(int irq, void (*isr)(void));
 
 #endif

@@ -59,7 +59,7 @@ gyros__target_init(void)
     TIM(3)->CR2 = 0;
     TIM(3)->SR  = 0;          /* clear any interrupt events */
 
-    gyros_target_set_isr(GYROS_IRQ_TIM3, 5, tick_isr);
+    gyros_target_set_isr(GYROS_IRQ_TIM3, tick_isr);
 
     TIM(3)->CR2 = 0; /* PBLK */
     TIM(3)->CR2 |= 0x4000;        /* enable OC1 interrupt */

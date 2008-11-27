@@ -31,7 +31,7 @@
 #include "str91x.h"
 
 void
-gyros_target_set_isr(int irq, int priority, void (*isr)(void))
+gyros_target_set_isr(int irq, void (*isr)(void))
 {
     struct VIC_regs *vic;
         
@@ -39,16 +39,17 @@ gyros_target_set_isr(int irq, int priority, void (*isr)(void))
         vic = VIC0;
     else
         vic = VIC1;
+    irq &= 15;
 
-    vic->INTECR |= 1 << (irq & 15); /* Disable the interrupt */
+    vic->INTECR |= 1 << irq; /* Disable the interrupt */
 
-    vic->INTSR &= ~(1 << (irq & 15));
-    vic->VAiR[priority] = (unsigned)isr;
+    vic->INTSR &= ~(1 << irq);
+    vic->VAiR[irq] = (unsigned)isr;
     if (isr)
     {
-        vic->VCiR[priority] = (1U << 5) | (irq & 0x0f);
-        vic->INTER |= 1 << (irq & 15); /* Enable the interrupt */
+        vic->VCiR[irq] = (1U << 5) | irq;
+        vic->INTER |= 1 << irq; /* Enable the interrupt */
     }
     else
-        vic->VCiR[priority] = 0;
+        vic->VCiR[irq] = 0;
 }
