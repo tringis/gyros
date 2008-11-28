@@ -35,45 +35,45 @@ typedef volatile uint16_t reg16;
 typedef volatile uint32_t reg32;
 
 /* AHB peripherals */
-#define SCU_P0_FMI          0x1
-#define SCU_P0_FPQBC        0x2
-#define SCU_P0_SRAM         0x8
-#define SCU_P0_SRAM_ARBITER 0x10
-#define SCU_P0_VIC          0x20
-#define SCU_P0_EMI          0x40
-#define SCU_P0_EMI_MEM_CLK  0x80
-#define SCU_P0_DMA          0x100
-#define SCU_P0_USB          0x200
-#define SCU_P0_USB48M       0x400
-#define SCU_P0_ENET         0x800
-#define SCU_P0_PFQBC_AHB    0x1000
+#define SCU_P0_FMI             (1U <<  0)
+#define SCU_P0_FPQBC           (1U <<  1)
+#define SCU_P0_SRAM            (1U <<  3)
+#define SCU_P0_SRAM_ARBITER    (1U <<  4)
+#define SCU_P0_VIC             (1U <<  5)
+#define SCU_P0_EMI             (1U <<  6)
+#define SCU_P0_EMI_MEM_CLK     (1U <<  7)
+#define SCU_P0_DMA             (1U <<  8)
+#define SCU_P0_USB             (1U <<  9)
+#define SCU_P0_USB48M          (1U << 10)
+#define SCU_P0_MAC             (1U << 11)
+#define SCU_P0_PFQBC_AHB       (1U << 12)
 
 /* APB peripherals */
-#define SCU_P1_TIM01 0x1
-#define SCU_P1_TIM23 0x2
-#define SCU_P1_MC    0x4
-#define SCU_P1_UART0 0x8
-#define SCU_P1_UART1 0x10
-#define SCU_P1_UART2 0x20
-#define SCU_P1_I2C0  0x40
-#define SCU_P1_I2C1  0x80
-#define SCU_P1_SSP0  0x100
-#define SCU_P1_SSP1  0x200
-#define SCU_P1_CAN   0x400
-#define SCU_P1_ADC   0x800
-#define SCU_P1_WDG   0x1000
-#define SCU_P1_WIU   0x2000
-#define SCU_P1_GPIO0 0x4000
-#define SCU_P1_GPIO1 0x8000
-#define SCU_P1_GPIO2 0x10000
-#define SCU_P1_GPIO3 0x20000
-#define SCU_P1_GPIO4 0x40000
-#define SCU_P1_GPIO5 0x80000
-#define SCU_P1_GPIO6 0x100000
-#define SCU_P1_GPIO7 0x200000
-#define SCU_P1_GPIO8 0x400000
-#define SCU_P1_GPIO9 0x800000
-#define SCU_P1_RTC   0x1000000
+#define SCU_P1_TIM01           (1U <<  0)
+#define SCU_P1_TIM23           (1U <<  1)
+#define SCU_P1_MC              (1U <<  2)
+#define SCU_P1_UART0           (1U <<  3)
+#define SCU_P1_UART1           (1U <<  4)
+#define SCU_P1_UART2           (1U <<  5)
+#define SCU_P1_I2C0            (1U <<  6)
+#define SCU_P1_I2C1            (1U <<  7)
+#define SCU_P1_SSP0            (1U <<  8)
+#define SCU_P1_SSP1            (1U <<  9)
+#define SCU_P1_CAN             (1U << 10)
+#define SCU_P1_ADC             (1U << 11)
+#define SCU_P1_WDG             (1U << 12)
+#define SCU_P1_WIU             (1U << 13)
+#define SCU_P1_GPIO0           (1U << 14)
+#define SCU_P1_GPIO1           (1U << 15)
+#define SCU_P1_GPIO2           (1U << 16)
+#define SCU_P1_GPIO3           (1U << 17)
+#define SCU_P1_GPIO4           (1U << 18)
+#define SCU_P1_GPIO5           (1U << 19)
+#define SCU_P1_GPIO6           (1U << 20)
+#define SCU_P1_GPIO7           (1U << 21)
+#define SCU_P1_GPIO8           (1U << 22)
+#define SCU_P1_GPIO9           (1U << 23)
+#define SCU_P1_RTC             (1U << 24)
 
 struct SCU_regs
 {
