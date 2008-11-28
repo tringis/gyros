@@ -41,14 +41,14 @@ gyros_target_set_isr(int irq, void (*isr)(void))
         vic = VIC1;
     irq &= 15;
 
-    vic->INTECR |= 1 << irq; /* Disable the interrupt */
+    vic->INTECR = 1 << irq; /* Disable the interrupt */
 
     vic->INTSR &= ~(1 << irq);
     vic->VAiR[irq] = (unsigned)isr;
     if (isr)
     {
         vic->VCiR[irq] = (1U << 5) | irq;
-        vic->INTER |= 1 << irq; /* Enable the interrupt */
+        vic->INTER = 1 << irq; /* Enable the interrupt */
     }
     else
         vic->VCiR[irq] = 0;
