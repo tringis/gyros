@@ -51,7 +51,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 }
 
 int
-gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, int timeout)
+gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, unsigned long timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 

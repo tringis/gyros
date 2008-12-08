@@ -66,7 +66,7 @@ void gyros_task_delete(gyros_task_t *task);
 
 gyros_task_t *gyros_task_wait(void);
 
-gyros_task_t *gyros_task_timedwait(int timeout);
+gyros_task_t *gyros_task_timedwait(unsigned long timeout);
 
 gyros_task_t *gyros_task_current(void);
 
