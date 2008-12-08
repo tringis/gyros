@@ -26,21 +26,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/interrupt.h>
+#include <gyros/arm/task_regs.h>
 
-#include "str91x.h"
-#include "../private.h"
-#include "private.h"
+typedef unsigned long long gyros_abstime_t;
 
-unsigned long
-gyros_utime(void)
+typedef long long gyros_time_t;
+
+static inline gyros_time_t gyros_us(long long microseconds)
 {
-    unsigned long flags = gyros_interrupt_disable();
-    uint16_t last_cntr = TIM(3)->OC1R - TIM_PERIOD;
-    unsigned long t = gyros__ticks * 1000 +
-        (uint16_t)(TIM(3)->CNTR - last_cntr) / (TIM_PERIOD / 1000);
+    return microseconds;
+}
 
-    gyros_interrupt_restore(flags);
+static inline gyros_time_t gyros_ms(long long milliseconds)
+{
+    return milliseconds * 1000;
+}
 
-    return t;
+static inline gyros_time_t gyros_s(long long seconds)
+{
+    return seconds * 1000000;
+}
+
+static inline long long gyros_time_to_us(gyros_time_t time)
+{
+    return time;
+}
+
+static inline long long gyros_time_to_ms(gyros_time_t time)
+{
+    return time / 1000;
+}
+
+static inline long long gyros_time_to_s(gyros_time_t time)
+{
+    return time / 1000000;
 }

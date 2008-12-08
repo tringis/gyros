@@ -31,7 +31,7 @@
 
 #include <gyros/list.h>
 #include <gyros/target/interrupt.h>
-#include <gyros/target/task_regs.h>
+#include <gyros/target/types.h>
 
 typedef struct
 {
@@ -66,7 +66,7 @@ void gyros_task_delete(gyros_task_t *task);
 
 gyros_task_t *gyros_task_wait(void);
 
-gyros_task_t *gyros_task_timedwait(unsigned long timeout);
+gyros_task_t *gyros_task_timedwait(gyros_abstime_t timeout);
 
 gyros_task_t *gyros_task_current(void);
 
@@ -88,20 +88,10 @@ gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
 
 int gyros_task_stack_used(gyros_task_t *task);
 
-static __inline__ unsigned long
-gyros_time(void)
-{
-    extern volatile unsigned long gyros__ticks;
+gyros_abstime_t gyros_time(void);
 
-    return gyros__ticks;
-}
+int gyros_sleep(gyros_time_t time);
 
-unsigned long gyros_utime();
-
-int gyros_sleep(unsigned long ticks);
-
-int gyros_sleep_until(unsigned long ticks);
-
-void gyros_udelay(unsigned long microseconds);
+int gyros_sleep_until(gyros_abstime_t timeout);
 
 #endif

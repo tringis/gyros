@@ -40,7 +40,7 @@ void gyros_cond_init(gyros_cond_t *c);
 void gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m);
 
 int gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m,
-                         unsigned long timeout);
+                         gyros_abstime_t timeout);
 
 void gyros_cond_signal_one(gyros_cond_t *c);
 

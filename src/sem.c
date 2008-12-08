@@ -65,7 +65,7 @@ gyros_sem_wait(gyros_sem_t *s)
 }
 
 int
-gyros_sem_timedwait(gyros_sem_t *s, unsigned long timeout)
+gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 

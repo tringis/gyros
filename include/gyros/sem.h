@@ -44,7 +44,7 @@ void gyros_sem_init_binary(gyros_sem_t *s);
 
 void gyros_sem_wait(gyros_sem_t *s);
 
-int gyros_sem_timedwait(gyros_sem_t *s, unsigned long timeout);
+int gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout);
 
 void gyros_sem_signal(gyros_sem_t *s);
 

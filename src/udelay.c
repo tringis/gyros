@@ -29,10 +29,10 @@
 #include <gyros/task.h>
 
 void
-gyros_udelay(unsigned long microseconds)
+gyros_udelay(gyros_abstime_t microseconds)
 {
-    unsigned long end = gyros_utime() + microseconds;
+    gyros_abstime_t end = gyros_time() + microseconds;
 
-    while ((long)(gyros_utime() - end) < 0)
+    while ((gyros_time_t)(gyros_time() - end) < 0)
         ;
 }

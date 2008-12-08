@@ -53,7 +53,7 @@ gyros_task_wait(void)
 }
 
 gyros_task_t*
-gyros_task_timedwait(unsigned long timeout)
+gyros_task_timedwait(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
     gyros_task_t *task;

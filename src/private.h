@@ -45,7 +45,6 @@ extern struct gyros_list_node gyros__tasks;
 extern struct gyros_list_node gyros__zombies;
 extern struct gyros_list_node gyros__reapers;
 extern gyros__state_t gyros__state;
-extern volatile unsigned long gyros__ticks;
 
 void gyros__task_zombify(gyros_task_t *task);
 
@@ -55,9 +54,9 @@ void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
 
-void gyros__task_set_timeout(unsigned long timeout);
+void gyros__task_set_timeout(gyros_abstime_t timeout);
 
-void gyros__wake_sleeping_tasks(void);
+long gyros__wake_sleeping_tasks(void);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 

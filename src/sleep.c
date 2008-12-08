@@ -28,6 +28,8 @@
  **************************************************************************/
 #include <gyros/task.h>
 
+#include <limits.h>
+
 #include "private.h"
 
 #define TIMEOUT_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, timeout_list)
@@ -35,13 +37,13 @@
 static struct gyros_list_node s_sleeping = { &s_sleeping, &s_sleeping };
 
 void
-gyros__task_set_timeout(unsigned long timeout)
+gyros__task_set_timeout(gyros_abstime_t timeout)
 {
     struct gyros_list_node *i;
 
     for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
-        if ((long)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
+        if ((gyros_time_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
     gyros_list_insert_before(&gyros__state.current->timeout_list, i);
@@ -49,29 +51,33 @@ gyros__task_set_timeout(unsigned long timeout)
     gyros__state.current->timed_out = 0;
 }
 
-void
+long
 gyros__wake_sleeping_tasks(void)
 {
-    unsigned long now = gyros__ticks;
+    gyros_abstime_t now = gyros_time();
 
     while (!gyros_list_empty(&s_sleeping) &&
-           (long)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
+           (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
     {
         gyros_task_t *task = TIMEOUT_TASK(s_sleeping.next);
 
         task->timed_out = 1;
         gyros__task_wake(task);
     }
+
+    return gyros_list_empty(&s_sleeping)
+        ? LONG_MAX
+        : (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout);
 }
 
 int
-gyros_sleep(unsigned long ticks)
+gyros_sleep(gyros_time_t time)
 {
-    return ticks == 0 ? 1 : gyros_sleep_until(gyros_time() + ticks + 1);
+    return time <= 0 ? 1 : gyros_sleep_until(gyros_time() + time + 1);
 }
 
 int
-gyros_sleep_until(unsigned long timeout)
+gyros_sleep_until(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
