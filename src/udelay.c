@@ -31,7 +31,7 @@
 void
 gyros_udelay(unsigned long microseconds)
 {
-    unsigned long end = gyros_utime();
+    unsigned long end = gyros_utime() + microseconds;
 
     while ((long)(gyros_utime() - end) < 0)
         ;
