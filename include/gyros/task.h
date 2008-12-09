@@ -94,4 +94,19 @@ int gyros_sleep(gyros_time_t time);
 
 int gyros_sleep_until(gyros_abstime_t timeout);
 
+static inline int gyros_sleep_us(int microseconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_us(microseconds) + 1);
+}
+
+static inline int gyros_sleep_ms(int milliseconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_ms(milliseconds) + 1);
+}
+
+static inline int gyros_sleep_s(int seconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_s(seconds) + 1);
+}
+
 #endif

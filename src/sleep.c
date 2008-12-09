@@ -71,12 +71,6 @@ gyros__wake_sleeping_tasks(void)
 }
 
 int
-gyros_sleep(gyros_time_t time)
-{
-    return time <= 0 ? 1 : gyros_sleep_until(gyros_time() + time + 1);
-}
-
-int
 gyros_sleep_until(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
