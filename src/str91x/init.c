@@ -67,8 +67,7 @@ gyros__update_tick(gyros_abstime_t next_timeout)
         TIM(3)->OC1R = next_timeout;
     TIM(3)->SR &= ~(1U << 14);
 
-    if ((int16_t)(TIM(3)->OC1R - TIM(3)->CNTR) <= 0 &&
-        (TIM(3)->SR & (1U << 14)) == 0)
+    if ((int16_t)(TIM(3)->OC1R - TIM(3)->CNTR) <= 0)
     {
         /* Oops, we missed the OC1 tick.  Make the interrupt happen by
          * enabling the OC2 interrupt (which is always on). */
