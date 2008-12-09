@@ -54,10 +54,8 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 }
 
 void
-gyros__wake_sleeping_tasks(void)
+gyros__wake_sleeping_tasks(gyros_abstime_t now)
 {
-    gyros_abstime_t now = gyros_time();
-
     while (!gyros_list_empty(&s_sleeping) &&
            (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
     {

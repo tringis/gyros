@@ -56,7 +56,7 @@ void gyros__task_wake(gyros_task_t *task);
 
 void gyros__task_set_timeout(gyros_abstime_t timeout);
 
-void gyros__wake_sleeping_tasks(void);
+void gyros__wake_sleeping_tasks(gyros_abstime_t now);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
