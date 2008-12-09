@@ -49,9 +49,11 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
     gyros_list_insert_before(&gyros__state.current->timeout_list, i);
     gyros__state.current->timeout = timeout;
     gyros__state.current->timed_out = 0;
+    if (s_sleeping.next == &gyros__state.current->timeout_list)
+        gyros__update_tick(timeout);
 }
 
-long
+void
 gyros__wake_sleeping_tasks(void)
 {
     gyros_abstime_t now = gyros_time();
@@ -65,9 +67,10 @@ gyros__wake_sleeping_tasks(void)
         gyros__task_wake(task);
     }
 
-    return gyros_list_empty(&s_sleeping)
-        ? LONG_MAX
-        : (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout);
+    if (gyros_list_empty(&s_sleeping))
+        gyros__suspend_tick();
+    else
+        gyros__update_tick(TIMEOUT_TASK(s_sleeping.next)->timeout);
 }
 
 int

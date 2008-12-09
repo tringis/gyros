@@ -33,23 +33,52 @@
 
 #define PCLK            48000000
 
+#define MAX_PERIOD      0x3fff
+
 static gyros_abstime_t s_time_hi;
 static uint16_t s_last_time_lo;
 
 static void
 tim3_isr(void)
 {
-    do
+    /* Disable the OC2 interrupt in cast it was enabled. */
+    TIM(3)->CR2 &= ~(1U << 11);
+
+    gyros__wake_sleeping_tasks();
+}
+
+void
+gyros__suspend_tick(void)
+{
+    /* We can't suspend the tick, because it would make gyros_time()
+     * fail, so we set it to the maximum period. */
+    TIM(3)->OC1R = TIM(3)->CNTR + MAX_PERIOD;
+    TIM(3)->SR &= ~(1U << 14);
+}
+
+void
+gyros__update_tick(gyros_abstime_t next_timeout)
+{
+    gyros_time_t dt = next_timeout - gyros_time();
+    gyros_time_t h[3];
+
+    h[2] = h[1];
+    h[1] = h[0];
+    h[0] = next_timeout;
+
+    if (dt >= MAX_PERIOD)
+        TIM(3)->OC1R = TIM(3)->CNTR + MAX_PERIOD;
+    else
+        TIM(3)->OC1R = next_timeout;
+    TIM(3)->SR &= ~(1U << 14);
+
+    if ((int16_t)(TIM(3)->OC1R - TIM(3)->CNTR) <= 0 &&
+        (TIM(3)->SR & (1U << 14)) == 0)
     {
-        long dt = gyros__wake_sleeping_tasks();
-
-        if (dt > 0x3fff)
-            dt = 0x4000;
-
-        TIM(3)->OC1R += dt;
-        TIM(3)->SR &= ~(1U << 14);
+        /* Oops, we missed the OC1 tick.  Make the interrupt happen by
+         * enabling the OC2 interrupt (which is always on). */
+        TIM(3)->CR2 |= 1U << 11;
     }
-    while ((int16_t)(TIM(3)->OC1R - TIM(3)->CNTR) <= 0);
 }
 
 gyros_abstime_t
@@ -85,9 +114,10 @@ gyros__target_init(void)
 
     gyros_target_set_isr(GYROS_IRQ_TIM3, tim3_isr);
 
-    TIM(3)->CR2 = PCLK / 1000000; /* 1 us */
-    TIM(3)->CR2 |= 0x4000;        /* enable OC1 interrupt */
-    TIM(3)->CNTR = 0;         /* reset count (exact value ignored) */
-    TIM(3)->OC1R = 0x4000;    /* set period */
-    TIM(3)->CR1 |= 0x8000;            /* start timer */
+    TIM(3)->CR2 = PCLK / 1000000 - 1; /* 1 µs per tick */
+    TIM(3)->CR2 |= 0x4000;        /* Enable OC1 interrupt */
+    TIM(3)->OC1R = MAX_PERIOD;
+    TIM(3)->OC2R = 1;             /* Make OC2 happen right away */
+    TIM(3)->CNTR = 0;             /* Reset value (exact value ignored) */
+    TIM(3)->CR1 |= 0x8000;        /* Start timer */
 }
