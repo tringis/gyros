@@ -60,11 +60,6 @@ void
 gyros__update_tick(gyros_abstime_t next_timeout)
 {
     gyros_time_t dt = next_timeout - gyros_time();
-    gyros_time_t h[3];
-
-    h[2] = h[1];
-    h[1] = h[0];
-    h[0] = next_timeout;
 
     if (dt >= MAX_PERIOD)
         TIM(3)->OC1R = TIM(3)->CNTR + MAX_PERIOD;
