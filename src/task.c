@@ -28,6 +28,7 @@
  **************************************************************************/
 #include <gyros/task.h>
 
+#include <limits.h>
 #include <string.h>
 
 #include <gyros/target/interrupt.h>
@@ -102,11 +103,15 @@ gyros__cond_reschedule(void)
 
         if (gyros__state.locked)
         {
+            unsigned short old_prio = gyros__state.current->priority;
+
+            gyros__state.current->priority = USHRT_MAX;
             while (TASK(gyros__state.running.next) != gyros__state.current)
             {
                 gyros_interrupt_restore(flags);
                 flags = gyros_interrupt_disable();
             }
+            gyros__state.current->priority = old_prio;
         }
         if (TASK(gyros__state.running.next) != gyros__state.current)
             gyros__reschedule();
