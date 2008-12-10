@@ -90,6 +90,11 @@ int gyros_task_stack_used(gyros_task_t *task);
 
 gyros_abstime_t gyros_time(void);
 
+static inline int gyros_time_reached(gyros_abstime_t time)
+{
+    return (gyros_time_t)(time - gyros_time()) <= 0;
+}
+
 int gyros_sleep_until(gyros_abstime_t timeout);
 
 static inline int gyros_sleep_us(int microseconds)
