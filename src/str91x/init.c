@@ -33,7 +33,7 @@
 
 #define PCLK            48000000
 
-#define MAX_PERIOD      0xbfff
+#define MAX_PERIOD      0x8000
 
 static gyros_abstime_t s_time_hi;
 static uint16_t s_last_time_lo;
@@ -42,7 +42,7 @@ static void
 tim3_isr(void)
 {
     /* Disable the OC2 interrupt in cast it was enabled. */
-    TIM(3)->CR2 &= ~(1U << 11);
+    TIM(3)->CR2 &= ~TIM_CR2_OC2IE;
 
     /* Note that it's important to call gyros_time() here, because we
      * need to call it before 0xffff ticks have passed not to miss
@@ -56,7 +56,7 @@ gyros__suspend_tick(void)
     /* We can't suspend the tick, because it would make gyros_time()
      * fail, so we set it to the maximum period. */
     TIM(3)->OC1R = s_last_time_lo + MAX_PERIOD;
-    TIM(3)->SR &= ~(1U << 14);
+    TIM(3)->SR &= ~TIM_SR_OCF1;
 }
 
 void
@@ -67,18 +67,24 @@ gyros__update_tick(gyros_abstime_t next_timeout)
     if (dt >= MAX_PERIOD)
     {
         TIM(3)->OC1R = s_last_time_lo + MAX_PERIOD;
-        TIM(3)->SR &= ~(1U << 14);
+        TIM(3)->SR &= ~TIM_SR_OCF1;
+    }
+    else if (dt <= 0)
+    {
+        /* Oops, we're late!  Make the interrupt happen by enabling
+         * the OC2 interrupt (which is always on). */
+        TIM(3)->CR2 |= TIM_CR2_OC2IE;
     }
     else
     {
         TIM(3)->OC1R = next_timeout;
-        TIM(3)->SR &= ~(1U << 14);
+        TIM(3)->SR &= ~TIM_SR_OCF1;
 
         if ((int16_t)((uint16_t)next_timeout - (uint16_t)TIM(3)->CNTR) <= 0)
         {
             /* Oops, we missed the OC1 tick.  Make the interrupt happen by
              * enabling the OC2 interrupt (which is always on). */
-            TIM(3)->CR2 |= 1U << 11;
+            TIM(3)->CR2 |= TIM_CR2_OC2IE;
         }
     }
 }

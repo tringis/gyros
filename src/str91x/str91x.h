@@ -123,6 +123,19 @@ struct TIM_regs
     reg16 EMPTY8;
 };
 
+#define TIM_CR2_IC1IE        (1U << 15)
+#define TIM_CR2_OC1IE        (1U << 14)
+#define TIM_CR2_TOIE         (1U << 13)
+#define TIM_CR2_IC2IE        (1U << 12)
+#define TIM_CR2_OC2IE        (1U << 11)
+#define TIM_CR2_DMAE         (1U << 10)
+
+#define TIM_SR_ICF1          (1U << 15)
+#define TIM_SR_OCF1          (1U << 14)
+#define TIM_SR_TOF           (1U << 13)
+#define TIM_SR_ICF2          (1U << 12)
+#define TIM_SR_OCF2          (1U << 11)
+
 struct VIC_regs
 {
     reg32 ISR;
