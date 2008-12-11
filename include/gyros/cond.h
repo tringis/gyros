@@ -32,6 +32,10 @@
 #include <gyros/mutex.h>
 
 typedef struct gyros_cond {
+#if GYROS_DEBUG
+    unsigned debug_magic;
+#endif
+
     struct gyros_list_node task_list;
 } gyros_cond_t;
 

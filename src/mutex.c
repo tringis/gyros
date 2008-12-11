@@ -32,11 +32,17 @@
 
 #include "private.h"
 
+#define GYROS_MUTEX_DEBUG_MAGIC        0xe398123d
+
 #define SEM_TASK(t) GYROS_LIST_ENTRY(t, gyros_task_t, cond_list)
 
 void
 gyros_mutex_init(gyros_mutex_t *m)
 {
+#if GYROS_DEBUG
+    m->debug_magic = GYROS_MUTEX_DEBUG_MAGIC;
+#endif
+
     m->owner = NULL;
     GYROS_LIST_NODE_INIT(&m->task_list);
 }
@@ -45,6 +51,13 @@ int
 gyros_mutex_trylock(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+        gyros_error("uninitialized mutex in mutex_trylock");
+    if (gyros_in_interrupt())
+        gyros_error("mutex_trylock called from interrupt");
+#endif
 
     if (m->owner)
     {
@@ -63,6 +76,13 @@ void
 gyros_mutex_lock(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+        gyros_error("uninitialized mutex in mutex_lock");
+    if (gyros_in_interrupt())
+        gyros_error("mutex_lock called from interrupt");
+#endif
 
     while (m->owner)
     {
@@ -88,6 +108,15 @@ void
 gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+        gyros_error("uninitialized mutex in mutex__unlock");
+    if (m->owner == NULL)
+        gyros_error("mutex__unlock called for unlocked mutex");
+    if (m->owner != gyros__state.current)
+        gyros_error("mutex__unlock called by non owner task");
+#endif
 
     m->owner = NULL;
     if (gyros__state.current->raised_priority)

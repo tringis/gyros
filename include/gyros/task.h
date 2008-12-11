@@ -29,6 +29,7 @@
 #ifndef INCLUDED__gyros_task_h__200206071335
 #define INCLUDED__gyros_task_h__200206071335
 
+#include <gyros/debug.h>
 #include <gyros/list.h>
 #include <gyros/target/interrupt.h>
 #include <gyros/target/types.h>
@@ -50,6 +51,10 @@ typedef struct
     const char *name;
     void *stack;
     int stack_size;
+
+#if GYROS_DEBUG
+    unsigned debug_magic;
+#endif
 } gyros_task_t;
 
 void gyros_start(void) __attribute__((__noreturn__));

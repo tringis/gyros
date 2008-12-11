@@ -37,6 +37,11 @@ gyros_task_suspend(gyros_task_t *task)
 {
     unsigned long flags = gyros_interrupt_disable();
 
+#if GYROS_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros_error("resume non-task");
+#endif
+
     gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
     gyros_interrupt_restore(flags);
@@ -48,6 +53,11 @@ void
 gyros_task_resume(gyros_task_t *task)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros_error("resume non-task");
+#endif
 
     gyros__task_move(task, &gyros__state.running);
     gyros_interrupt_restore(flags);

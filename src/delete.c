@@ -35,6 +35,10 @@ gyros_task_delete(gyros_task_t *task)
 {
     unsigned long flags = gyros_interrupt_disable();
 
+#if GYROS_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros_error("delete non-task");
+#endif
     gyros__task_zombify(gyros__state.current);
     gyros_interrupt_restore(flags);
     gyros__cond_reschedule();

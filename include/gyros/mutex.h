@@ -33,6 +33,10 @@
 
 typedef struct gyros_mutex
 {
+#if GYROS_DEBUG
+    unsigned debug_magic;
+#endif
+
     gyros_task_t *owner;
     unsigned short owner_priority;
     struct gyros_list_node task_list;

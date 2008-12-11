@@ -29,10 +29,15 @@
 #ifndef INCLUDED__gyros_sem_h__200808281430
 #define INCLUDED__gyros_sem_h__200808281430
 
+#include <gyros/debug.h>
 #include <gyros/task.h>
 
 typedef struct gyros_sem
 {
+#if GYROS_DEBUG
+    unsigned debug_magic;
+#endif
+
     unsigned value;
     unsigned max_value;
     struct gyros_list_node task_list;

@@ -30,9 +30,15 @@
 
 #include "private.h"
 
+#define GYROS_COND_DEBUG_MAGIC         0xe0899aa1
+
 void
 gyros_cond_init(gyros_cond_t *c)
 {
+#if GYROS_DEBUG
+    c->debug_magic = GYROS_COND_DEBUG_MAGIC;
+#endif
+
     GYROS_LIST_NODE_INIT(&c->task_list);
 }
 
@@ -40,6 +46,13 @@ void
 gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+        gyros_error("uninitialized cond in cond_wait");
+    if (gyros_in_interrupt())
+        gyros_error("cond_wait called from interrupt");
+#endif
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
@@ -54,6 +67,13 @@ int
 gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+        gyros_error("uninitialized cond in cond_timedwait");
+    if (gyros_in_interrupt())
+        gyros_error("cond_timedwait called from interrupt");
+#endif
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
@@ -71,6 +91,11 @@ gyros_cond_signal_one(gyros_cond_t *c)
 {
     unsigned long flags = gyros_interrupt_disable();
 
+#if GYROS_DEBUG
+    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+        gyros_error("uninitialized cond in cond_signal_one");
+#endif
+
     if (gyros_list_empty(&c->task_list))
         gyros_interrupt_restore(flags);
     else
@@ -85,6 +110,11 @@ void
 gyros_cond_signal_all(gyros_cond_t *c)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+        gyros_error("uninitialized cond in signal_all");
+#endif
 
     if (gyros_list_empty(&c->task_list))
         gyros_interrupt_restore(flags);

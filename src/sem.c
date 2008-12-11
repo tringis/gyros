@@ -32,9 +32,15 @@
 
 #include "private.h"
 
+#define GYROS_SEM_DEBUG_MAGIC          0xe111100a
+
 void
 gyros_sem_init(gyros_sem_t *s, int start_value)
 {
+#if GYROS_DEBUG
+    s->debug_magic = GYROS_SEM_DEBUG_MAGIC;
+#endif
+
     s->value = start_value;
     s->max_value = UINT_MAX;
     GYROS_LIST_NODE_INIT(&s->task_list);
@@ -43,6 +49,10 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 void
 gyros_sem_init_binary(gyros_sem_t *s)
 {
+#if GYROS_DEBUG
+    s->debug_magic = GYROS_SEM_DEBUG_MAGIC;
+#endif
+
     s->value = 0;
     s->max_value = 1;
     GYROS_LIST_NODE_INIT(&s->task_list);
@@ -52,6 +62,13 @@ void
 gyros_sem_wait(gyros_sem_t *s)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+        gyros_error("uninitialized sem in sem_wait");
+    if (gyros_in_interrupt())
+        gyros_error("sem_wait called from interrupt");
+#endif
 
     while (s->value == 0)
     {
@@ -68,6 +85,13 @@ int
 gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+        gyros_error("uninitialized sem in sem_timedwait");
+    if (gyros_in_interrupt())
+        gyros_error("sem_timedwait called from interrupt");
+#endif
 
     if (s->value == 0)
     {
@@ -92,6 +116,11 @@ void
 gyros_sem_signal(gyros_sem_t *s)
 {
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+        gyros_error("uninitialized sem in sem_signal");
+#endif
 
     if (s->value >= s->max_value)
         gyros_interrupt_restore(flags);

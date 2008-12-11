@@ -38,6 +38,11 @@ gyros_task_wait(void)
     unsigned long flags = gyros_interrupt_disable();
     gyros_task_t *task;
 
+#if GYROS_DEBUG
+    if (gyros_in_interrupt())
+        gyros_error("task_wait called from interrupt");
+#endif
+
     while (gyros__zombies.next == &gyros__zombies)
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
@@ -47,6 +52,9 @@ gyros_task_wait(void)
     }
     task = TASK_LIST_TASK(gyros__zombies.next);
     gyros_list_remove(&task->task_list);
+#if GYROS_DEBUG
+    task->debug_magic = 0;
+#endif
     gyros_interrupt_restore(flags);
 
     return task;
@@ -57,6 +65,11 @@ gyros_task_timedwait(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
     gyros_task_t *task;
+
+#if GYROS_DEBUG
+    if (gyros_in_interrupt())
+        gyros_error("task_timedwait called from interrupt");
+#endif
 
     if (gyros__zombies.next == &gyros__zombies)
     {
@@ -72,6 +85,9 @@ gyros_task_timedwait(gyros_abstime_t timeout)
     {
         task = TASK_LIST_TASK(gyros__zombies.next);
         gyros_list_remove(&task->task_list);
+#if GYROS_DEBUG
+        task->debug_magic = 0;
+#endif
     }
     gyros_interrupt_restore(flags);
 
