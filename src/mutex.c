@@ -34,8 +34,6 @@
 
 #define GYROS_MUTEX_DEBUG_MAGIC        0xe398123d
 
-#define SEM_TASK(t) GYROS_LIST_ENTRY(t, gyros_task_t, cond_list)
-
 void
 gyros_mutex_init(gyros_mutex_t *m)
 {
