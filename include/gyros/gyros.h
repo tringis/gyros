@@ -33,5 +33,6 @@
 #include <gyros/mutex.h>
 #include <gyros/cond.h>
 #include <gyros/sem.h>
+#include <gyros/rwlock.h>
 
 #endif
