@@ -92,6 +92,10 @@ gyros_mutex_lock(gyros_mutex_t *m)
             m->owner->raised_priority = 1;
             m->owner->priority = gyros__state.current->priority;
         }
+#if GYROS_DEBUG
+        gyros__state.current->debug_state = "mutex_lock";
+        gyros__state.current->debug_object = m;
+#endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();

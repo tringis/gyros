@@ -29,6 +29,7 @@
 #include <gyros/task.h>
 
 #include <limits.h>
+#include <stdlib.h>
 
 #include "private.h"
 
@@ -83,6 +84,10 @@ gyros_sleep_until(gyros_abstime_t timeout)
 
     gyros_list_remove(&gyros__state.current->main_list);
     gyros__task_set_timeout(timeout);
+#if GYROS_DEBUG
+    gyros__state.current->debug_state = "sleep_until";
+    gyros__state.current->debug_object = NULL;
+#endif
     gyros_interrupt_restore(flags);
     gyros__cond_reschedule();
 

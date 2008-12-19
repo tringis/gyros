@@ -28,6 +28,8 @@
  **************************************************************************/
 #include <gyros/task.h>
 
+#include <stdlib.h>
+
 #include <gyros/target/interrupt.h>
 
 #include "private.h"
@@ -44,6 +46,10 @@ gyros_task_suspend(gyros_task_t *task)
 
     gyros_list_remove(&task->main_list);
     gyros_list_remove(&task->timeout_list);
+#if GYROS_DEBUG
+    task->debug_state = "suspended";
+    task->debug_object = NULL;
+#endif
     gyros_interrupt_restore(flags);
     if (task == gyros__state.current)
         gyros__cond_reschedule();

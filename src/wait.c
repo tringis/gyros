@@ -28,6 +28,8 @@
  **************************************************************************/
 #include <gyros/task.h>
 
+#include <stdlib.h>
+
 #include "private.h"
 
 #define TASK_LIST_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, task_list)
@@ -46,6 +48,10 @@ gyros_task_wait(void)
     while (gyros__zombies.next == &gyros__zombies)
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
+#if GYROS_DEBUG
+        gyros__state.current->debug_state = "task_wait";
+        gyros__state.current->debug_object = NULL;
+#endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -75,6 +81,10 @@ gyros_task_timedwait(gyros_abstime_t timeout)
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros__task_set_timeout(timeout);
+#if GYROS_DEBUG
+        task->debug_state = "cond_timedwait";
+        task->debug_object = NULL;
+#endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();

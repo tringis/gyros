@@ -54,6 +54,8 @@ typedef struct
 
 #if GYROS_DEBUG
     unsigned debug_magic;
+    const char *debug_state;
+    void *debug_object;
 #endif
 } gyros_task_t;
 

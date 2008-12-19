@@ -56,6 +56,10 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
+#if GYROS_DEBUG
+    gyros__state.current->debug_state = "cond_wait";
+    gyros__state.current->debug_object = c;
+#endif
     gyros_interrupt_restore(flags);
 
     gyros__cond_reschedule();
@@ -78,6 +82,10 @@ gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, gyros_abstime_t timeout)
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
     gyros__task_set_timeout(timeout);
+#if GYROS_DEBUG
+    gyros__state.current->debug_state = "cond_timedwait";
+    gyros__state.current->debug_object = c;
+#endif
     gyros_interrupt_restore(flags);
     gyros__cond_reschedule();
 

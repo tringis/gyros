@@ -73,6 +73,10 @@ gyros_sem_wait(gyros_sem_t *s)
     while (s->value == 0)
     {
         gyros__task_move(gyros__state.current, &s->task_list);
+#if GYROS_DEBUG
+        gyros__state.current->debug_state = "sem_wait";
+        gyros__state.current->debug_object = s;
+#endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -97,6 +101,10 @@ gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout)
     {
         gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_set_timeout(timeout);
+#if GYROS_DEBUG
+        gyros__state.current->debug_state = "sem_timedwait";
+        gyros__state.current->debug_object = s;
+#endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
