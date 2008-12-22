@@ -40,7 +40,7 @@
 	stmdb		sp!, {lr}
 	/* Load address of current task_t to lr */
 	ldr		lr, =gyros__state
-	ldr		lr, [lr, #4]
+	ldr		lr, [lr]
 	/* Push SYS mode r0-lr to current task_t */
 	stmia		lr, {r0-lr}^
 	nop
@@ -58,17 +58,11 @@
 .macro restore_context
 	// Load address of gyros__state to r0
 	ldr		r0, =gyros__state
-	// Load gyros__state.locked to r1, and if it is not zero, load
-	// gyros__state.current to lr and branch to 1f.
-	ldr		r1, [r0]
-	cmp		r1, #0
-	ldrne		lr, [r0, #4]
-	bne		1f
 	// Load gyros__state.running.next to lr
-	ldr		r1, [r0, #8]
+	ldr		r1, [r0, #4]
 	// Set gyros__state.current
 	sub		lr, r1, #17*4
-	str		lr, [r0, #4]
+	str		lr, [r0]
 	/* Get the SPSR from the task struct. */ 
 1:	ldr		r0, [lr, #16*4]
 	msr		spsr_cxsf, r0

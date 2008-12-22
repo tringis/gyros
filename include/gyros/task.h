@@ -158,18 +158,6 @@ void gyros_task_resume(gyros_task_t *task);
   */
 void gyros_yield(void);
 
-/** Lock all task switching.  Locking is recursive, so task switching
-  * will not be activated until gyros_task_unlock() has been called as
-  * many times as this function was called.
-  */
-void gyros_task_lock(void);
-
-/** Unlock all task switching.  Locking is recursive, so task
-  * switching will not be activated until this function has been
-  * called as many times as gyros_task_lock() was called.
-  */
-void gyros_task_unlock(void);
-
 /** Iterate through all tasks.  Start iteration by calling this function
   * with @a previous set to @c NULL.  Continue calling this function
   * with the value returned by the previous call until @a NULL is

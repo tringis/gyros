@@ -36,7 +36,6 @@
 
 typedef struct
 {
-    int locked;
     gyros_task_t *current;
     struct gyros_list_node running;
 } gyros__state_t;
