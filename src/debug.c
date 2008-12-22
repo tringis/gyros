@@ -46,6 +46,7 @@ gyros_error(const char *msg)
     if (s_handler)
         s_handler(msg);
 
+    gyros_interrupt_disable();
     for (;;)
         ;
 }
