@@ -82,8 +82,8 @@ gyros_task_timedwait(gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros__task_set_timeout(timeout);
 #if GYROS_DEBUG
-        task->debug_state = "cond_timedwait";
-        task->debug_object = NULL;
+        gyros__state.current->debug_state = "task_timedwait";
+        gyros__state.current->debug_object = NULL;
 #endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
