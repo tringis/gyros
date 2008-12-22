@@ -31,7 +31,8 @@
 
 /** \internal */
 struct gyros_list_node {
-    struct gyros_list_node *next, *prev;
+    struct gyros_list_node *next; /**< \internal */
+    struct gyros_list_node *prev; /**< \internal */
 };
 
 #define GYROS_LIST_NODE_INIT(n) do { (n)->prev=(n); (n)->next=(n); } while (0)

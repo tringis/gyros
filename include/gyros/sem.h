@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_sem_h__200808281430
 #define INCLUDED__gyros_sem_h__200808281430
 
+/** \file sem.h
+ * \brief Semaphores.
+ */
+
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
 
@@ -36,22 +40,49 @@
 typedef struct gyros_sem
 {
 #if GYROS_DEBUG
-    unsigned debug_magic;
+    unsigned debug_magic; /**< \internal */
 #endif
 
-    unsigned value;
-    unsigned max_value;
-    struct gyros_list_node task_list;
+    unsigned value; /**< \internal */
+    unsigned max_value; /**< \internal */
+    struct gyros_list_node task_list; /**< \internal */
 } gyros_sem_t;
 
+/** Initialize the semaphore @a s to be a counting semaphore with
+ * start value @a start_value.
+  *
+  * \param s            Semaphore struct pointer.
+  * \param start_value  Start value.
+  */
 void gyros_sem_init(gyros_sem_t *s, int start_value);
 
+/** Initialize the semaphore @a s to be an unsignalled binary
+  * semaphore.
+  *
+  * \param s            Semaphore struct pointer.
+  */
 void gyros_sem_init_binary(gyros_sem_t *s);
 
+/** Wait for the semaphore @a s to be signalled.
+  *
+  * \param s            Semaphore struct pointer.
+  */
 void gyros_sem_wait(gyros_sem_t *s);
 
+/** Wait for the semaphore @a s to be signalled, or until the absolute
+ * time @a timeout has passed.
+  *
+  * \param s            Semaphore struct pointer.
+  * \param timeout      Timeout.  See gyros_time().
+  * \return             Non-zero if the semaphore was signalled, or
+  *                     zero if @a timeout was reached.
+  */
 int gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout);
 
+/** Signal the semaphore @a s.
+  *
+  * \param s            Semaphore struct pointer.
+  */
 void gyros_sem_signal(gyros_sem_t *s);
 
 #endif

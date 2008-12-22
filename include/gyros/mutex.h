@@ -44,12 +44,12 @@
 typedef struct gyros_mutex
 {
 #if GYROS_DEBUG
-    unsigned debug_magic;
+    unsigned debug_magic; /**< \internal */
 #endif
 
-    gyros_task_t *owner;
-    unsigned short owner_priority;
-    struct gyros_list_node task_list;
+    gyros_task_t *owner; /**< \internal */
+    unsigned short owner_priority; /**< \internal */
+    struct gyros_list_node task_list; /**< \internal */
 } gyros_mutex_t;
 
 /** Initialize the mutex @a m.

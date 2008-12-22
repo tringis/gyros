@@ -29,26 +29,58 @@
 #ifndef INCLUDED__gyros_cond_h__200808272231
 #define INCLUDED__gyros_cond_h__200808272231
 
+/** \file cond.h
+ * \brief Condition variable.
+ */
+
 #include <gyros/mutex.h>
 
 /** Condition variable (cond). */
 typedef struct gyros_cond {
 #if GYROS_DEBUG
-    unsigned debug_magic;
+    unsigned debug_magic; /**< \internal */
 #endif
 
-    struct gyros_list_node task_list;
+    struct gyros_list_node task_list; /**< \internal */
 } gyros_cond_t;
 
+/** Initialize the condition variable @a c.
+  *
+  * \param c            Condition variable struct pointer.
+  */
 void gyros_cond_init(gyros_cond_t *c);
 
+/** Wait for the condition variable @a c.  The mutex @a is unlocked
+  * atomically before waiting, and locked again before returning.
+  *
+  * \param c            Condition variable struct pointer.
+  * \param m            Mutex struct pointer.
+  */
 void gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m);
 
+/** Wait for the condition variable @a c, or until the absolute time
+  * @a timeout has passed.  The mutex @a is unlocked atomically before
+  * waiting, and locked again before returning.
+  *
+  * \param c            Condition variable struct pointer.
+  * \param m            Mutex struct pointer.
+  * \param timeout      Timeout.  See gyros_time().
+  * \return             Non-zero if the semaphore was signalled, or
+  *                     zero if @a timeout was reached.
+  */
 int gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m,
                          gyros_abstime_t timeout);
 
+/** Signal one task waiting for the condition variable @a c.
+  *
+  * \param c            Condition variable struct pointer.
+  */
 void gyros_cond_signal_one(gyros_cond_t *c);
 
+/** Signal all tasks waiting for the condition variable @a c.
+  *
+  * \param c            Condition variable struct pointer.
+  */
 void gyros_cond_signal_all(gyros_cond_t *c);
 
 #endif

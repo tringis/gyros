@@ -29,36 +29,84 @@
 #ifndef INCLUDED__gyros_rwlock_h__200812121950
 #define INCLUDED__gyros_rwlock_h__200812121950
 
+/** \file rwlock.h
+ * \brief Read/write locks.
+ *
+ * A read/write lock (rwlock) allows multiple read locks
+ * simultaneously, but write locks are exclusive, locking out all
+ * other readers and writers.
+ */
+
 #include <gyros/task.h>
 
 /** Read/write lock (rwlock). */
 typedef struct gyros_rwlock
 {
 #if GYROS_DEBUG
-    unsigned debug_magic;
+    unsigned debug_magic; /**< \internal */
 #endif
 
-    gyros_task_t *writer;
-    int readers;
+    gyros_task_t *writer; /**< \internal */
+    int readers; /**< \internal */
 
-    struct gyros_list_node rd_task_list;
-    struct gyros_list_node wr_task_list;
+    struct gyros_list_node rd_task_list; /**< \internal */
+    struct gyros_list_node wr_task_list; /**< \internal */
 } gyros_rwlock_t;
 
+/** Initialize the read/write lock @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 void gyros_rwlock_init(gyros_rwlock_t *rwlock);
 
+/** Aquire a reader lock on @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 void gyros_rwlock_rdlock(gyros_rwlock_t *rwlock);
 
+/** Try to aquire a reader lock on @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 int gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock);
 
+/** Aquire a reader lock on @a rwlock, unless @a timeout is passed
+  * before the lock can be aquired without blocking.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  * \param timeout      Timeout.  See gyros_time().
+  * \return             Non-zero if the semaphore was signalled, or
+  *                     zero if @a timeout was reached.
+  */
 int gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
+/** Aquire a writer lock on @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 void gyros_rwlock_wrlock(gyros_rwlock_t *rwlock);
 
+/** Try to aquire a writer lock on @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 int gyros_rwlock_trywrlock(gyros_rwlock_t *rwlock);
 
+/** Aquire a writer lock on @a rwlock, unless @a timeout is passed
+  * before the lock can be aquired without blocking.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  * \param timeout      Timeout.  See gyros_time().
+  * \return             Non-zero if the semaphore was signalled, or
+  *                     zero if @a timeout was reached.
+  */
 int gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
+/** Unlock the read/write lock @a rwlock.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  */
 void gyros_rwlock_unlock(gyros_rwlock_t *rwlock);
 
 #endif

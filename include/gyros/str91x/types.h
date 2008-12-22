@@ -28,37 +28,48 @@
  **************************************************************************/
 #include <gyros/arm/task_regs.h>
 
+/** \file types.h
+ * \brief Data types.
+ */
+
 /** Absolute monotonically increasing time in target specific
   * units. */
 typedef unsigned long long gyros_abstime_t;
 
+/** Relative time in target specific units. */
 typedef long long gyros_time_t;
 
+/** Convert @a microseconds to gyros_abstime_t. */
 static inline gyros_time_t gyros_us(long long microseconds)
 {
     return microseconds;
 }
 
+/** Convert @a milliseconds to gyros_abstime_t. */
 static inline gyros_time_t gyros_ms(long long milliseconds)
 {
     return milliseconds * 1000;
 }
 
+/** Convert @a seconds to gyros_abstime_t. */
 static inline gyros_time_t gyros_s(long long seconds)
 {
     return seconds * 1000000;
 }
 
+/** Convert @a gyros_abstime_t to microseconds. */
 static inline long long gyros_time_to_us(gyros_time_t time)
 {
     return time;
 }
 
+/** Convert @a gyros_abstime_t to milliseconds. */
 static inline long long gyros_time_to_ms(gyros_time_t time)
 {
     return time / 1000;
 }
 
+/** Convert @a gyros_abstime_t to seconds. */
 static inline long long gyros_time_to_s(gyros_time_t time)
 {
     return time / 1000000;
