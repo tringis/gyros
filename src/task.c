@@ -105,26 +105,28 @@ gyros__task_wake(gyros_task_t *task)
 void
 gyros__cond_reschedule(void)
 {
-    if (!gyros_in_interrupt())
+    unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_DEBUG
+    if (gyros_in_interrupt())
+        gyros_error("cond_reschedule called from interrupt");
+#endif
+
+    if (gyros__state.locked)
     {
-        unsigned long flags = gyros_interrupt_disable();
+        unsigned short old_prio = gyros__state.current->priority;
 
-        if (gyros__state.locked)
+        gyros__state.current->priority = USHRT_MAX;
+        while (TASK(gyros__state.running.next) != gyros__state.current)
         {
-            unsigned short old_prio = gyros__state.current->priority;
-
-            gyros__state.current->priority = USHRT_MAX;
-            while (TASK(gyros__state.running.next) != gyros__state.current)
-            {
-                gyros_interrupt_restore(flags);
-                flags = gyros_interrupt_disable();
-            }
-            gyros__state.current->priority = old_prio;
+            gyros_interrupt_restore(flags);
+            flags = gyros_interrupt_disable();
         }
-        if (TASK(gyros__state.running.next) != gyros__state.current)
-            gyros__reschedule();
-        gyros_interrupt_restore(flags);
+        gyros__state.current->priority = old_prio;
     }
+    if (TASK(gyros__state.running.next) != gyros__state.current)
+        gyros__reschedule();
+    gyros_interrupt_restore(flags);
 }
 
 void

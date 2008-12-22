@@ -133,6 +133,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
         while (!gyros_list_empty(&c->task_list))
             gyros__task_wake(TASK(c->task_list.prev));
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
+        if (!gyros_in_interrupt())
+            gyros__cond_reschedule();
     }
 }

@@ -141,7 +141,8 @@ gyros_sem_signal(gyros_sem_t *s)
         {
             gyros__task_wake(TASK(s->task_list.next));
             gyros_interrupt_restore(flags);
-            gyros__cond_reschedule();
+            if (!gyros_in_interrupt())
+                gyros__cond_reschedule();
         }
     }
 }

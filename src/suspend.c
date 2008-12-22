@@ -67,5 +67,6 @@ gyros_task_resume(gyros_task_t *task)
 
     gyros__task_move(task, &gyros__state.running);
     gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
+    if (!gyros_in_interrupt())
+        gyros__cond_reschedule();
 }
