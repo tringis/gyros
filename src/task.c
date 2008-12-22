@@ -141,7 +141,7 @@ gyros_start(void)
     s_idle_task.stack = 0;
     s_idle_task.stack_size = 0;
 
-    gyros_list_insert_before(&s_idle_task.task_list, &gyros__tasks);
+    gyros_list_insert_before(&s_idle_task.task_list, gyros__tasks.next);
     add_task_to_list(&s_idle_task, &gyros__state.running);
     gyros__state.current = &s_idle_task;
 
