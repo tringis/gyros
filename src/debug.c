@@ -29,17 +29,22 @@
 #include <gyros/debug.h>
 #include <gyros/target/interrupt.h>
 
+#if GYROS_DEBUG
 static void (*s_handler)(const char *msg);
+#endif
 
 void
 gyros_set_error_handler(void (*handler)(const char *msg))
 {
+#if GYROS_DEBUG
     unsigned long flags = gyros_interrupt_disable();
 
     s_handler = handler;
     gyros_interrupt_restore(flags);
+#endif
 }
 
+#if GYROS_DEBUG
 void
 gyros_error(const char *msg)
 {
@@ -50,3 +55,4 @@ gyros_error(const char *msg)
     for (;;)
         ;
 }
+#endif
