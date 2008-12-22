@@ -39,7 +39,8 @@ gyros_task_delete(gyros_task_t *task)
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
         gyros_error("delete non-task");
 #endif
-    gyros__task_zombify(gyros__state.current);
+    gyros__task_zombify(task);
+    if (task == gyros__state.current)
+        gyros__reschedule();
     gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
 }
