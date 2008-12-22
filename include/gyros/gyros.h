@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_gyros_h__200808261900
 #define INCLUDED__gyros_gyros_h__200808261900
 
+/** @file gyros.h
+  * \brief Includes all GyrOS include files.
+  */
+
 #include <gyros/task.h>
 #include <gyros/mutex.h>
 #include <gyros/cond.h>

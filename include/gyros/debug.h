@@ -29,18 +29,37 @@
 #ifndef INCLUDED__gyros_debug_h__200812022021
 #define INCLUDED__gyros_debug_h__200812022021
 
+/** @file debug.h
+  * \brief Debugging support.
+  *
+  * Debugging is enabled when compiled with @c GYROS_DEBUG set to a
+  * non-zero value.  When debugging is enabled, many common invalid
+  * uses of the GyrOS API is detected, and more information about the
+  * status of each task tracked, e.g. if a task is blocking on a
+  * mutex, and if so, which mutex.
+  */
+
 #include <gyros/debug.h>
 
+/** \cond */
 #ifndef GYROS_DEBUG
 #  define GYROS_DEBUG 0
 #endif
+/** \endcond */
 
-#define GYROS_TASK_DEBUG_MAGIC         0xefcd6711
-
+/** Set the error handler to @a msg. The default error handler just
+  * hangs forever in a loop with interrupts disabled.
+  *
+  * \param handler          Error handler function pointer.
+  */
 void gyros_set_error_handler(void (*handler)(const char *msg));
 
+/** \cond */
 #if GYROS_DEBUG
+#define GYROS_TASK_DEBUG_MAGIC         0xefcd6711
+
 void gyros_error(const char *msg);
 #endif
+/** \endcond */
 
 #endif

@@ -29,9 +29,9 @@
 #ifndef INCLUDED__gyros_task_h__200206071335
 #define INCLUDED__gyros_task_h__200206071335
 
-/** @file task.h
-  * Task management.
-  */
+/** \file task.h
+ * \brief Task management.
+ */
 
 #include <gyros/debug.h>
 #include <gyros/list.h>

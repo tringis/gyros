@@ -29,8 +29,18 @@
 #ifndef INCLUDED__gyros_mutex_h__200808272211
 #define INCLUDED__gyros_mutex_h__200808272211
 
+/** @file mutex.h
+  * \brief A mutex.
+  *
+  * Must be initialized using gyros_mutex_init() before use.
+
+  * Mutexes are not recursive, so calling gyros_mutex_lock() twice
+  * will result in a deadlock.
+  */
+
 #include <gyros/task.h>
 
+/** Mutual exclusion (mutex) struct. */
 typedef struct gyros_mutex
 {
 #if GYROS_DEBUG
@@ -42,12 +52,29 @@ typedef struct gyros_mutex
     struct gyros_list_node task_list;
 } gyros_mutex_t;
 
+/** Initialize the mutex @a m.
+  *
+  * \param m            Mutex struct pointer.
+  */
 void gyros_mutex_init(gyros_mutex_t *m);
 
+/** Try locking @a m.
+  *
+  * \param m            Mutex struct pointer.
+  * \return             Non-zero if @a m was locked, else zero.
+  */
 int gyros_mutex_trylock(gyros_mutex_t *m);
 
+/** Lock @a m.
+  *
+  * \param m            Mutex struct pointer.
+  */
 void gyros_mutex_lock(gyros_mutex_t *m);
 
+/** Unlock @a m.
+  *
+  * \param m            Mutex struct pointer.
+  */
 void gyros_mutex_unlock(gyros_mutex_t *m);
 
 #endif

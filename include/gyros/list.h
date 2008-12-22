@@ -29,6 +29,7 @@
 #ifndef INCLUDED__gyros_list_h__200206071350
 #define INCLUDED__gyros_list_h__200206071350
 
+/** \internal */
 struct gyros_list_node {
     struct gyros_list_node *next, *prev;
 };

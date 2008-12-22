@@ -31,6 +31,7 @@
 
 #include <gyros/mutex.h>
 
+/** Condition variable (cond). */
 typedef struct gyros_cond {
 #if GYROS_DEBUG
     unsigned debug_magic;

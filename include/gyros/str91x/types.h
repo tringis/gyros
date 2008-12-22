@@ -28,6 +28,8 @@
  **************************************************************************/
 #include <gyros/arm/task_regs.h>
 
+/** Absolute monotonically increasing time in target specific
+  * units. */
 typedef unsigned long long gyros_abstime_t;
 
 typedef long long gyros_time_t;

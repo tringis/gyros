@@ -31,6 +31,7 @@
 
 #include <gyros/task.h>
 
+/** Read/write lock (rwlock). */
 typedef struct gyros_rwlock
 {
 #if GYROS_DEBUG

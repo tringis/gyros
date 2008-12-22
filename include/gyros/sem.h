@@ -32,6 +32,7 @@
 #include <gyros/debug.h>
 #include <gyros/task.h>
 
+/** Semaphore (sem). */
 typedef struct gyros_sem
 {
 #if GYROS_DEBUG
