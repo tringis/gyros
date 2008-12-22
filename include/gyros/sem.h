@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_sem_h__200808281430
 #define INCLUDED__gyros_sem_h__200808281430
 
-#include <gyros/debug.h>
+#include <gyros/private/debug.h>
 #include <gyros/task.h>
 
 /** Semaphore (sem). */

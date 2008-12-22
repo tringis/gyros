@@ -39,7 +39,7 @@
   * mutex, and if so, which mutex.
   */
 
-#include <gyros/debug.h>
+#include <gyros/private/debug.h>
 
 /** \cond */
 #ifndef GYROS_DEBUG

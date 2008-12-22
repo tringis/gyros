@@ -33,8 +33,8 @@
  * \brief Task management.
  */
 
-#include <gyros/debug.h>
 #include <gyros/list.h>
+#include <gyros/private/debug.h>
 #include <gyros/target/interrupt.h>
 #include <gyros/target/types.h>
 
