@@ -58,9 +58,10 @@
 .macro restore_context
 	// Load address of gyros__state to r0
 	ldr		r0, =gyros__state
-	// Load gyros__state.next to lr
+	// Load gyros__state.running.next to lr
 	ldr		r1, [r0, #4]
-	// Store lr to gyros__state.current
+	// Set gyros__state.current
+	sub		lr, r1, #17*4
 	str		lr, [r0]
 	/* Get the SPSR from the task struct. */ 
 1:	ldr		r0, [lr, #16*4]
