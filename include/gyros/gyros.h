@@ -34,6 +34,7 @@
   */
 
 #include <gyros/cond.h>
+#include <gyros/debug.h>
 #include <gyros/interrupt.h>
 #include <gyros/mutex.h>
 #include <gyros/rwlock.h>
