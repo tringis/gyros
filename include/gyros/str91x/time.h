@@ -26,8 +26,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/arm/task_regs.h>
 
-typedef unsigned long long gyros__abstime_t;
+static inline gyros_time_t gyros_us(long long microseconds)
+{
+    return microseconds;
+}
 
-typedef long long gyros__time_t;
+static inline gyros_time_t gyros_ms(long long milliseconds)
+{
+    return milliseconds * 1000;
+}
+
+static inline gyros_time_t gyros_s(long long seconds)
+{
+    return seconds * 1000000;
+}
+
+static inline long long gyros_time_to_us(gyros_time_t time)
+{
+    return time;
+}
+
+static inline long long gyros_time_to_ms(gyros_time_t time)
+{
+    return time / 1000;
+}
+
+static inline long long gyros_time_to_s(gyros_time_t time)
+{
+    return time / 1000000;
+}

@@ -26,8 +26,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/arm/task_regs.h>
+#ifndef INCLUDED__gyros_types_h__200812291836
+#define INCLUDED__gyros_types_h__200812291836
 
-typedef unsigned long long gyros__abstime_t;
+/** \file types.h
+ * \brief Type definitions.
+ */
 
-typedef long long gyros__time_t;
+#include <gyros/target/types.h>
+
+/** Absolute monotonically increasing time in target specific
+  * units. */
+typedef gyros__abstime_t gyros_abstime_t;
+
+/** Relative time in target specific units. */
+typedef gyros__abstime_t gyros_time_t;
+
+#endif

@@ -35,8 +35,9 @@
 
 #include <gyros/private/debug.h>
 #include <gyros/private/list.h>
-#include <gyros/target/interrupt.h>
-#include <gyros/target/types.h>
+#include <gyros/interrupt.h>
+#include <gyros/time.h>
+#include <gyros/types.h>
 
 /** The structure representing a GyrOS task.  Most members of this
   * stucture are for internal GyrOS use only, and are not meant to be
@@ -175,25 +176,6 @@ gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
   * \return             Number of bytes stack used.
   */
 int gyros_task_stack_used(gyros_task_t *task);
-
-/** Return current absolute time.  The time is monotonically
-  * increasing.  Use time_us(), time_ms(), time_s(),
-  * gyros_time_to_us(), gyros_time_to_us() and gyros_time_to_s() to
-  * convert to and from real time.
-  *
-  * \return             Current absolute time.
-  */
-gyros_abstime_t gyros_time(void);
-
-/** Helper function to test if @a time has been reached.
-  *
-  * \param time         Absolute time to test.
-  * \return             Non-zero if @a time has been reached.
-  */
-static inline int gyros_time_reached(gyros_abstime_t time)
-{
-    return (gyros_time_t)(time - gyros_time()) <= 0;
-}
 
 /** Sleep until the absolute time @a timeout has been reached.
   *

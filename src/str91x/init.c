@@ -26,7 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/str91x/interrupt.h>
+#include <gyros/time.h>
+#include <gyros/interrupt.h>
 
 #include "str91x.h"
 #include "../private.h"

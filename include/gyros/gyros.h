@@ -33,10 +33,13 @@
   * \brief Includes all GyrOS include files.
   */
 
-#include <gyros/task.h>
-#include <gyros/mutex.h>
 #include <gyros/cond.h>
-#include <gyros/sem.h>
+#include <gyros/interrupt.h>
+#include <gyros/mutex.h>
 #include <gyros/rwlock.h>
+#include <gyros/sem.h>
+#include <gyros/task.h>
+#include <gyros/time.h>
+#include <gyros/types.h>
 
 #endif

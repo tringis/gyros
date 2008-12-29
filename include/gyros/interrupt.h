@@ -26,8 +26,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/arm/task_regs.h>
+#ifndef INCLUDE__gyros_interrupt_h__200812291812
+#define INCLUDE__gyros_interrupt_h__200812291812
 
-typedef unsigned long long gyros__abstime_t;
+/** \file interrupt.h
+  * \brief Interrupt handling.
+  */
 
-typedef long long gyros__time_t;
+#include <gyros/target/interrupt.h>
+
+/** Disable all interrupts.
+  * \return             Value used to restore interrupts using
+  *                     gyros_interrupt_restore().
+  */
+unsigned long gyros_interrupt_disable(void);
+
+/** Restore interrupts disabled by gyros_interrupt_disable().
+  * \param flags        Value returned by gyros_interrupt_restore().
+  */
+void gyros_interrupt_restore(unsigned long flags);
+
+/** Check whether currently in interrupt context.
+  * \return             Non-zero value if called from interrupt context.
+  */
+int gyros_in_interrupt(void);
+
+#endif
