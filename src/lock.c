@@ -26,55 +26,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_h__200808271854
-#define INCLUDED__gyros_private_h__200808271854
+#include <gyros/interrupt.h>
 
-#include <gyros/task.h>
-#include <gyros/mutex.h>
+#include "private.h"
 
-#define TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, main_list)
-
-typedef struct
+void
+gyros_task_lock(void)
 {
-    gyros_task_t *current;
-    gyros_task_t *next;
-    int locked;
-    struct gyros_list_node running;
-} gyros__state_t;
+    unsigned long flags = gyros_interrupt_disable();
 
-extern struct gyros_list_node gyros__tasks;
-extern struct gyros_list_node gyros__zombies;
-extern struct gyros_list_node gyros__reapers;
-extern gyros__state_t gyros__state;
+    gyros__state.locked++;
+    gyros_interrupt_restore(flags);
+}
 
-void gyros__task_zombify(gyros_task_t *task);
-
-void gyros__task_exit(void);
-
-void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
-
-void gyros__task_wake(gyros_task_t *task);
-
-void gyros__task_set_timeout(gyros_abstime_t timeout);
-
-void gyros__wake_sleeping_tasks(gyros_abstime_t now);
-
-void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
-
-void gyros__cond_reschedule(void);
-
-/* The following functions must be implemented by the target */
-
-void gyros__target_init(void);
-
-void gyros__target_task_init(gyros_task_t *task,
-                             void (*entry)(void *arg),
-                             void *arg,
-                             void *stack,
-                             int stack_size);
-
-void gyros__suspend_tick(void);
-
-void gyros__update_tick(gyros_abstime_t next_timeout);
-
+void
+gyros_task_unlock(void)
+{
+#if GYROS_DEBUG
+    if (gyros__state.locked == 0)
+        gyros_error("unbalanced task_unlock");
 #endif
+
+    /* We don't need to disable interrupts because the interrupt does
+     * not touch gyros__state.locked, and since we are locked, no
+     * other tasks can either. */
+    if (--gyros__state.locked == 0)
+    {
+        unsigned long flags = gyros_interrupt_disable();
+
+        gyros__state.next = TASK(gyros__state.running.next);
+        gyros_interrupt_restore(flags);
+
+        gyros__cond_reschedule();
+    }
+}

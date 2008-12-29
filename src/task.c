@@ -99,6 +99,8 @@ gyros__task_wake(gyros_task_t *task)
 #endif
     gyros_list_remove(&task->timeout_list);
     gyros__task_move(task, &gyros__state.running);
+    if (!gyros__state.locked && gyros__state.running.next == &task->main_list)
+        gyros__state.next = task;
 }
 
 void
@@ -111,7 +113,7 @@ gyros__cond_reschedule(void)
         gyros_error("cond_reschedule called from interrupt");
 #endif
 
-    if (TASK(gyros__state.running.next) != gyros__state.current)
+    if (TASK(gyros__state.next) != gyros__state.current)
         gyros__reschedule();
     gyros_interrupt_restore(flags);
 }
