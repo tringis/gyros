@@ -26,12 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/interrupt.h>
 #include <gyros/task.h>
 
 #include <limits.h>
 #include <string.h>
-
-#include <gyros/target/interrupt.h>
 
 #include "private.h"
 

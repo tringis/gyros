@@ -35,9 +35,7 @@
 
 #include <gyros/private/debug.h>
 #include <gyros/private/list.h>
-#include <gyros/interrupt.h>
 #include <gyros/time.h>
-#include <gyros/types.h>
 
 /** The structure representing a GyrOS task.  Most members of this
   * stucture are for internal GyrOS use only, and are not meant to be

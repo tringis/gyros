@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/interrupt.h>
 #include <gyros/private/debug.h>
-#include <gyros/target/interrupt.h>
 
 #if GYROS_DEBUG
 static void (*s_handler)(const char *msg);
