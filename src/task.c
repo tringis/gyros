@@ -39,9 +39,10 @@ struct gyros__list_node gyros__zombies = { &gyros__zombies, &gyros__zombies };
 struct gyros__list_node gyros__reapers = { &gyros__reapers, &gyros__reapers };
 static gyros_task_t s_idle_task;
 gyros__state_t gyros__state = {
-    .running = { &gyros__state.running, &gyros__state.running }
+    &s_idle_task,
+    { &gyros__state.running, &gyros__state.running }
 };
-gyros_mutex_t gyros__cd_mutex;
+GYROS_MUTEX_DEFINE(gyros__cd_mutex);
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
@@ -179,5 +180,5 @@ gyros_task_create(gyros_task_t *task,
     GYROS__LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
 
-    gyros_mutex_unlock(&gyros__cd_mutex);
+    gyros__mutex_unlock(&gyros__cd_mutex, 0);
 }
