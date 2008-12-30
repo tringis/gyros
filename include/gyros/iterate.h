@@ -26,24 +26,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "private.h"
+#ifndef INCLUDED__gyros_task_h__200206071335
+#define INCLUDED__gyros_task_h__200206071335
 
-#define TASK_LIST_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, task_list)
+/** \file iterate.h
+ * \brief Task iteration.
+ */
 
-gyros_task_t*
-gyros_task_iterate(gyros_task_t *previous)
-{
-    if (!previous)
-    {
-        gyros_mutex_lock(&gyros__cd_mutex);
-        return TASK_LIST_TASK(gyros__tasks.next);
-    }
+#include <gyros/task.h>
 
-    if (previous->task_list.next == &gyros__tasks)
-    {
-        gyros_mutex_unlock(&gyros__cd_mutex);
-        return 0;
-    }
+/** Iterate through all tasks.  Start iteration by calling this
+  * function with @a previous set to @c NULL.  Continue calling this
+  * function with the value returned by the previous call until @c
+  * NULL is returned.  This function locks task creation and deletion
+  * during the iteration (causing calls to gyros_task_create and
+  * gyros_task_delete to block), and must therefore always be called
+  * until it returns @c NULL.
+  *
+  * \param previous     Task struct pointer.
+  * \return             Task struct pointer of next task, or @c NULL
+  *                     when iteration is complete.
+  */
+gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
 
-    return TASK_LIST_TASK(previous->task_list.next);
-}
+#endif

@@ -158,17 +158,6 @@ void gyros_task_resume(gyros_task_t *task);
   */
 void gyros_yield(void);
 
-/** Iterate through all tasks.  Start iteration by calling this function
-  * with @a previous set to @c NULL.  Continue calling this function
-  * with the value returned by the previous call until @a NULL is
-  * returned.
-  *
-  * \param previous     Task struct pointer.
-  * \return             Task struct pointer of next task, or @a NULL
-  *                     if called with the last task.
-  */
-gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
-
 /** Return the amount of stack used by @a task.
   *
   * \param task         Task struct pointer.

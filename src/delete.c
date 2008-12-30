@@ -34,14 +34,24 @@
 void
 gyros_task_delete(gyros_task_t *task)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
+    gyros_mutex_lock(&gyros__cd_mutex);
+
+    flags = gyros_interrupt_disable();
 #if GYROS_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
         gyros_error("delete non-task");
 #endif
     gyros__task_zombify(task);
     if (task == gyros__state.current)
-        gyros__reschedule();
-    gyros_interrupt_restore(flags);
+    {
+        gyros__mutex_unlock(&gyros__cd_mutex, 0);
+        gyros__reschedule(); /* Never returns */
+    }
+    else
+    {
+        gyros_interrupt_restore(flags);
+        gyros_mutex_unlock(&gyros__cd_mutex);
+    }
 }

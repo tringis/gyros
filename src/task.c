@@ -41,6 +41,7 @@ static gyros_task_t s_idle_task;
 gyros__state_t gyros__state = {
     .running = { &gyros__state.running, &gyros__state.running }
 };
+gyros_mutex_t gyros__cd_mutex;
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
@@ -72,6 +73,8 @@ gyros__task_zombify(gyros_task_t *task)
 void
 gyros__task_exit(void)
 {
+    gyros_mutex_lock(&gyros__cd_mutex);
+
     /* Note that we do not need to call gyros_interrupt_restore()
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
@@ -80,6 +83,7 @@ gyros__task_exit(void)
     gyros__state.current->debug_object = NULL;
 #endif
     gyros__task_zombify(gyros__state.current);
+    gyros__mutex_unlock(&gyros__cd_mutex, 0);
     gyros__reschedule();
 }
 
@@ -167,9 +171,13 @@ gyros_task_create(gyros_task_t *task,
     /* Perform architecture specific initalization */
     gyros__target_task_init(task, entry, arg, stack, stack_size);
 
+    gyros_mutex_lock(&gyros__cd_mutex);
+
     flags = gyros_interrupt_disable();
     gyros__list_insert_before(&task->task_list, &gyros__tasks);
     add_task_to_list(task, &gyros__state.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);
+
+    gyros_mutex_unlock(&gyros__cd_mutex);
 }
