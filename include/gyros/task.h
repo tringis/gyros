@@ -175,45 +175,4 @@ gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
   */
 int gyros_task_stack_used(gyros_task_t *task);
 
-/** Sleep until the absolute time @a timeout has been reached.
-  *
-  * \param timeout      Absolute time to sleep until.
-  * \return             Non-zero if @a time has been reached, or
-  *                     zero if the sleep was aborted prematurely.
-  */
-int gyros_sleep_until(gyros_abstime_t timeout);
-
-/** Sleep at least @a microseconds microseconds.
-  *
-  * \param microseconds Minimum number of microseconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
-  */
-static inline int gyros_sleep_us(int microseconds)
-{
-    return gyros_sleep_until(gyros_time() + gyros_us(microseconds) + 1);
-}
-
-/** Sleep at least @a milliseconds milliseconds.
-  *
-  * \param milliseconds Minimum number of milliseconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
-  */
-static inline int gyros_sleep_ms(int milliseconds)
-{
-    return gyros_sleep_until(gyros_time() + gyros_ms(milliseconds) + 1);
-}
-
-/** Sleep at least @a seconds seconds.
-  *
-  * \param seconds      Minimum number of seconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
-  */
-static inline int gyros_sleep_s(int seconds)
-{
-    return gyros_sleep_until(gyros_time() + gyros_s(seconds) + 1);
-}
-
 #endif

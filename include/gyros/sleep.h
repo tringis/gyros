@@ -26,22 +26,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
+#ifndef INCLUDED__gyros_sleep_h__200812301241
+#define INCLUDED__gyros_sleep_h__200812301241
 
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
-  */
+/** \file sleep.h
+ * \brief Sleep functions.
+ */
 
-#include <gyros/cond.h>
-#include <gyros/debug.h>
-#include <gyros/interrupt.h>
-#include <gyros/mutex.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
 #include <gyros/time.h>
-#include <gyros/types.h>
+
+/** Sleep until the absolute time @a timeout has been reached.
+  *
+  * \param timeout      Absolute time to sleep until.
+  * \return             Non-zero if @a time has been reached, or
+  *                     zero if the sleep was aborted prematurely.
+  */
+int gyros_sleep_until(gyros_abstime_t timeout);
+
+/** Sleep at least @a microseconds microseconds.
+  *
+  * \param microseconds Minimum number of microseconds to sleep.
+  * \return             Non-zero if the sleep was complete, or
+  *                     zero if it was aborted prematurely.
+  */
+static inline int gyros_sleep_us(int microseconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_us(microseconds) + 1);
+}
+
+/** Sleep at least @a milliseconds milliseconds.
+  *
+  * \param milliseconds Minimum number of milliseconds to sleep.
+  * \return             Non-zero if the sleep was complete, or
+  *                     zero if it was aborted prematurely.
+  */
+static inline int gyros_sleep_ms(int milliseconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_ms(milliseconds) + 1);
+}
+
+/** Sleep at least @a seconds seconds.
+  *
+  * \param seconds      Minimum number of seconds to sleep.
+  * \return             Non-zero if the sleep was complete, or
+  *                     zero if it was aborted prematurely.
+  */
+static inline int gyros_sleep_s(int seconds)
+{
+    return gyros_sleep_until(gyros_time() + gyros_s(seconds) + 1);
+}
 
 #endif
