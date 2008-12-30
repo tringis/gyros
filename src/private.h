@@ -32,24 +32,24 @@
 #include <gyros/task.h>
 #include <gyros/mutex.h>
 
-#define TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, main_list)
+#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list)
 
 typedef struct
 {
     gyros_task_t *current;
-    struct gyros_list_node running;
+    struct gyros__list_node running;
 } gyros__state_t;
 
-extern struct gyros_list_node gyros__tasks;
-extern struct gyros_list_node gyros__zombies;
-extern struct gyros_list_node gyros__reapers;
+extern struct gyros__list_node gyros__tasks;
+extern struct gyros__list_node gyros__zombies;
+extern struct gyros__list_node gyros__reapers;
 extern gyros__state_t gyros__state;
 
 void gyros__task_zombify(gyros_task_t *task);
 
 void gyros__task_exit(void);
 
-void gyros__task_move(gyros_task_t *task, struct gyros_list_node *list);
+void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
 

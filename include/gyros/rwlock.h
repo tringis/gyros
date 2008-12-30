@@ -49,8 +49,8 @@ typedef struct gyros_rwlock
     gyros_task_t *writer; /**< \internal */
     int readers; /**< \internal */
 
-    struct gyros_list_node rd_task_list; /**< \internal */
-    struct gyros_list_node wr_task_list; /**< \internal */
+    struct gyros__list_node rd_task_list; /**< \internal */
+    struct gyros__list_node wr_task_list; /**< \internal */
 } gyros_rwlock_t;
 
 /** Initialize the read/write lock @a rwlock.

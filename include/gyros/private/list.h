@@ -30,27 +30,27 @@
 #define INCLUDED__gyros_list_h__200206071350
 
 /** \internal */
-struct gyros_list_node {
-    struct gyros_list_node *next; /**< \internal */
-    struct gyros_list_node *prev; /**< \internal */
+struct gyros__list_node {
+    struct gyros__list_node *next; /**< \internal */
+    struct gyros__list_node *prev; /**< \internal */
 };
 
-#define GYROS_LIST_NODE_INIT(n) do { (n)->prev=(n); (n)->next=(n); } while (0)
+#define GYROS__LIST_NODE_INIT(n) do { (n)->prev=(n); (n)->next=(n); } while (0)
 
-#define GYROS_LIST_CONTAINER(node, type, member) \
+#define GYROS__LIST_CONTAINER(node, type, member) \
     ((type*)((char*)(node)-(unsigned long)(&((type*)0)->member)))
 
 static __inline int
-gyros_list_empty(struct gyros_list_node *list)
+gyros__list_empty(struct gyros__list_node *list)
 {
     return list->next == list;
 }
 
 static __inline void
-gyros_list_insert_before(struct gyros_list_node *new_node,
-                         struct gyros_list_node *list_node)
+gyros__list_insert_before(struct gyros__list_node *new_node,
+                          struct gyros__list_node *list_node)
 {
-    struct gyros_list_node *prev_node = list_node->prev;
+    struct gyros__list_node *prev_node = list_node->prev;
 
     new_node->next = list_node;
     new_node->prev = prev_node;
@@ -59,7 +59,7 @@ gyros_list_insert_before(struct gyros_list_node *new_node,
 }
 
 static __inline void
-gyros_list_remove(struct gyros_list_node *node)
+gyros__list_remove(struct gyros__list_node *node)
 {
     node->prev->next = node->next;
     node->next->prev = node->prev;

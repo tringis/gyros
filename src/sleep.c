@@ -34,21 +34,21 @@
 
 #include "private.h"
 
-#define TIMEOUT_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, timeout_list)
+#define TIMEOUT_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list)
 
-static struct gyros_list_node s_sleeping = { &s_sleeping, &s_sleeping };
+static struct gyros__list_node s_sleeping = { &s_sleeping, &s_sleeping };
 
 void
 gyros__task_set_timeout(gyros_abstime_t timeout)
 {
-    struct gyros_list_node *i;
+    struct gyros__list_node *i;
 
     for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
     {
         if ((gyros_time_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
-    gyros_list_insert_before(&gyros__state.current->timeout_list, i);
+    gyros__list_insert_before(&gyros__state.current->timeout_list, i);
     gyros__state.current->timeout = timeout;
     gyros__state.current->timed_out = 0;
     if (s_sleeping.next == &gyros__state.current->timeout_list)
@@ -58,7 +58,7 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 void
 gyros__wake_sleeping_tasks(gyros_abstime_t now)
 {
-    while (!gyros_list_empty(&s_sleeping) &&
+    while (!gyros__list_empty(&s_sleeping) &&
            (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
     {
         gyros_task_t *task = TIMEOUT_TASK(s_sleeping.next);
@@ -67,7 +67,7 @@ gyros__wake_sleeping_tasks(gyros_abstime_t now)
         gyros__task_wake(task);
     }
 
-    if (gyros_list_empty(&s_sleeping))
+    if (gyros__list_empty(&s_sleeping))
         gyros__suspend_tick();
     else
         gyros__update_tick(TIMEOUT_TASK(s_sleeping.next)->timeout);
@@ -83,7 +83,7 @@ gyros_sleep_until(gyros_abstime_t timeout)
         gyros_error("tried to sleep in interrupt");
 #endif
 
-    gyros_list_remove(&gyros__state.current->main_list);
+    gyros__list_remove(&gyros__state.current->main_list);
     gyros__task_set_timeout(timeout);
 #if GYROS_DEBUG
     gyros__state.current->debug_state = "sleep_until";

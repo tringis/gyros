@@ -28,7 +28,7 @@
  **************************************************************************/
 #include "private.h"
 
-#define TASK_LIST_TASK(t) GYROS_LIST_CONTAINER(t, gyros_task_t, task_list)
+#define TASK_LIST_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, task_list)
 
 gyros_task_t*
 gyros_task_iterate(gyros_task_t *previous)

@@ -44,7 +44,7 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 
     s->value = start_value;
     s->max_value = UINT_MAX;
-    GYROS_LIST_NODE_INIT(&s->task_list);
+    GYROS__LIST_NODE_INIT(&s->task_list);
 }
 
 void
@@ -56,7 +56,7 @@ gyros_sem_init_binary(gyros_sem_t *s)
 
     s->value = 0;
     s->max_value = 1;
-    GYROS_LIST_NODE_INIT(&s->task_list);
+    GYROS__LIST_NODE_INIT(&s->task_list);
 }
 
 void
@@ -136,7 +136,7 @@ gyros_sem_signal(gyros_sem_t *s)
     else
     {
         s->value++;
-        if (gyros_list_empty(&s->task_list))
+        if (gyros__list_empty(&s->task_list))
             gyros_interrupt_restore(flags);
         else
         {

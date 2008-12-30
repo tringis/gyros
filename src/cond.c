@@ -40,7 +40,7 @@ gyros_cond_init(gyros_cond_t *c)
     c->debug_magic = GYROS_COND_DEBUG_MAGIC;
 #endif
 
-    GYROS_LIST_NODE_INIT(&c->task_list);
+    GYROS__LIST_NODE_INIT(&c->task_list);
 }
 
 void
@@ -105,7 +105,7 @@ gyros_cond_signal_one(gyros_cond_t *c)
         gyros_error("uninitialized cond in cond_signal_one");
 #endif
 
-    if (gyros_list_empty(&c->task_list))
+    if (gyros__list_empty(&c->task_list))
         gyros_interrupt_restore(flags);
     else
     {
@@ -125,13 +125,13 @@ gyros_cond_signal_all(gyros_cond_t *c)
         gyros_error("uninitialized cond in signal_all");
 #endif
 
-    if (gyros_list_empty(&c->task_list))
+    if (gyros__list_empty(&c->task_list))
         gyros_interrupt_restore(flags);
     else
     {
         /* Move the tasks in reverse order to preserve the order of
          * the tasks (of equal priority) in the list. */
-        while (!gyros_list_empty(&c->task_list))
+        while (!gyros__list_empty(&c->task_list))
             gyros__task_wake(TASK(c->task_list.prev));
         gyros_interrupt_restore(flags);
         if (!gyros_in_interrupt())

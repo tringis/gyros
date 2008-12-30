@@ -45,8 +45,8 @@ cgyros_rwlock_init(gyros_rwlock_t *rwlock)
     rwlock->writer = NULL;
     rwlock->readers = 0;
 
-    GYROS_LIST_NODE_INIT(&rwlock->rd_task_list);
-    GYROS_LIST_NODE_INIT(&rwlock->wr_task_list);
+    GYROS__LIST_NODE_INIT(&rwlock->rd_task_list);
+    GYROS__LIST_NODE_INIT(&rwlock->wr_task_list);
 }
 
 void
@@ -61,7 +61,7 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         gyros_error("rwlock_rdlock called from interrupt");
 #endif
 
-    while (rwlock->writer || !gyros_list_empty(&rwlock->wr_task_list))
+    while (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
     {
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
 #if GYROS_DEBUG
@@ -89,7 +89,7 @@ gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock)
         gyros_error("rwlock_tryrdlock called from interrupt");
 #endif
 
-    if (rwlock->writer || !gyros_list_empty(&rwlock->wr_task_list))
+    if (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
         ret = 0;
     else
     {
@@ -114,7 +114,7 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_error("rwlock_rdlock called from interrupt");
 #endif
 
-    if (rwlock->writer || !gyros_list_empty(&rwlock->wr_task_list))
+    if (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
     {
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
         gyros__task_set_timeout(timeout);
@@ -262,7 +262,7 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
     }
     /* It's important that we don't try to wake any readers if there
      * are queued writers. */
-    if (!gyros_list_empty(&rwlock->wr_task_list))
+    if (!gyros__list_empty(&rwlock->wr_task_list))
     {
         if (rwlock->readers == 0)
         {
@@ -279,7 +279,7 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
     {
         /* Move the tasks in reverse order to preserve the order of
          * the tasks (of equal priority) in the list. */
-        while (!gyros_list_empty(&rwlock->rd_task_list))
+        while (!gyros__list_empty(&rwlock->rd_task_list))
             gyros__task_wake(TASK(rwlock->rd_task_list.prev));
     }
     gyros_interrupt_restore(flags);

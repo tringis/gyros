@@ -41,7 +41,7 @@ typedef struct gyros_cond {
     unsigned debug_magic; /**< \internal */
 #endif
 
-    struct gyros_list_node task_list; /**< \internal */
+    struct gyros__list_node task_list; /**< \internal */
 } gyros_cond_t;
 
 /** Initialize the condition variable @a c.

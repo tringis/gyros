@@ -43,7 +43,7 @@ gyros_mutex_init(gyros_mutex_t *m)
 #endif
 
     m->owner = NULL;
-    GYROS_LIST_NODE_INIT(&m->task_list);
+    GYROS__LIST_NODE_INIT(&m->task_list);
 }
 
 int
@@ -127,7 +127,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
         gyros__state.current->raised_priority = 0;
         gyros__state.current->priority = m->owner_priority;
     }
-    if (gyros_list_empty(&m->task_list))
+    if (gyros__list_empty(&m->task_list))
         gyros_interrupt_restore(flags);
     else
     {

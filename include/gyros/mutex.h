@@ -49,7 +49,7 @@ typedef struct gyros_mutex
 
     gyros_task_t *owner; /**< \internal */
     unsigned short owner_priority; /**< \internal */
-    struct gyros_list_node task_list; /**< \internal */
+    struct gyros__list_node task_list; /**< \internal */
 } gyros_mutex_t;
 
 /** Initialize the mutex @a m.

@@ -43,16 +43,16 @@
 typedef struct
 {
     struct gyros_task_regs regs; /**< \internal */
-    struct gyros_list_node main_list; /**< \internal */
+    struct gyros__list_node main_list; /**< \internal */
 
-    struct gyros_list_node timeout_list; /**< \internal */
+    struct gyros__list_node timeout_list; /**< \internal */
     unsigned long timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
 
     unsigned char raised_priority; /**< \internal */
     unsigned short priority; /**< \internal */
 
-    struct gyros_list_node task_list; /**< \internal */
+    struct gyros__list_node task_list; /**< \internal */
 
     const char *name; /**< Task name. */
     void *stack; /**< Task stack base address. */

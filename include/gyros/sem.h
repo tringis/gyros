@@ -45,7 +45,7 @@ typedef struct gyros_sem
 
     unsigned value; /**< \internal */
     unsigned max_value; /**< \internal */
-    struct gyros_list_node task_list; /**< \internal */
+    struct gyros__list_node task_list; /**< \internal */
 } gyros_sem_t;
 
 /** Initialize the semaphore @a s to be a counting semaphore with
