@@ -31,7 +31,8 @@
 
 #include <stdint.h>
 
-struct gyros_task_regs {
+struct gyros__context
+{
     uint32_t r[13];
     uint32_t sp;
     uint32_t lr;

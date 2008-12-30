@@ -42,11 +42,11 @@ gyros__target_task_init(gyros_task_t *task,
     uint32_t *p = task->stack;
     uint32_t *e = (uint32_t*)((uint32_t)task->stack + task->stack_size);
 
-    task->regs.r[0] = (uint32_t)arg;
-    task->regs.sp = (uint32_t)stack + stack_size;
-    task->regs.lr = (uint32_t)gyros__task_exit;
-    task->regs.pc = (uint32_t)entry + 4;
-    task->regs.psr = ARM_MODE_SYS;
+    task->context.r[0] = (uint32_t)arg;
+    task->context.sp = (uint32_t)stack + stack_size;
+    task->context.lr = (uint32_t)gyros__task_exit;
+    task->context.pc = (uint32_t)entry + 4;
+    task->context.psr = ARM_MODE_SYS;
 
     do
         *p++ = 0xeeeeeeee;

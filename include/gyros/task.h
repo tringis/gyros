@@ -42,7 +42,8 @@
   * accessed directly. */
 typedef struct
 {
-    struct gyros_task_regs regs; /**< \internal */
+    struct gyros__context context; /**< \internal */
+
     struct gyros__list_node main_list; /**< \internal */
 
     struct gyros__list_node timeout_list; /**< \internal */
