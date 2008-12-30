@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_list_h__200206071350
-#define INCLUDED__gyros_list_h__200206071350
+#ifndef INCLUDED__gyros_private_list_h__200206071350
+#define INCLUDED__gyros_private_list_h__200206071350
 
 /** \internal */
 struct gyros__list_node {

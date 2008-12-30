@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__aic_h__112128919811112399
-#define INCLUDED__aic_h__112128919811112399
+#ifndef INCLUDED__gyros_at91sam7s_interrupt_h__200812301816
+#define INCLUDED__gyros_at91sam7s_interrupt_h__200812301816
 
 #include <stdint.h>
 

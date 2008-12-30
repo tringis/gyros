@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__arm7tdmi_interrupt_h__200212292232
-#define INCLUDE__arm7tdmi_interrupt_h__200212292232
+#ifndef INCLUDE__gyros_arm_interrupt_h__200212292232
+#define INCLUDE__gyros_arm_interrupt_h__200212292232
 
 #include <gyros/arm/arm_defs.h>
 

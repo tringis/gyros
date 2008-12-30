@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_task_h__200206071335
-#define INCLUDED__gyros_task_h__200206071335
+#ifndef INCLUDED__gyros_iterate_h__200812301809
+#define INCLUDED__gyros_iterate_h__200812301809
 
 /** \file iterate.h
  * \brief Task iteration.

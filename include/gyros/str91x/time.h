@@ -26,6 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#ifndef INCLUDE__gyros_str91x_time_h__200812301811
+#define INCLUDE__gyros_str91x_time_h__200812301811
 
 static inline gyros_time_t gyros_us(long long microseconds)
 {
@@ -56,3 +58,5 @@ static inline long long gyros_time_to_s(gyros_time_t time)
 {
     return time / 1000000;
 }
+
+#endif

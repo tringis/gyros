@@ -26,8 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__armdefs_h__200203211323
-#define INCLUDED__armdefs_h__200203211323
+#ifndef INCLUDED__gyros_arm_arm_defs_h__200203211323
+#define INCLUDED__gyros_arm_arm_defs_h__200203211323
 
 /*--------------------------*/
 /* ARM Mode and Status Bits */
