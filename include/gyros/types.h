@@ -40,6 +40,6 @@
 typedef gyros__abstime_t gyros_abstime_t;
 
 /** Relative time in target specific units. */
-typedef gyros__abstime_t gyros_time_t;
+typedef gyros__time_t gyros_time_t;
 
 #endif
