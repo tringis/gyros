@@ -33,8 +33,6 @@
 
 #include "private.h"
 
-#define GYROS_MUTEX_DEBUG_MAGIC        0xe398123d
-
 void
 gyros_mutex_init(gyros_mutex_t *m)
 {

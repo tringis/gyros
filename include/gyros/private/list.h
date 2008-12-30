@@ -37,6 +37,8 @@ struct gyros__list_node {
 
 #define GYROS__LIST_NODE_INIT(n) do { (n)->prev=(n); (n)->next=(n); } while (0)
 
+#define GYROS__LIST_INITALIZER(l) { &l, &l }
+
 #define GYROS__LIST_CONTAINER(node, type, member) \
     ((type*)((char*)(node)-(unsigned long)(&((type*)0)->member)))
 

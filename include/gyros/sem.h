@@ -33,8 +33,33 @@
  * \brief Semaphores.
  */
 
+#include <limits.h>
+
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#if GYROS_DEBUG
+#define GYROS_SEM_DEBUG_MAGIC           0xe111100a
+#define GYROS_SEM_DEBUG_INITIALIZER     GYROS_SEM_DEBUG_MAGIC,
+#else
+#define GYROS_SEM_DEBUG_INITIALIZER
+#endif
+#endif
+
+/** Define a ready to use (initialized) counting semaphore by the
+  * specified @a name with start value @a start_value. */
+#define GYROS_SEM_DEFINE(name, start_value) \
+    gyros_sem_t name = { GYROS_SEM_DEBUG_INITIALIZER                    \
+                         start_value, UINT_MAX,                         \
+                         GYROS__LIST_INITALIZER(name.task_list) }
+
+/** Define a ready to use (initialized) binary semaphore by the
+  * specified @a name. */
+#define GYROS_SEM_DEFINE_BINARY(name) \
+    gyros_sem_t name = { GYROS_SEM_DEBUG_INITIALIZER                    \
+                         0, 1, GYROS__LIST_INITALIZER(name.task_list) }
+
 
 /** Semaphore (sem). */
 typedef struct gyros_sem

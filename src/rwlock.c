@@ -33,8 +33,6 @@
 
 #include "private.h"
 
-#define GYROS_RWLOCK_DEBUG_MAGIC        0xe151110d
-
 void
 gyros_rwlock_init(gyros_rwlock_t *rwlock)
 {

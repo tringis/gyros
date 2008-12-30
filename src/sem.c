@@ -29,11 +29,7 @@
 #include <gyros/interrupt.h>
 #include <gyros/sem.h>
 
-#include <limits.h>
-
 #include "private.h"
-
-#define GYROS_SEM_DEBUG_MAGIC          0xe111100a
 
 void
 gyros_sem_init(gyros_sem_t *s, int start_value)

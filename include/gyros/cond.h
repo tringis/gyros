@@ -35,6 +35,21 @@
 
 #include <gyros/mutex.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#if GYROS_DEBUG
+#define GYROS_COND_DEBUG_MAGIC          0xe0899aa1
+#define GYROS_COND_DEBUG_INITIALIZER    GYROS_COND_DEBUG_MAGIC,
+#else
+#define GYROS_COND_DEBUG_INITIALIZER
+#endif
+#endif
+
+/** Define a ready to use (initialized) condition variable by the
+  * specified @a name. */
+#define GYROS_COND_DEFINE(name) \
+    gyros_cond_t name = { GYROS_COND_DEBUG_INITIALIZER                \
+                          GYROS__LIST_INITALIZER(name.task_list) }
+
 /** Condition variable (cond). */
 typedef struct gyros_cond {
 #if GYROS_DEBUG

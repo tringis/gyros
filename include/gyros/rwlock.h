@@ -39,6 +39,23 @@
 
 #include <gyros/task.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#if GYROS_DEBUG
+#define GYROS_RWLOCK_DEBUG_MAGIC         0xe151110d
+#define GYROS_RWLOCK_DEBUG_INITIALIZER   GYROS_RWLOCK_DEBUG_MAGIC,
+#else
+#define GYROS_RWLOCK_DEBUG_INITIALIZER
+#endif
+#endif
+
+/** Define a ready to use (initialized) read/write lock by the
+  * specified @a name. */
+#define GYROS_RWLOCK_DEFINE(name) \
+    gyros_rwlock_t name = { GYROS_RWLOCK_DEBUG_INITIALIZER                \
+                            (gyros_task_t*)0, 0,                          \
+                            GYROS__LIST_INITALIZER(name.rd_task_list),    \
+                            GYROS__LIST_INITALIZER(name.wr_task_list) }
+
 /** Read/write lock (rwlock). */
 typedef struct gyros_rwlock
 {

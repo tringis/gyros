@@ -31,8 +31,6 @@
 
 #include "private.h"
 
-#define GYROS_COND_DEBUG_MAGIC         0xe0899aa1
-
 void
 gyros_cond_init(gyros_cond_t *c)
 {

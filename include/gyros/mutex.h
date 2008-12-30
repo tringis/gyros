@@ -40,6 +40,21 @@
 
 #include <gyros/task.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#if GYROS_DEBUG
+#define GYROS_MUTEX_DEBUG_MAGIC         0xe398123d
+#define GYROS_MUTEX_DEBUG_INITIALIZER   GYROS_MUTEX_DEBUG_MAGIC,
+#else
+#define GYROS_MUTEX_DEBUG_INITIALIZER
+#endif
+#endif
+
+/** Define a ready to use (initialized) mutex by the specified @a name. */
+#define GYROS_MUTEX_DEFINE(name) \
+    gyros_mutex_t name = { GYROS_MUTEX_DEBUG_INITIALIZER                \
+                           (gyros_task_t*)0, 0,                         \
+                           GYROS__LIST_INITALIZER(name.task_list) }
+
 /** Mutual exclusion (mutex) struct. */
 typedef struct gyros_mutex
 {
