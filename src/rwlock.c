@@ -36,7 +36,7 @@
 #define GYROS_RWLOCK_DEBUG_MAGIC        0xe151110d
 
 void
-cgyros_rwlock_init(gyros_rwlock_t *rwlock)
+gyros_rwlock_init(gyros_rwlock_t *rwlock)
 {
 #if GYROS_DEBUG
     rwlock->debug_magic = GYROS_RWLOCK_DEBUG_MAGIC;
