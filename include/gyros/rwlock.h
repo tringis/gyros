@@ -30,12 +30,20 @@
 #define INCLUDED__gyros_rwlock_h__200812121950
 
 /** \file rwlock.h
- * \brief Read/write locks.
- *
- * A read/write lock (rwlock) allows multiple read locks
- * simultaneously, but write locks are exclusive, locking out all
- * other readers and writers.
- */
+  * \brief Read/write lock (rwlock).
+  *
+  * A read/write lock (rwlock) allows multiple read locks
+  * simultaneously, but write locks are exclusive, locking out all
+  * other readers and writers.
+  *
+  * A read/write lock must be initialized before use, either using
+  * GYROS_RWLOCK_INITVAL() when defining the read/write lock, or using
+  * gyros_rwlock_init().
+  *
+  * Read/write locks are not recursive, so calling a lock function
+  * twice (without calling gyros_rwlock_unlock() inbetween) from the
+  * same task will result in a deadlock.
+  */
 
 #include <gyros/task.h>
 
@@ -48,13 +56,19 @@
 #endif
 #endif
 
-/** Define a ready to use (initialized) read/write lock by the
-  * specified @a name. */
-#define GYROS_RWLOCK_DEFINE(name) \
-    gyros_rwlock_t name = { GYROS_RWLOCK_DEBUG_INITIALIZER                \
-                            (gyros_task_t*)0, 0,                          \
-                            GYROS__LIST_INITALIZER(name.rd_task_list),    \
-                            GYROS__LIST_INITALIZER(name.wr_task_list) }
+/** Initialization value for a read/write lock by the specified @a
+  * name.  When a read/write lock is initialized using this value,
+  * gyros_rwlock_init() does not need to be called.  Example:
+  *
+  * \code
+  * gyros_rwlock_t my_rwlock = GYROS_RWLOCK_INITVAL(my_rwlock);
+  * \endcode
+  */
+#define GYROS_RWLOCK_INITVAL(name) \
+    { GYROS_RWLOCK_DEBUG_INITIALIZER                \
+      (gyros_task_t*)0, 0,                          \
+      GYROS__LIST_INITVAL(name.rd_task_list),    \
+      GYROS__LIST_INITVAL(name.wr_task_list) }
 
 /** Read/write lock (rwlock). */
 typedef struct gyros_rwlock

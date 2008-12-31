@@ -34,15 +34,15 @@
 
 #include "private.h"
 
-struct gyros__list_node gyros__tasks = { &gyros__tasks, &gyros__tasks };
-struct gyros__list_node gyros__zombies = { &gyros__zombies, &gyros__zombies };
-struct gyros__list_node gyros__reapers = { &gyros__reapers, &gyros__reapers };
+struct gyros__list_node gyros__tasks = GYROS__LIST_INITVAL(gyros__tasks);
+struct gyros__list_node gyros__zombies = GYROS__LIST_INITVAL(gyros__zombies);
+struct gyros__list_node gyros__reapers = GYROS__LIST_INITVAL(gyros__reapers);
 static gyros_task_t s_idle_task;
 gyros__state_t gyros__state = {
     &s_idle_task,
-    { &gyros__state.running, &gyros__state.running }
+    GYROS__LIST_INITVAL(gyros__state.running)
 };
-GYROS_MUTEX_DEFINE(gyros__cd_mutex);
+gyros_mutex_t gyros__cd_mutex = GYROS_MUTEX_INITVAL(gyros__cd_mutex);
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)

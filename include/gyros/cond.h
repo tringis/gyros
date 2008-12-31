@@ -30,8 +30,12 @@
 #define INCLUDED__gyros_cond_h__200808272231
 
 /** \file cond.h
- * \brief Condition variable.
- */
+  * \brief Condition variable.
+  *
+  * A condition variable must be initialized before use, either using
+  * GYROS_COND_INITVAL() when defining the condition variable, or
+  * using gyros_cond_init().
+  */
 
 #include <gyros/mutex.h>
 
@@ -44,11 +48,17 @@
 #endif
 #endif
 
-/** Define a ready to use (initialized) condition variable by the
-  * specified @a name. */
-#define GYROS_COND_DEFINE(name) \
-    gyros_cond_t name = { GYROS_COND_DEBUG_INITIALIZER                \
-                          GYROS__LIST_INITALIZER(name.task_list) }
+/** Initialization value for a condition variable by the specified @a
+  * name.  When a condition variable is initialized using this value,
+  * gyros_cond_init() does not need to be called.  Example:
+  *
+  * \code
+  * gyros_cond_t my_cond = GYROS_COND_INITVAL(my_cond);
+  * \endcode
+  */
+#define GYROS_COND_INITVAL(name) \
+    { GYROS_COND_DEBUG_INITIALIZER                \
+      GYROS__LIST_INITVAL(name.task_list) }
 
 /** Condition variable (cond). */
 typedef struct gyros_cond {

@@ -36,7 +36,7 @@
 
 #define TIMEOUT_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list)
 
-static struct gyros__list_node s_sleeping = { &s_sleeping, &s_sleeping };
+static struct gyros__list_node s_sleeping = GYROS__LIST_INITVAL(s_sleeping);
 
 void
 gyros__task_set_timeout(gyros_abstime_t timeout)

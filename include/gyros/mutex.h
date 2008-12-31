@@ -30,12 +30,15 @@
 #define INCLUDED__gyros_mutex_h__200808272211
 
 /** @file mutex.h
-  * \brief A mutex.
+  * \brief Mutual exclusion (mutex).
   *
-  * Must be initialized using gyros_mutex_init() before use.
-
+  * A mutex must be initialized before use, either using
+  * GYROS_MUTEX_INITVAL() when defining the mutex, or using
+  * gyros_mutex_init().
+  *
   * Mutexes are not recursive, so calling gyros_mutex_lock() twice
-  * will result in a deadlock.
+  * from the same task (without calling gyros_mutex_unlock()
+  * inbetween) will result in a deadlock.
   */
 
 #include <gyros/task.h>
@@ -49,11 +52,18 @@
 #endif
 #endif
 
-/** Define a ready to use (initialized) mutex by the specified @a name. */
-#define GYROS_MUTEX_DEFINE(name) \
-    gyros_mutex_t name = { GYROS_MUTEX_DEBUG_INITIALIZER                \
-                           (gyros_task_t*)0, 0,                         \
-                           GYROS__LIST_INITALIZER(name.task_list) }
+/** Initialization value for a mutex by the specified @a name.  When a
+  * mutex is initialized using this value, gyros_mutex_init() does not
+  * need to be called.  Example:
+  *
+  * \code
+  * gyros_mutex_t my_mutex = GYROS_MUTEX_INITVAL(my_mutex);
+  * \endcode
+  */
+#define GYROS_MUTEX_INITVAL(name) \
+    { GYROS_MUTEX_DEBUG_INITIALIZER                                     \
+      (gyros_task_t*)0, 0,                                              \
+      GYROS__LIST_INITVAL(name.task_list) }
 
 /** Mutual exclusion (mutex) struct. */
 typedef struct gyros_mutex

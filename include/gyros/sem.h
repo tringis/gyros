@@ -30,7 +30,11 @@
 #define INCLUDED__gyros_sem_h__200808281430
 
 /** \file sem.h
- * \brief Semaphores.
+  * \brief Semaphores.
+  *
+  * A semaphore must be initialized before use, either using
+  * GYROS_SEM_INITVAL() or GYROS_BINARY_SEM_INITVAL() when defining
+  * the semaphore, or using gyros_sem_init().
  */
 
 #include <limits.h>
@@ -47,18 +51,31 @@
 #endif
 #endif
 
-/** Define a ready to use (initialized) counting semaphore by the
-  * specified @a name with start value @a start_value. */
-#define GYROS_SEM_DEFINE(name, start_value) \
-    gyros_sem_t name = { GYROS_SEM_DEBUG_INITIALIZER                    \
-                         start_value, UINT_MAX,                         \
-                         GYROS__LIST_INITALIZER(name.task_list) }
+/** Initialization value for a counting semaphore by the specified @a
+  * name and start value @a start_value.  When a semaphore is
+  * initialized using this value, gyros_sem_init() does not need to be
+  * called.  Example:
+  *
+  * \code
+  * gyros_sem_t my_sem = GYROS_SEM_INITVAL(my_sem, 0);
+  * \endcode
+  */
+#define GYROS_SEM_INITVAL(name, start_value) \
+    { GYROS_SEM_DEBUG_INITIALIZER                    \
+      start_value, UINT_MAX,                         \
+      GYROS__LIST_INITVAL(name.task_list) }
 
-/** Define a ready to use (initialized) binary semaphore by the
-  * specified @a name. */
-#define GYROS_SEM_DEFINE_BINARY(name) \
-    gyros_sem_t name = { GYROS_SEM_DEBUG_INITIALIZER                    \
-                         0, 1, GYROS__LIST_INITALIZER(name.task_list) }
+/** Initialization value for a binary semaphore by the specified @a
+  * name.  When a semaphore is initialized using this value,
+  * gyros_sem_init_binary() does not need to be called.  Example:
+  *
+  * \code
+  * gyros_sem_t my_sem = GYROS_BINARY_SEM_INITVAL(my_sem);
+  * \endcode
+  */
+#define GYROS_BINARY_SEM_INITVAL(name) \
+    { GYROS_SEM_DEBUG_INITIALIZER                    \
+      0, 1, GYROS__LIST_INITVAL(name.task_list) }
 
 
 /** Semaphore (sem). */
