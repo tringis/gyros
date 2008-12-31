@@ -26,56 +26,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/at91sam7s/interrupt.h>
+#ifndef INCLUDE__gyros_str91x_time_h__200812301811
+#define INCLUDE__gyros_str91x_time_h__200812301811
 
-#include "../private.h"
-#include "at91sam7s.h"
-#include "private.h"
-
-volatile gyros_abstime_t s_time;
-
-static void
-pit_isr(void)
+static inline gyros_time_t gyros_us(long long microseconds)
 {
-    if (AT91C_BASE_PITC->PITC_PISR & AT91C_SYSC_PITS)
-    {
-        uint32_t status = AT91C_BASE_PITC->PITC_PIVR;
-
-        s_time += status >> 20;
-        gyros__wake_sleeping_tasks(gyros_time());
-    }
+    return microseconds;
 }
 
-void
-gyros__suspend_tick(void)
+static inline gyros_time_t gyros_ms(long long milliseconds)
 {
+    return milliseconds * 1000;
 }
 
-void
-gyros__update_tick(gyros_abstime_t next_timeout)
+static inline gyros_time_t gyros_s(long long seconds)
 {
+    return seconds * 1000000;
 }
 
-gyros_abstime_t
-gyros_time(void)
+static inline long long gyros_time_to_us(gyros_time_t time)
 {
-    unsigned long flags = gyros_interrupt_disable();
-    gyros_abstime_t time = s_time;
-
-    gyros_interrupt_restore(flags);
-
     return time;
 }
 
-void
-gyros__target_init(void)
+static inline long long gyros_time_to_ms(gyros_time_t time)
 {
-    uint32_t dummy;
-
-    gyros_target_aic_init();
-    gyros_target_add_sys_isr(pit_isr);
-
-    dummy = AT91C_BASE_PITC->PITC_PIVR;
-    AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
-        (PIT_PERIOD - 1);
+    return time / 1000;
 }
+
+static inline long long gyros_time_to_s(gyros_time_t time)
+{
+    return time / 1000000;
+}
+
+#endif
