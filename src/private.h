@@ -44,7 +44,7 @@ extern struct gyros__list_node gyros__tasks;
 extern struct gyros__list_node gyros__zombies;
 extern struct gyros__list_node gyros__reapers;
 extern gyros__state_t gyros__state;
-extern gyros_mutex_t gyros__cd_mutex;
+extern gyros_mutex_t gyros__iterate_mutex;
 
 void gyros__task_zombify(gyros_task_t *task);
 
