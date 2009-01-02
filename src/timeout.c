@@ -26,54 +26,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_h__200808271854
-#define INCLUDED__gyros_private_h__200808271854
-
+#include <gyros/interrupt.h>
 #include <gyros/task.h>
-#include <gyros/mutex.h>
 
-#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list)
+#include <limits.h>
+#include <stdlib.h>
 
-typedef struct
+#include "private.h"
+
+#define TIMEOUT_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list)
+
+static struct gyros__list_node s_timeouts = GYROS__LIST_INITVAL(s_timeouts);
+
+void
+gyros__task_set_timeout(gyros_abstime_t timeout)
 {
-    gyros_task_t *current;
-    struct gyros__list_node running;
-} gyros__state_t;
+    struct gyros__list_node *i;
 
-extern struct gyros__list_node gyros__tasks;
-extern struct gyros__list_node gyros__zombies;
-extern struct gyros__list_node gyros__reapers;
-extern gyros__state_t gyros__state;
-extern gyros_mutex_t gyros__iterate_mutex;
+    for (i = s_timeouts.next; i != &s_timeouts; i = i->next)
+    {
+        if ((gyros_time_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
+            break;
+    }
+    gyros__list_insert_before(&gyros__state.current->timeout_list, i);
+    gyros__state.current->timeout = timeout;
+    gyros__state.current->timed_out = 0;
+    if (s_timeouts.next == &gyros__state.current->timeout_list)
+        gyros__update_tick(timeout);
+}
 
-void gyros__task_zombify(gyros_task_t *task);
+void
+gyros__wake_timedout_tasks(gyros_abstime_t now)
+{
+    while (!gyros__list_empty(&s_timeouts) &&
+           (gyros_time_t)(now - TIMEOUT_TASK(s_timeouts.next)->timeout) >= 0)
+    {
+        gyros_task_t *task = TIMEOUT_TASK(s_timeouts.next);
 
-void gyros__task_exit(void);
+        task->timed_out = 1;
+        gyros__task_wake(task);
+    }
 
-void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
-
-void gyros__task_wake(gyros_task_t *task);
-
-void gyros__task_set_timeout(gyros_abstime_t timeout);
-
-void gyros__wake_timedout_tasks(gyros_abstime_t now);
-
-void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
-
-void gyros__cond_reschedule(void);
-
-/* The following functions must be implemented by the target */
-
-void gyros__target_init(void);
-
-void gyros__target_task_init(gyros_task_t *task,
-                             void (*entry)(void *arg),
-                             void *arg,
-                             void *stack,
-                             int stack_size);
-
-void gyros__suspend_tick(void);
-
-void gyros__update_tick(gyros_abstime_t next_timeout);
-
-#endif
+    if (gyros__list_empty(&s_timeouts))
+        gyros__suspend_tick();
+    else
+        gyros__update_tick(TIMEOUT_TASK(s_timeouts.next)->timeout);
+}

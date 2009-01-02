@@ -42,7 +42,7 @@ pit_isr(void)
         uint32_t status = AT91C_BASE_PITC->PITC_PIVR;
 
         s_time += status >> 20;
-        gyros__wake_sleeping_tasks(gyros_time());
+        gyros__wake_timedout_tasks(gyros_time());
     }
 }
 

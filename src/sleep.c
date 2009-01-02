@@ -27,51 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
-#include <gyros/task.h>
 
-#include <limits.h>
-#include <stdlib.h>
+#include <stddef.h>
 
 #include "private.h"
-
-#define TIMEOUT_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list)
-
-static struct gyros__list_node s_sleeping = GYROS__LIST_INITVAL(s_sleeping);
-
-void
-gyros__task_set_timeout(gyros_abstime_t timeout)
-{
-    struct gyros__list_node *i;
-
-    for (i = s_sleeping.next; i != &s_sleeping; i = i->next)
-    {
-        if ((gyros_time_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
-            break;
-    }
-    gyros__list_insert_before(&gyros__state.current->timeout_list, i);
-    gyros__state.current->timeout = timeout;
-    gyros__state.current->timed_out = 0;
-    if (s_sleeping.next == &gyros__state.current->timeout_list)
-        gyros__update_tick(timeout);
-}
-
-void
-gyros__wake_sleeping_tasks(gyros_abstime_t now)
-{
-    while (!gyros__list_empty(&s_sleeping) &&
-           (gyros_time_t)(now - TIMEOUT_TASK(s_sleeping.next)->timeout) >= 0)
-    {
-        gyros_task_t *task = TIMEOUT_TASK(s_sleeping.next);
-
-        task->timed_out = 1;
-        gyros__task_wake(task);
-    }
-
-    if (gyros__list_empty(&s_sleeping))
-        gyros__suspend_tick();
-    else
-        gyros__update_tick(TIMEOUT_TASK(s_sleeping.next)->timeout);
-}
 
 int
 gyros_sleep_until(gyros_abstime_t timeout)

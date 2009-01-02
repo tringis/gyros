@@ -48,7 +48,7 @@ tim3_isr(void)
     /* Note that it's important to call gyros_time() here, because we
      * need to call it before 0xffff ticks have passed not to miss
      * time. */
-    gyros__wake_sleeping_tasks(gyros_time());
+    gyros__wake_timedout_tasks(gyros_time());
 }
 
 void
