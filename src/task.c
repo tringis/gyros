@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/target/config.h>
 #include <gyros/task.h>
 
 #include <limits.h>
@@ -35,14 +36,18 @@
 #include "private.h"
 
 struct gyros__list_node gyros__tasks = GYROS__LIST_INITVAL(gyros__tasks);
+#if GYROS_CONFIG_WAIT
 struct gyros__list_node gyros__zombies = GYROS__LIST_INITVAL(gyros__zombies);
 struct gyros__list_node gyros__reapers = GYROS__LIST_INITVAL(gyros__reapers);
+#endif
 static gyros_task_t s_idle_task;
 gyros__state_t gyros__state = {
     &s_idle_task,
     GYROS__LIST_INITVAL(gyros__state.running)
 };
+#if GYROS_CONFIG_ITERATE
 gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
+#endif
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
@@ -57,6 +62,7 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
     gyros__list_insert_before(&task->main_list, i);
 }
 
+#if GYROS_CONFIG_WAIT
 void
 gyros__task_zombify(gyros_task_t *task)
 {
@@ -70,21 +76,28 @@ gyros__task_zombify(gyros_task_t *task)
     while (gyros__reapers.prev != &gyros__reapers)
         gyros__task_wake(TASK(gyros__reapers.prev));
 }
+#endif
 
 void
 gyros__task_exit(void)
 {
+#if GYROS_CONFIG_ITERATE
     gyros_mutex_lock(&gyros__iterate_mutex);
+#endif
 
     /* Note that we do not need to call gyros_interrupt_restore()
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     gyros__state.current->debug_state = "zombie";
     gyros__state.current->debug_object = NULL;
 #endif
+#if GYROS_CONFIG_WAIT
     gyros__task_zombify(gyros__state.current);
+#endif
+#if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock(&gyros__iterate_mutex, 0);
+#endif
     gyros__reschedule();
 }
 
@@ -98,7 +111,7 @@ gyros__task_move(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_wake(gyros_task_t *task)
 {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     task->debug_state = "running";
     task->debug_object = NULL;
 #endif
@@ -111,7 +124,7 @@ gyros__cond_reschedule(void)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
         gyros_error("cond_reschedule called from interrupt");
 #endif
@@ -125,7 +138,7 @@ void
 gyros_start(void)
 {
     /* Make the current "task" the idle task */
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     s_idle_task.debug_magic = GYROS_TASK_DEBUG_MAGIC;
     s_idle_task.debug_state = "running";
     s_idle_task.debug_object = NULL;
@@ -159,7 +172,7 @@ gyros_task_create(gyros_task_t *task,
 
     memset(task, 0, sizeof(gyros_task_t));
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
     task->debug_state = "running";
     task->debug_object = NULL;

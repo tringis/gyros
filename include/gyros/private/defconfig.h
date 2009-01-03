@@ -26,37 +26,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_str91x_time_h__200812301811
-#define INCLUDE__gyros_str91x_time_h__200812301811
+#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
+#define INCLUDED__gyros_private_defconfig_h__200901021029
 
-static inline gyros_time_t gyros_us(long long microseconds)
-{
-    return microseconds;
-}
+#ifndef GYROS_CONFIG_DEBUG
+#define GYROS_CONFIG_DEBUG 1
+#endif
 
-static inline gyros_time_t gyros_ms(long long milliseconds)
-{
-    return milliseconds * 1000;
-}
+#ifndef GYROS_CONFIG_DELETE
+#define GYROS_CONFIG_DELETE 1
+#endif
 
-static inline gyros_time_t gyros_s(long long seconds)
-{
-    return seconds * 1000000;
-}
+#ifndef GYROS_CONFIG_DYNTICK
+#define GYROS_CONFIG_DYNTICK 0
+#endif
 
-static inline long long gyros_time_to_us(gyros_time_t time)
-{
-    return time;
-}
+#ifndef GYROS_CONFIG_ITERATE
+#define GYROS_CONFIG_ITERATE 1
+#endif
 
-static inline long long gyros_time_to_ms(gyros_time_t time)
-{
-    return time / 1000;
-}
+#ifndef GYROS_CONFIG_STACK_USED
+#define GYROS_CONFIG_STACK_USED 1
+#endif
 
-static inline long long gyros_time_to_s(gyros_time_t time)
-{
-    return time / 1000000;
-}
+#ifndef GYROS_CONFIG_TIME_TYPE
+#define GYROS_CONFIG_TIME_TYPE long long
+#endif
+
+#ifndef GYROS_CONFIG_WAIT
+#define GYROS_CONFIG_WAIT 1
+#endif
 
 #endif

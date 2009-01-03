@@ -41,10 +41,11 @@
   * inbetween) will result in a deadlock.
   */
 
+#include <gyros/target/config.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 #define GYROS_MUTEX_DEBUG_MAGIC         0xe398123d
 #define GYROS_MUTEX_DEBUG_INITIALIZER   GYROS_MUTEX_DEBUG_MAGIC,
 #else
@@ -68,7 +69,7 @@
 /** Mutual exclusion (mutex) struct. */
 typedef struct gyros_mutex
 {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
 #endif
 

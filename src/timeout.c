@@ -45,21 +45,23 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 
     for (i = s_timeouts.next; i != &s_timeouts; i = i->next)
     {
-        if ((gyros_time_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
+        if ((gyros_reltime_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
     gyros__list_insert_before(&gyros__state.current->timeout_list, i);
     gyros__state.current->timeout = timeout;
     gyros__state.current->timed_out = 0;
+#if GYROS_CONFIG_DYNTICK
     if (s_timeouts.next == &gyros__state.current->timeout_list)
         gyros__update_tick(timeout);
+#endif
 }
 
 void
 gyros__wake_timedout_tasks(gyros_abstime_t now)
 {
     while (!gyros__list_empty(&s_timeouts) &&
-           (gyros_time_t)(now - TIMEOUT_TASK(s_timeouts.next)->timeout) >= 0)
+           (gyros_reltime_t)(now - TIMEOUT_TASK(s_timeouts.next)->timeout) >= 0)
     {
         gyros_task_t *task = TIMEOUT_TASK(s_timeouts.next);
 
@@ -67,8 +69,10 @@ gyros__wake_timedout_tasks(gyros_abstime_t now)
         gyros__task_wake(task);
     }
 
+#if GYROS_CONFIG_DYNTICK
     if (gyros__list_empty(&s_timeouts))
         gyros__suspend_tick();
     else
         gyros__update_tick(TIMEOUT_TASK(s_timeouts.next)->timeout);
+#endif
 }

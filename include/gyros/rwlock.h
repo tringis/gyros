@@ -45,10 +45,11 @@
   * same task will result in a deadlock.
   */
 
+#include <gyros/target/config.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 #define GYROS_RWLOCK_DEBUG_MAGIC         0xe151110d
 #define GYROS_RWLOCK_DEBUG_INITIALIZER   GYROS_RWLOCK_DEBUG_MAGIC,
 #else
@@ -73,7 +74,7 @@
 /** Read/write lock (rwlock). */
 typedef struct gyros_rwlock
 {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
 #endif
 

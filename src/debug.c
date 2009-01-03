@@ -28,15 +28,16 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 #include <gyros/private/debug.h>
+#include <gyros/target/config.h>
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 static void (*s_handler)(const char *msg);
 #endif
 
 void
 gyros_set_error_handler(void (*handler)(const char *msg))
 {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned long flags = gyros_interrupt_disable();
 
     s_handler = handler;
@@ -44,7 +45,7 @@ gyros_set_error_handler(void (*handler)(const char *msg))
 #endif
 }
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 void
 gyros_error(const char *msg)
 {

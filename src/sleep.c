@@ -37,14 +37,14 @@ gyros_sleep_until(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
         gyros_error("tried to sleep in interrupt");
 #endif
 
     gyros__list_remove(&gyros__state.current->main_list);
     gyros__task_set_timeout(timeout);
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     gyros__state.current->debug_state = "sleep_until";
     gyros__state.current->debug_object = NULL;
 #endif

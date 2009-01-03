@@ -26,15 +26,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/target/config.h>
 #include <gyros/time.h>
 #include <gyros/interrupt.h>
 
 #include "str91x.h"
 #include "../private.h"
 
-#define PCLK            48000000
-
 #define MAX_PERIOD      0x8000
+
+#if !GYROS_CONFIG_DYNTICK
+#error str91x target needs GYROS_CONFIG_DYNTICK
+#endif
 
 static gyros_abstime_t s_time_hi;
 static uint16_t s_last_time_lo;
@@ -63,7 +66,7 @@ gyros__suspend_tick(void)
 void
 gyros__update_tick(gyros_abstime_t next_timeout)
 {
-    gyros_time_t dt = next_timeout - gyros_time();
+    gyros_reltime_t dt = next_timeout - gyros_time();
 
     if (dt >= MAX_PERIOD)
     {
@@ -123,7 +126,7 @@ gyros__target_init(void)
 
     gyros_target_set_isr(GYROS_IRQ_TIM3, tim3_isr);
 
-    TIM(3)->CR2 = PCLK / 1000000 - 1; /* 1 µs per tick */
+    TIM(3)->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_TIMER_RESOLUTION - 1;
     TIM(3)->CR2 |= 0x4000;        /* Enable OC1 interrupt */
     TIM(3)->OC1R = MAX_PERIOD;
     TIM(3)->OC2R = 1;             /* Make OC2 happen right away */

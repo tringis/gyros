@@ -26,37 +26,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_at91sam7s_time_h__200812311140
-#define INCLUDE__gyros_at91sam7s_time_h__200812311140
+#ifndef INCLUDED__gyros_at91sam7s_config_h__200901021701
+#define INCLUDED__gyros_at91sam7s_config_h__200901021701
 
-static inline gyros_time_t gyros_us(long long microseconds)
-{
-    return microseconds / 1000;
-}
+/*---------------------------------------------------------------------*
+ * GyrOS generic configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_DYNTICK                   1
 
-static inline gyros_time_t gyros_ms(long long milliseconds)
-{
-    return milliseconds;
-}
+#include <gyros/private/defconfig.h>
 
-static inline gyros_time_t gyros_s(long long seconds)
-{
-    return seconds * 1000;
-}
+/*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_STR91X_PCLK               48000000
 
-static inline long long gyros_time_to_us(gyros_time_t time)
-{
-    return time * 1000;
-}
+#define GYROS_CONFIG_TIMER_RESOLUTION          1000000
 
-static inline long long gyros_time_to_ms(gyros_time_t time)
-{
-    return time;
-}
+#define GYROS_CONFIG_US_TO_TICKS(us)           (us)
+#define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
+#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000000)
 
-static inline long long gyros_time_to_s(gyros_time_t time)
-{
-    return time / 1000;
-}
+#define GYROS_CONFIG_TICKS_TO_US(us)           (us)
+#define GYROS_CONFIG_TICKS_TO_MS(ms)           ((ms) / 1000)
+#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000000)
 
 #endif

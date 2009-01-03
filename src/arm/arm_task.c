@@ -39,8 +39,10 @@ gyros__target_task_init(gyros_task_t *task,
                         void *stack,
                         int stack_size)
 {
+#if GYROS_CONFIG_STACK_USED
     uint32_t *p = task->stack;
     uint32_t *e = (uint32_t*)((uint32_t)task->stack + task->stack_size);
+#endif
 
     task->context.r[0] = (uint32_t)arg;
     task->context.sp = (uint32_t)stack + stack_size;
@@ -48,11 +50,14 @@ gyros__target_task_init(gyros_task_t *task,
     task->context.pc = (uint32_t)entry + 4;
     task->context.psr = ARM_MODE_SYS;
 
+#if GYROS_CONFIG_STACK_USED
     do
         *p++ = 0xeeeeeeee;
     while (p != e);
+#endif
 }
 
+#if GYROS_CONFIG_STACK_USED
 int
 gyros_task_stack_used(gyros_task_t *task)
 {
@@ -64,3 +69,4 @@ gyros_task_stack_used(gyros_task_t *task)
 
     return (uint32_t)e - (uint32_t)p;
 }
+#endif

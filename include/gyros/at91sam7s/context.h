@@ -26,13 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_at91sam7s_types_h__200812301810
-#define INCLUDE__gyros_at91sam7s_types_h__200812301810
+#ifndef INCLUDE__gyros_at91sam7s_context_h__200812301810
+#define INCLUDE__gyros_at91sam7s_context_h__200812301810
 
 #include <gyros/arm/context.h>
-
-typedef unsigned long long gyros__abstime_t;
-
-typedef long long gyros__time_t;
 
 #endif

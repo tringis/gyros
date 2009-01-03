@@ -33,6 +33,8 @@
  * \brief Task management.
  */
 
+#include <gyros/target/config.h>
+#include <gyros/target/context.h>
 #include <gyros/private/debug.h>
 #include <gyros/private/list.h>
 #include <gyros/time.h>
@@ -59,7 +61,7 @@ typedef struct
     void *stack; /**< Task stack base address. */
     int stack_size; /**< Task stack size in bytes. */
 
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
     const char *debug_state; /**< String representing the task state. */
     /** Pointer to the object related to the currect task state,

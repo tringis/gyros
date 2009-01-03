@@ -39,7 +39,7 @@ gyros_task_delete(gyros_task_t *task)
     gyros_mutex_lock(&gyros__iterate_mutex);
 
     flags = gyros_interrupt_disable();
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
         gyros_error("delete non-task");
 #endif

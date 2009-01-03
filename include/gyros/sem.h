@@ -39,11 +39,12 @@
 
 #include <limits.h>
 
+#include <gyros/target/config.h>
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 #define GYROS_SEM_DEBUG_MAGIC           0xe111100a
 #define GYROS_SEM_DEBUG_INITIALIZER     GYROS_SEM_DEBUG_MAGIC,
 #else
@@ -81,7 +82,7 @@
 /** Semaphore (sem). */
 typedef struct gyros_sem
 {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
 #endif
 

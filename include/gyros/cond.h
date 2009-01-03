@@ -37,10 +37,11 @@
   * using gyros_cond_init().
   */
 
+#include <gyros/target/config.h>
 #include <gyros/mutex.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
 #define GYROS_COND_DEBUG_MAGIC          0xe0899aa1
 #define GYROS_COND_DEBUG_INITIALIZER    GYROS_COND_DEBUG_MAGIC,
 #else
@@ -62,7 +63,7 @@
 
 /** Condition variable (cond). */
 typedef struct gyros_cond {
-#if GYROS_DEBUG
+#if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
 #endif
 

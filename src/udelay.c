@@ -33,6 +33,6 @@ gyros_udelay(gyros_abstime_t microseconds)
 {
     gyros_abstime_t end = gyros_time() + microseconds;
 
-    while ((gyros_time_t)(gyros_time() - end) < 0)
+    while ((gyros_reltime_t)(gyros_time() - end) < 0)
         ;
 }

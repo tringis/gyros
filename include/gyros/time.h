@@ -29,30 +29,54 @@
 #ifndef INCLUDE__gyros_time_h__200808291459
 #define INCLUDE__gyros_time_h__200808291459
 
-#include <gyros/types.h>
-#include <gyros/target/time.h>
-
 /** \file time.h
  * \brief Data types.
  */
 
-/** Convert @a microseconds to gyros_abstime_t. */
-gyros_time_t gyros_us(long long microseconds);
+#include <gyros/target/config.h>
 
-/** Convert @a milliseconds to gyros_abstime_t. */
-gyros_time_t gyros_ms(long long milliseconds);
+/** Absolute monotonically increasing time in target specific
+  * units. */
+typedef unsigned GYROS_CONFIG_TIME_TYPE gyros_abstime_t;
 
-/** Convert @a seconds to gyros_abstime_t. */
-gyros_time_t gyros_s(long long seconds);
+/** Relative time in target specific units. */
+typedef signed GYROS_CONFIG_TIME_TYPE gyros_reltime_t;
 
-/** Convert @a gyros_abstime_t to microseconds. */
-long long gyros_time_to_us(gyros_time_t time);
+/** Convert @a microseconds to gyros_reltime_t. */
+static inline gyros_reltime_t gyros_us(long microseconds)
+{
+    return GYROS_CONFIG_US_TO_TICKS(microseconds);
+}
 
-/** Convert @a gyros_abstime_t to milliseconds. */
-long long gyros_time_to_ms(gyros_time_t time);
+/** Convert @a milliseconds to gyros_reltime_t. */
+static inline gyros_reltime_t gyros_ms(long milliseconds)
+{
+    return GYROS_CONFIG_MS_TO_TICKS(milliseconds);
+}
 
-/** Convert @a gyros_abstime_t to seconds. */
-long long gyros_time_to_s(gyros_time_t time);
+/** Convert @a seconds to gyros_reltime_t. */
+static inline gyros_reltime_t gyros_s(long seconds)
+{
+    return GYROS_CONFIG_S_TO_TICKS(seconds);
+}
+
+/** Convert @a gyros_reltime_t to microseconds. */
+static inline long gyros_time_to_us(gyros_reltime_t time)
+{
+    return GYROS_CONFIG_TICKS_TO_US(time);
+}
+
+/** Convert @a gyros_reltime_t to milliseconds. */
+static inline long gyros_time_to_ms(gyros_reltime_t time)
+{
+    return GYROS_CONFIG_TICKS_TO_MS(time);
+}
+
+/** Convert @a gyros_reltime_t to seconds. */
+static inline long gyros_time_to_s(gyros_reltime_t time)
+{
+    return GYROS_CONFIG_TICKS_TO_S(time);
+}
 
 /** Return current absolute time.  The time is monotonically
   * increasing.  Use time_us(), time_ms(), time_s(),
@@ -70,7 +94,7 @@ gyros_abstime_t gyros_time(void);
   */
 static inline int gyros_time_reached(gyros_abstime_t time)
 {
-    return (gyros_time_t)(time - gyros_time()) <= 0;
+    return (gyros_reltime_t)(time - gyros_time()) <= 0;
 }
 
 #endif

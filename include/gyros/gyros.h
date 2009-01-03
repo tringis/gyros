@@ -43,6 +43,5 @@
 #include <gyros/sleep.h>
 #include <gyros/task.h>
 #include <gyros/time.h>
-#include <gyros/types.h>
 
 #endif

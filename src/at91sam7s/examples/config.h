@@ -26,20 +26,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_types_h__200812291836
-#define INCLUDED__gyros_types_h__200812291836
+#ifndef INCLUDED__gyros_str91x_config_h__200901021029
+#define INCLUDED__gyros_str91x_config_h__200901021029
 
-/** \file types.h
- * \brief Type definitions.
- */
+/*---------------------------------------------------------------------*
+ * GyrOS generic configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_DYNTICK                   0
 
-#include <gyros/target/types.h>
+#include <gyros/private/defconfig.h>
 
-/** Absolute monotonically increasing time in target specific
-  * units. */
-typedef gyros__abstime_t gyros_abstime_t;
+/*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_AT91SAM7S_MCLK            47923200
 
-/** Relative time in target specific units. */
-typedef gyros__time_t gyros_time_t;
+#define GYROS_CONFIG_TIMER_RESOLUTION          1000
+
+#define GYROS_CONFIG_US_TO_TICKS(us)           ((us) / 1000)
+#define GYROS_CONFIG_MS_TO_TICKS(ms)           (ms)
+#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000)
+
+#define GYROS_CONFIG_TICKS_TO_US(us)           ((us) * 1000)
+#define GYROS_CONFIG_TICKS_TO_MS(ms)           (ms)
+#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000)
 
 #endif
