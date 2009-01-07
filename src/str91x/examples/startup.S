@@ -26,6 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+	.equ    FIQ_BIT,	0x40
+	.equ    IRQ_BIT,	0x80
+
 	.equ    MODE_USR,	0x10
 	.equ    MODE_FIQ,	0x11
 	.equ    MODE_IRQ,	0x12
@@ -34,14 +37,11 @@
 	.equ    MODE_UND,	0x1b
 	.equ    MODE_SYS,	0x1f
 
-	.equ    FIQ_BIT,	0x40
-	.equ    IRQ_BIT,	0x80
-
 	/* Stack Sizes */
-	.set  UND_STACK_SIZE,		0x00000020
-	.set  ABT_STACK_SIZE,		0x00000020
-	.set  FIQ_STACK_SIZE,		0x00000004
-	.set  IRQ_SVC_STACK_SIZE,	0x00000200
+	.equ  UND_STACK_SIZE,		4
+	.equ  ABT_STACK_SIZE,		4
+	.equ  FIQ_STACK_SIZE,		4
+	.equ  IRQ_SVC_STACK_SIZE,	512
 
 	.arm
 	.section	.text.vectors, "ax"
@@ -70,22 +70,18 @@ __exception_vectors:
 	.word	gyros__irq_handler
 	.word	__fiq_handler
 
-	.weak	__undefined_instruction_handler
 	.type	__undefined_instruction_handler, %function
 __undefined_instruction_handler:
 	b	.
 
-	.weak	__abort_prefetch_handler
 	.type	__abort_prefetch_handler, %function
 __abort_prefetch_handler:
 	b	.
 
-	.weak	__abort_data_handler
 	.type	__abort_data_handler, %function
 __abort_data_handler:
 	b	.
 
-	.weak	__fiq_handler
 	.type	__fiq_handler, %function
 __fiq_handler:
 	b	.
