@@ -49,7 +49,7 @@ typedef struct
     struct gyros__list_node main_list; /**< \internal */
 
     struct gyros__list_node timeout_list; /**< \internal */
-    unsigned long timeout; /**< \internal */
+    gyros_abstime_t timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
 
     unsigned char raised_priority; /**< \internal */
