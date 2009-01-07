@@ -31,11 +31,11 @@
 
 struct gyros__context
 {
-    unsigned long r[13];
-    unsigned long sp;
-    unsigned long lr;
-    unsigned long pc;
-    unsigned long psr;
+    unsigned r[13];
+    unsigned sp;
+    unsigned lr;
+    unsigned pc;
+    unsigned psr;
 };
 
 #endif
