@@ -35,7 +35,9 @@
 
 #include "private.h"
 
+#if GYROS_CONFIG_ITERATE
 struct gyros__list_node gyros__tasks = GYROS__LIST_INITVAL(gyros__tasks);
+#endif
 #if GYROS_CONFIG_WAIT
 struct gyros__list_node gyros__zombies = GYROS__LIST_INITVAL(gyros__zombies);
 struct gyros__list_node gyros__reapers = GYROS__LIST_INITVAL(gyros__reapers);
@@ -67,7 +69,9 @@ gyros__task_zombify(gyros_task_t *task)
 {
     gyros__list_remove(&gyros__state.current->main_list);
     gyros__list_remove(&gyros__state.current->timeout_list);
+#if GYROS_CONFIG_ITERATE
     gyros__list_remove(&gyros__state.current->task_list);
+#endif
 #if GYROS_CONFIG_WAIT
     gyros__list_insert_before(&task->main_list, &gyros__zombies);
 
@@ -146,7 +150,9 @@ gyros_start(void)
     s_idle_task.stack = 0;
     s_idle_task.stack_size = 0;
 
+#if GYROS_CONFIG_ITERATE
     gyros__list_insert_before(&s_idle_task.task_list, gyros__tasks.next);
+#endif
     add_task_to_list(&s_idle_task, &gyros__state.running);
     gyros__state.current = &s_idle_task;
 
@@ -182,7 +188,9 @@ gyros_task_create(gyros_task_t *task,
     gyros__target_task_init(task, entry, arg, stack, stack_size);
 
     flags = gyros_interrupt_disable();
+#if GYROS_CONFIG_ITERATE
     gyros__list_insert_before(&task->task_list, &gyros__tasks);
+#endif
     add_task_to_list(task, &gyros__state.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list);
     gyros_interrupt_restore(flags);

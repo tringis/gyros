@@ -55,7 +55,9 @@ typedef struct
     unsigned char raised_priority; /**< \internal */
     unsigned short priority; /**< \internal */
 
+#if GYROS_CONFIG_ITERATE
     struct gyros__list_node task_list; /**< \internal */
+#endif
 
     const char *name; /**< Task name. */
     void *stack; /**< Task stack base address. */

@@ -28,6 +28,8 @@
  **************************************************************************/
 #include "private.h"
 
+#if GYROS_CONFIG_ITERATE
+
 #define TASK_LIST_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, task_list)
 
 gyros_task_t*
@@ -47,3 +49,5 @@ gyros_task_iterate(gyros_task_t *previous)
 
     return TASK_LIST_TASK(previous->task_list.next);
 }
+
+#endif
