@@ -62,21 +62,21 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
     gyros__list_insert_before(&task->main_list, i);
 }
 
-#if GYROS_CONFIG_WAIT
 void
 gyros__task_zombify(gyros_task_t *task)
 {
     gyros__list_remove(&gyros__state.current->main_list);
     gyros__list_remove(&gyros__state.current->timeout_list);
     gyros__list_remove(&gyros__state.current->task_list);
+#if GYROS_CONFIG_WAIT
     gyros__list_insert_before(&task->task_list, &gyros__zombies);
 
     /* Wake the tasks in reverse order to preserve the order of the
      * tasks (of equal priority) in the list. */
     while (gyros__reapers.prev != &gyros__reapers)
         gyros__task_wake(TASK(gyros__reapers.prev));
-}
 #endif
+}
 
 void
 gyros__task_exit(void)
@@ -92,9 +92,7 @@ gyros__task_exit(void)
     gyros__state.current->debug_state = "zombie";
     gyros__state.current->debug_object = NULL;
 #endif
-#if GYROS_CONFIG_WAIT
     gyros__task_zombify(gyros__state.current);
-#endif
 #if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock(&gyros__iterate_mutex, 0);
 #endif
