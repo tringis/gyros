@@ -36,11 +36,6 @@ gyros__target_task_init(gyros_task_t *task,
                         void *stack,
                         int stack_size)
 {
-#if GYROS_CONFIG_STACK_USED
-    unsigned *p = task->stack;
-    unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
-#endif
-
     task->context.r[0] = (unsigned)arg;
     task->context.sp = (unsigned)stack + stack_size;
     task->context.lr = (unsigned)gyros__task_exit;
@@ -48,22 +43,13 @@ gyros__target_task_init(gyros_task_t *task,
     task->context.psr = ARM_MODE_SYS;
 
 #if GYROS_CONFIG_STACK_USED
-    do
-        *p++ = 0xeeeeeeee;
-    while (p != e);
+    {
+        unsigned *p = task->stack;
+        unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+
+        do
+            *p++ = 0xeeeeeeee;
+        while (p != e);
+    }
 #endif
 }
-
-#if GYROS_CONFIG_STACK_USED
-int
-gyros_task_stack_used(gyros_task_t *task)
-{
-    unsigned *p = task->stack;
-    unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
-
-    while (p != e && *p == 0xeeeeeeee)
-        p++;
-
-    return (unsigned)e - (unsigned)p;
-}
-#endif

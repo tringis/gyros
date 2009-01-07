@@ -9,7 +9,8 @@ gyros_common_srcs = SConscript('../../src/SConscript')
 # Target specific source files
 ######################################################################
 gyros_target_srcs = map(target_env.File, [ 'exceptions.S',
-                                           '../arm/arm_task.c',
+                                           '../arm/stack_used.c',
+                                           '../arm/task_init.c',
                                            'init.c',
                                            'interrupt.c' ])
 
