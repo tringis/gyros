@@ -38,11 +38,10 @@
 	.equ    IRQ_BIT,	0x80
 
 	/* Stack Sizes */
-	.set  UND_STACK_SIZE,	0x00000020
-	.set  ABT_STACK_SIZE,	0x00000020
-	.set  FIQ_STACK_SIZE,	0x00000004
-	.set  IRQ_STACK_SIZE,	0X00001000
-	.set  SVC_STACK_SIZE,	0x00002000
+	.set  UND_STACK_SIZE,		0x00000020
+	.set  ABT_STACK_SIZE,		0x00000020
+	.set  FIQ_STACK_SIZE,		0x00000004
+	.set  IRQ_SVC_STACK_SIZE,	0x00000200
 
 	.arm
 	.section	.text.vectors, "ax"
@@ -123,28 +122,24 @@ __reset_handler:
 1:
 #endif
 
-	// Setup stack pointers
+	// Setup stack pointers and go to system mode
 	ldr	r0, =__stack_top
-	msr	cpsr_c, #MODE_UND | IRQ_BIT | FIQ_BIT
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_UND
 	mov	sp, r0
 	sub	r0, r0, #UND_STACK_SIZE
-	msr	cpsr_c, #MODE_ABT | IRQ_BIT | FIQ_BIT
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_ABT
 	mov	sp, r0
 	sub	r0, r0, #ABT_STACK_SIZE
-	msr	cpsr_c, #MODE_FIQ | IRQ_BIT | FIQ_BIT
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_FIQ
 	mov	sp, r0
 	sub	r0, r0, #FIQ_STACK_SIZE
-	msr	cpsr_c, #MODE_IRQ | IRQ_BIT | FIQ_BIT
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_IRQ
 	mov	sp, r0
-	sub	r0, r0, #IRQ_STACK_SIZE
-	msr	cpsr_c, #MODE_SVC | IRQ_BIT | FIQ_BIT
+	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SVC
 	mov	sp, r0
-	sub	r0, r0, #SVC_STACK_SIZE
-	msr	cpsr_c, #MODE_SYS | IRQ_BIT | FIQ_BIT
-	mov	sp, r0
-
-	// Go to system mode with IRQ and FIQ disabled
+	sub	r0, r0, #IRQ_SVC_STACK_SIZE
 	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SYS
+	mov	sp, r0
 
 	// Copy .text.ram section
 	ldr	r0, =__text_ram_start
