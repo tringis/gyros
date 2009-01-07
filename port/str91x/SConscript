@@ -1,0 +1,20 @@
+Import("target_env")
+
+######################################################################
+# Common source files
+######################################################################
+gyros_common_srcs = SConscript('../../src/SConscript')
+
+######################################################################
+# Target specific source files
+######################################################################
+gyros_target_srcs = map(target_env.File, [ 'exceptions.S',
+                                           '../arm/arm_task.c',
+                                           'init.c',
+                                           'interrupt.c' ])
+
+######################################################################
+# Library target
+######################################################################
+Default(target_env.StaticLibrary('gyros-str91x',
+                                 gyros_common_srcs + gyros_target_srcs))

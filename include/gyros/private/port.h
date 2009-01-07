@@ -26,42 +26,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_h__200808271854
-#define INCLUDED__gyros_private_h__200808271854
+#ifndef INCLUDED__gyros_private_port_h__200901072001
+#define INCLUDED__gyros_private_port_h__200901072001
 
-/*---------------------------------------------------------------------*
- * This file is completely internal to GyrOS and contains stuff that
- * are not used by neither the application nor the port.
+#include <gyros/target/config.h>
+#include <gyros/task.h>
+#include <gyros/time.h>
+
+/*---------------------------------------------------------------------*'
+ * The following function are called by the port, but never from the
+ * application.
  *---------------------------------------------------------------------*/
 
-#include <gyros/task.h>
-#include <gyros/mutex.h>
-#include <gyros/private/port.h>
+/* Called by the port by the timer interrupt to wake up any sleeping
+ * tasks. */
+void gyros__wake_timedout_tasks(gyros_abstime_t now);
 
-#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list)
+/* Called by the port when a task exists its main function. */
+void gyros__task_exit(void);
 
-typedef struct
-{
-    gyros_task_t *current;
-    struct gyros__list_node running;
-} gyros__state_t;
+/*---------------------------------------------------------------------*
+ * The following functions must be implemented by the target *
+ *---------------------------------------------------------------------*/
 
-extern struct gyros__list_node gyros__tasks;
-extern struct gyros__list_node gyros__zombies;
-extern struct gyros__list_node gyros__reapers;
-extern gyros__state_t gyros__state;
-extern gyros_mutex_t gyros__iterate_mutex;
+/* Initialize the target by programming a timer to provide the timer
+ * interrupt.  Interrupts are disabled when this function is called,
+ * and should not be enabled by this function. */
+void gyros__target_init(void);
 
-void gyros__task_zombify(gyros_task_t *task);
+/* Target specific initialization of the task struct. */
+void gyros__target_task_init(gyros_task_t *task,
+                             void (*entry)(void *arg),
+                             void *arg,
+                             void *stack,
+                             int stack_size);
 
-void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
+#if GYROS_CONFIG_DYNTICK
+/* Called when there are no timeouts scheduled. */
+void gyros__suspend_tick(void);
 
-void gyros__task_wake(gyros_task_t *task);
-
-void gyros__task_set_timeout(gyros_abstime_t timeout);
-
-void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
-
-void gyros__cond_reschedule(void);
+/* Called to program the timer for the next scheduled timeout. */
+void gyros__update_tick(gyros_abstime_t next_timeout);
+#endif
 
 #endif

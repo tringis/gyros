@@ -1,3 +1,0 @@
-Import("*")
-
-SConscript(['src/SConscript'])

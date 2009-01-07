@@ -1,11 +1,20 @@
 Import("*")
 
-gyros_srcs = map(target_env.File, [ 'task.c', 'delete.c', 'current.c',
-                                    'yield.c', 'wait.c', 'priority.c',
-                                    'rwlock.c', 'suspend.c', 'sleep.c',
-                                    'timeout.c', 'mutex.c', 'cond.c', 'sem.c',
-                                    'iterate.c', 'udelay.c', 'debug.c' ])
+gyros_common_srcs = map(target_env.File, [ 'cond.c',
+                                           'current.c',
+                                           'debug.c',
+                                           'delete.c',
+                                           'iterate.c',
+                                           'mutex.c',
+                                           'priority.c',
+                                           'rwlock.c',
+                                           'sem.c',
+                                           'sleep.c',
+                                           'suspend.c',
+                                           'task.c',
+                                           'timeout.c',
+                                           'udelay.c',
+                                           'wait.c',
+                                           'yield.c' ])
 
-Export("gyros_srcs")
-
-SConscript(['target/SConscript'])
+Return("gyros_common_srcs")

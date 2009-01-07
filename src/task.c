@@ -31,7 +31,7 @@
 #include <gyros/task.h>
 
 #include <limits.h>
-#include <string.h>
+#include <stddef.h>
 
 #include "private.h"
 
@@ -167,8 +167,6 @@ gyros_task_create(gyros_task_t *task,
                   unsigned short priority)
 {
     unsigned long flags;
-
-    memset(task, 0, sizeof(gyros_task_t));
 
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;

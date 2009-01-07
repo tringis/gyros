@@ -1,0 +1,39 @@
+SConsignFile()
+
+######################################################################
+# Create root environments
+######################################################################
+env = Environment()
+
+######################################################################
+# Create environments
+######################################################################
+host_env = env.Clone()
+target_env = env.Clone(CC = 'arm-elf-gcc',
+                       AR = 'arm-elf-ar',
+                       RANLIB = 'arm-elf-ranlib',
+                       ASFLAGS = ['-g', '-mcpu=arm966e-s'],
+                       CCFLAGS = ['-Wall', '-g', '-O2', '-mcpu=arm966e-s'],
+                       CPPPATH = ['#/../../../include',
+                                  '#/../include',
+                                  '#/include'],
+                       LIBPATH = ['..'],
+                       LIBS = ['gyros-at91sam7s', 'gcc'],
+                       LINKFLAGS = ['-nostdlib', '-Wl,--nmagic',
+                                    '-Tat91sam7s64.ld'],
+                       OBJPREFIX = '.at91sam7s-',
+                       PROGSUFFIX = '.elf')
+
+target_env.PrependENVPath('PATH', '/opt/arm-elf/gcc/bin')
+
+Export("host_env", "target_env")
+
+######################################################################
+# Include subtargets
+######################################################################
+SConscript('../SConscript')
+
+######################################################################
+# Test program
+######################################################################
+Default(target_env.Program('test', ['test.c', 'hwinit.c', 'startup.S']))

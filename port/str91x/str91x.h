@@ -29,10 +29,8 @@
 #ifndef INCLUDED__gyros_str91x_h__200808312206
 #define INCLUDED__gyros_str91x_h__200808312206
 
-#include <stdint.h>
-
-typedef volatile uint16_t reg16;
-typedef volatile uint32_t reg32;
+typedef volatile unsigned short reg16;
+typedef volatile unsigned reg32;
 
 /* AHB peripherals */
 #define SCU_P0_FMI             (1U <<  0)
@@ -93,13 +91,13 @@ struct SCU_regs
     reg32 SCR0;
     reg32 SCR1;
     reg32 SCR2;
-    uint32_t reserved1;
+    reg32 reserved1;
     reg32 GPIOOUT[8];
     reg32 GPIOIN[8];
     reg32 GPIOTYPE[10];
     reg32 GPIOEMI;
     reg32 WKUPSEL;
-    uint32_t reserved2[2];
+    reg32 reserved2[2];
     reg32 GPIOANA;
 };
 

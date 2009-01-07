@@ -26,29 +26,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_at91sam7s_config_h__200901021701
-#define INCLUDED__gyros_at91sam7s_config_h__200901021701
+#include "../at91sam7s.h"
 
-/*---------------------------------------------------------------------*
- * GyrOS generic configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_DYNTICK                   1
+#define MCLK_FREQ           47923200
 
-#include <gyros/private/defconfig.h>
+/* WARNING: This function is run before the data and bss sections are
+ * set up, so it cannot access global or static variables. */
+void
+gyros__hwinit(void)
+{
+    /* Configure the flash controller. */
+    AT91C_BASE_MC->MC_FMR = (((15 * MCLK_FREQ + 9999999) / 10000000) << 16) |
+        AT91C_MC_FWS_1FWS;
 
-/*---------------------------------------------------------------------*
- * GyrOS target specific configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_STR91X_PCLK               48000000
+    /* Disable the watchdog */
+    AT91C_BASE_WDTC->WDTC_WDMR = AT91C_SYSC_WDDIS;
 
-#define GYROS_CONFIG_TIMER_RESOLUTION          1000000
+    /* Enable the main oscillator */
+    AT91C_BASE_PMC->PMC_MOR = (6U << 8) | AT91C_CKGR_MOSCEN;
 
-#define GYROS_CONFIG_US_TO_TICKS(us)           (us)
-#define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
-#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000000)
+    /* Wait for the main oscillator to stabilize */
+    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MOSCS))
+        ;
 
-#define GYROS_CONFIG_TICKS_TO_US(us)           (us)
-#define GYROS_CONFIG_TICKS_TO_MS(ms)           ((ms) / 1000)
-#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000000)
+    /* Configure the PLL */
+    AT91C_BASE_PMC->PMC_PLLR = 5U | (16U << 8) | (25U << 16);
 
-#endif
+    /* Wait for the PLL to stabilize */
+    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_LOCK))
+        ;
+
+    /* Configure the master clock prescaler */
+    AT91C_BASE_PMC->PMC_MCKR =
+        (AT91C_BASE_PMC->PMC_MCKR & ~AT91C_PMC_PRES) | AT91C_PMC_PRES_CLK_2;
+
+    /* Wait for the master clock to stabilize */
+    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MCKRDY))
+        ;
+
+    /* Configure the master clock to use the PLL clock */
+    AT91C_BASE_PMC->PMC_MCKR =
+        (AT91C_BASE_PMC->PMC_MCKR & ~AT91C_PMC_CSS) | AT91C_PMC_CSS_PLL_CLK;
+
+    /* Wait for the master clock to stabilize */
+    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MCKRDY))
+        ;
+}

@@ -26,8 +26,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <91x_map.h>
-#include <91x_vic.h>
+
+#include "../str91x.h"
+
+struct FMI_regs
+{
+    reg32 BBSR;
+    reg32 NBBSR;
+    reg32 EMPTY1;
+    reg32 BBADR;
+    reg32 NBBADR;
+    reg32 EMPTY2;
+    reg32 CR;
+    reg32 SR;
+    reg32 BCE5ADDR;
+};
+
+#define FMI          ((struct FMI_regs*)0x54000000)
 
 /* WARNING: This function is run before the data and bss sections are
  * set up, so it cannot access global or static variables. */
@@ -42,8 +57,8 @@ gyros__hwinit(void)
     FMI->CR = 0x00000018;
 
     /* Configure 2 read wait states for the flash */
-    *(vu16*)0x00080000 = 0x60;
-    *(vu16*)0x00083040 = 0x03;
+    *(reg16*)0x00080000 = 0x60;
+    *(reg16*)0x00083040 = 0x03;
 
     /* Enable 96 KB SRAM */
     SCU->SCR0 |= (2U << 3);
@@ -65,6 +80,6 @@ gyros__hwinit(void)
     SCU->CLKCNTR = (1U << 7);
 
     /* Enable VIC */
-    SCU->PCGRO |= __VIC;
-    SCU->PRR0 |= __VIC;
+    SCU->PCGR0 |= SCU_P0_VIC;
+    SCU->PRR0 |= SCU_P0_VIC;
 }

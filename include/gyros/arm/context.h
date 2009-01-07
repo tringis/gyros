@@ -29,15 +29,13 @@
 #ifndef INCLUDED__gyros_arm_context_h__200212281230
 #define INCLUDED__gyros_arm_context_h__200212281230
 
-#include <stdint.h>
-
 struct gyros__context
 {
-    uint32_t r[13];
-    uint32_t sp;
-    uint32_t lr;
-    uint32_t pc;
-    uint32_t psr;
+    unsigned long r[13];
+    unsigned long sp;
+    unsigned long lr;
+    unsigned long pc;
+    unsigned long psr;
 };
 
 #endif

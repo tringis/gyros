@@ -30,7 +30,7 @@
 #include <gyros/task.h>
 
 #include <limits.h>
-#include <stdlib.h>
+#include <stddef.h>
 
 #include "private.h"
 

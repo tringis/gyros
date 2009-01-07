@@ -26,55 +26,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/at91sam7s/interrupt.h>
+#ifndef INCLUDED__gyros_at91sam7s_config_h__200901021701
+#define INCLUDED__gyros_at91sam7s_config_h__200901021701
 
-#include "../private.h"
-#include "at91sam7s.h"
-#include "private.h"
+/*---------------------------------------------------------------------*
+ * Application specific configuration
+ *---------------------------------------------------------------------*/
 
-#define DIV_AND_CEIL(a,b)      (((a) + (b) - 1) / (b))
+#define GYROS_CONFIG_DEBUG 0
+#define GYROS_CONFIG_DELETE 0
+#define GYROS_CONFIG_ITERATE 0
+#define GYROS_CONFIG_STACK_USED 0
+#define GYROS_CONFIG_TIME_TYPE long long
+#define GYROS_CONFIG_WAIT 0
 
-#define PIT_FREQ       (GYROS_CONFIG_AT91SAM7S_MCLK / 16)
-#define PIT_PERIOD     DIV_AND_CEIL(PIT_FREQ, GYROS_CONFIG_TIMER_RESOLUTION)
+/*---------------------------------------------------------------------*
+ * GyrOS generic configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_DYNTICK                   1
 
-#if PIT_PERIOD > 65535
-#error PIT period out of range.
+#include <gyros/private/defconfig.h>
+
+/*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_STR91X_PCLK               48000000
+
+#define GYROS_CONFIG_TIMER_RESOLUTION          1000000
+
+#define GYROS_CONFIG_US_TO_TICKS(us)           (us)
+#define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
+#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000000)
+
+#define GYROS_CONFIG_TICKS_TO_US(us)           (us)
+#define GYROS_CONFIG_TICKS_TO_MS(ms)           ((ms) / 1000)
+#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000000)
+
 #endif
-
-volatile gyros_abstime_t s_time;
-
-static void
-pit_isr(void)
-{
-    if (AT91C_BASE_PITC->PITC_PISR & AT91C_SYSC_PITS)
-    {
-        uint32_t status = AT91C_BASE_PITC->PITC_PIVR;
-
-        s_time += status >> 20;
-        gyros__wake_timedout_tasks(gyros_time());
-    }
-}
-
-gyros_abstime_t
-gyros_time(void)
-{
-    unsigned long flags = gyros_interrupt_disable();
-    gyros_abstime_t time = s_time;
-
-    gyros_interrupt_restore(flags);
-
-    return time;
-}
-
-void
-gyros__target_init(void)
-{
-    uint32_t dummy;
-
-    gyros_target_aic_init();
-    gyros_target_add_sys_isr(pit_isr);
-
-    dummy = AT91C_BASE_PITC->PITC_PIVR;
-    AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
-        (PIT_PERIOD - 1);
-}

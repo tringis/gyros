@@ -26,12 +26,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_at91sam7s_private_h__200810271613
-#define INCLUDED__gyros_at91sam7s_private_h__200810271613
+#include <gyros/interrupt.h>
 
-#define MCLK_FREQ    47923200
+#include "str91x.h"
 
-#define PIT_FREQ     (MCLK_FREQ / 16)
-#define PIT_PERIOD   (PIT_FREQ / 1000)  /* cycles per 1 ms */
+void
+gyros_target_set_isr(int irq, void (*isr)(void))
+{
+    struct VIC_regs *vic;
+        
+    if (irq < 16)
+        vic = VIC0;
+    else
+        vic = VIC1;
+    irq &= 15;
 
-#endif
+    vic->INTECR = 1 << irq; /* Disable the interrupt */
+
+    vic->INTSR &= ~(1 << irq);
+    vic->VAiR[irq] = (unsigned)isr;
+    if (isr)
+    {
+        vic->VCiR[irq] = (1U << 5) | irq;
+        vic->INTER = 1 << irq; /* Enable the interrupt */
+    }
+    else
+        vic->VCiR[irq] = 0;
+}

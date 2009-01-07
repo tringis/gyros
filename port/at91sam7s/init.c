@@ -26,84 +26,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/at91sam7s/interrupt.h>
-
-#include <gyros/arm/interrupt.h>
+#include <gyros/interrupt.h>
+#include <gyros/private/port.h>
 
 #include "at91sam7s.h"
 
-#define MAX_SYS_ISR_COUNT 4
+#define DIV_AND_CEIL(a,b)      (((a) + (b) - 1) / (b))
 
-extern void aic_spurious_irq_handler(void);
-extern void aic_isr(void);
+#define PIT_FREQ       (GYROS_CONFIG_AT91SAM7S_MCLK / 16)
+#define PIT_PERIOD     DIV_AND_CEIL(PIT_FREQ, GYROS_CONFIG_TIMER_RESOLUTION)
 
-static int s_sys_isr_count;
-static gyros_target_aic_isr_t *s_sys_isr_table[MAX_SYS_ISR_COUNT];
+#if PIT_PERIOD > 65535
+#error PIT period out of range.
+#endif
+
+volatile gyros_abstime_t s_time;
 
 static void
-aic_sys_isr(void)
+pit_isr(void)
 {
-    int i;
+    if (AT91C_BASE_PITC->PITC_PISR & AT91C_SYSC_PITS)
+    {
+        unsigned status = AT91C_BASE_PITC->PITC_PIVR;
 
-    for (i = 0; i < s_sys_isr_count; ++i)
-        s_sys_isr_table[i]();
+        s_time += status >> 20;
+        gyros__wake_timedout_tasks(gyros_time());
+    }
 }
 
-static void
-aic_spurious_isr(void)
+gyros_abstime_t
+gyros_time(void)
 {
+    unsigned long flags = gyros_interrupt_disable();
+    gyros_abstime_t time = s_time;
+
+    gyros_interrupt_restore(flags);
+
+    return time;
 }
 
 void
-gyros_target_aic_init(void)
+gyros__target_init(void)
 {
-    int i;
+    unsigned dummy;
 
-    for (i = 0; i < 32; ++i)
-        AT91C_AIC_SVR[i] = 0;
-    *AT91C_AIC_SPU = (uint32_t)aic_spurious_isr;
+    gyros_target_aic_init();
+    gyros_target_add_sys_isr(pit_isr);
 
-    *AT91C_AIC_IDCR = -1; /* Disable all AIC interrupts */
-    *AT91C_AIC_EOICR = 0; /* End any pending interrupts */
-
-    gyros_target_set_isr(GYROS_IRQ_SYS, GYROS_IRQ_MODE_INT_LEVEL, aic_sys_isr);
-}
-
-int
-gyros_target_set_irq_prio(int irq, int prio)
-{
-    if (prio < 0 || prio > 7)
-        return 0;
-
-    AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & ~AT91C_AIC_PRIOR) | prio;
-
-    return 1;
-}
-
-int
-gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr)
-{
-    AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & AT91C_AIC_PRIOR) | mode;
-    AT91C_AIC_SVR[irq] = (uint32_t)isr;
-
-    return 1;
-}
-
-int
-gyros_target_add_sys_isr(gyros_target_aic_isr_t isr)
-{
-    unsigned long flags = gyros_interrupt_disable();
-
-    if (s_sys_isr_count >= MAX_SYS_ISR_COUNT)
-    {
-        gyros_interrupt_restore(flags);
-        return 0;
-    }
-
-    s_sys_isr_table[s_sys_isr_count++] = isr;
-    gyros_interrupt_restore(flags);
-
-    *AT91C_AIC_IECR = (1 << GYROS_IRQ_SYS);
-
-    return 1;
+    dummy = AT91C_BASE_PITC->PITC_PIVR;
+    AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
+        (PIT_PERIOD - 1);
 }

@@ -26,47 +26,82 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <string.h>
+#include <gyros/interrupt.h>
 
-#include <gyros/arm/arm_defs.h>
+#include "at91sam7s.h"
 
-#include "../private.h"
+#define MAX_SYS_ISR_COUNT 4
+
+extern void aic_spurious_irq_handler(void);
+extern void aic_isr(void);
+
+static int s_sys_isr_count;
+static gyros_target_aic_isr_t *s_sys_isr_table[MAX_SYS_ISR_COUNT];
+
+static void
+aic_sys_isr(void)
+{
+    int i;
+
+    for (i = 0; i < s_sys_isr_count; ++i)
+        s_sys_isr_table[i]();
+}
+
+static void
+aic_spurious_isr(void)
+{
+}
 
 void
-gyros__target_task_init(gyros_task_t *task,
-                        void (*entry)(void *arg),
-                        void *arg,
-                        void *stack,
-                        int stack_size)
+gyros_target_aic_init(void)
 {
-#if GYROS_CONFIG_STACK_USED
-    uint32_t *p = task->stack;
-    uint32_t *e = (uint32_t*)((uint32_t)task->stack + task->stack_size);
-#endif
+    int i;
 
-    task->context.r[0] = (uint32_t)arg;
-    task->context.sp = (uint32_t)stack + stack_size;
-    task->context.lr = (uint32_t)gyros__task_exit;
-    task->context.pc = (uint32_t)entry + 4;
-    task->context.psr = ARM_MODE_SYS;
+    for (i = 0; i < 32; ++i)
+        AT91C_AIC_SVR[i] = 0;
+    *AT91C_AIC_SPU = (unsigned)aic_spurious_isr;
 
-#if GYROS_CONFIG_STACK_USED
-    do
-        *p++ = 0xeeeeeeee;
-    while (p != e);
-#endif
+    *AT91C_AIC_IDCR = -1; /* Disable all AIC interrupts */
+    *AT91C_AIC_EOICR = 0; /* End any pending interrupts */
+
+    gyros_target_set_isr(GYROS_IRQ_SYS, GYROS_IRQ_MODE_INT_LEVEL, aic_sys_isr);
 }
 
-#if GYROS_CONFIG_STACK_USED
 int
-gyros_task_stack_used(gyros_task_t *task)
+gyros_target_set_irq_prio(int irq, int prio)
 {
-    uint32_t *p = task->stack;
-    uint32_t *e = (uint32_t*)((uint32_t)task->stack + task->stack_size);
+    if (prio < 0 || prio > 7)
+        return 0;
 
-    while (p != e && *p == 0xeeeeeeee)
-        p++;
+    AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & ~AT91C_AIC_PRIOR) | prio;
 
-    return (uint32_t)e - (uint32_t)p;
+    return 1;
 }
-#endif
+
+int
+gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr)
+{
+    AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & AT91C_AIC_PRIOR) | mode;
+    AT91C_AIC_SVR[irq] = (unsigned)isr;
+
+    return 1;
+}
+
+int
+gyros_target_add_sys_isr(gyros_target_aic_isr_t isr)
+{
+    unsigned long flags = gyros_interrupt_disable();
+
+    if (s_sys_isr_count >= MAX_SYS_ISR_COUNT)
+    {
+        gyros_interrupt_restore(flags);
+        return 0;
+    }
+
+    s_sys_isr_table[s_sys_isr_count++] = isr;
+    gyros_interrupt_restore(flags);
+
+    *AT91C_AIC_IECR = (1 << GYROS_IRQ_SYS);
+
+    return 1;
+}

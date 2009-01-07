@@ -29,7 +29,7 @@
 #include <gyros/interrupt.h>
 #include <gyros/mutex.h>
 
-#include <stdlib.h>
+#include <stddef.h>
 
 #include "private.h"
 

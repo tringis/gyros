@@ -29,8 +29,6 @@
 #ifndef INCLUDED__gyros_at91sam7s_interrupt_h__200812301816
 #define INCLUDED__gyros_at91sam7s_interrupt_h__200812301816
 
-#include <stdint.h>
-
 #include <gyros/arm/interrupt.h>
 
 #define GYROS_IRQ_FIQ                0 // Advanced Interrupt Controller (FIQ)

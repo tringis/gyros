@@ -26,49 +26,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <at91sam7s.h>
+#include <gyros/arm/arm_defs.h>
+#include <gyros/private/port.h>
 
-#define MCLK_FREQ           47923200
-
-/* WARNING: This function is run before the data and bss sections are
- * set up, so it cannot access global or static variables. */
 void
-gyros__hwinit(void)
+gyros__target_task_init(gyros_task_t *task,
+                        void (*entry)(void *arg),
+                        void *arg,
+                        void *stack,
+                        int stack_size)
 {
-    /* Configure the flash controller. */
-    AT91C_BASE_MC->MC_FMR = (((15 * MCLK_FREQ + 9999999) / 10000000) << 16) |
-        AT91C_MC_FWS_1FWS;
+#if GYROS_CONFIG_STACK_USED
+    unsigned *p = task->stack;
+    unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+#endif
 
-    /* Disable the watchdog */
-    AT91C_BASE_WDTC->WDTC_WDMR = AT91C_SYSC_WDDIS;
+    task->context.r[0] = (unsigned)arg;
+    task->context.sp = (unsigned)stack + stack_size;
+    task->context.lr = (unsigned)gyros__task_exit;
+    task->context.pc = (unsigned)entry + 4;
+    task->context.psr = ARM_MODE_SYS;
 
-    /* Enable the main oscillator */
-    AT91C_BASE_PMC->PMC_MOR = (6U << 8) | AT91C_CKGR_MOSCEN;
-
-    /* Wait for the main oscillator to stabilize */
-    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MOSCS))
-        ;
-
-    /* Configure the PLL */
-    AT91C_BASE_PMC->PMC_PLLR = 5U | (16U << 8) | (25U << 16);
-
-    /* Wait for the PLL to stabilize */
-    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_LOCK))
-        ;
-
-    /* Configure the master clock prescaler */
-    AT91C_BASE_PMC->PMC_MCKR =
-        (AT91C_BASE_PMC->PMC_MCKR & ~AT91C_PMC_PRES) | AT91C_PMC_PRES_CLK_2;
-
-    /* Wait for the master clock to stabilize */
-    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MCKRDY))
-        ;
-
-    /* Configure the master clock to use the PLL clock */
-    AT91C_BASE_PMC->PMC_MCKR =
-        (AT91C_BASE_PMC->PMC_MCKR & ~AT91C_PMC_CSS) | AT91C_PMC_CSS_PLL_CLK;
-
-    /* Wait for the master clock to stabilize */
-    while (!(AT91C_BASE_PMC->PMC_SR & AT91C_PMC_MCKRDY))
-        ;
+#if GYROS_CONFIG_STACK_USED
+    do
+        *p++ = 0xeeeeeeee;
+    while (p != e);
+#endif
 }
+
+#if GYROS_CONFIG_STACK_USED
+int
+gyros_task_stack_used(gyros_task_t *task)
+{
+    unsigned *p = task->stack;
+    unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+
+    while (p != e && *p == 0xeeeeeeee)
+        p++;
+
+    return (unsigned)e - (unsigned)p;
+}
+#endif

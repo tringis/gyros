@@ -26,12 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/interrupt.h>
+#include <gyros/private/port.h>
 #include <gyros/target/config.h>
 #include <gyros/time.h>
-#include <gyros/interrupt.h>
 
 #include "str91x.h"
-#include "../private.h"
 
 #define MAX_PERIOD      0x8000
 
@@ -40,7 +40,7 @@
 #endif
 
 static gyros_abstime_t s_time_hi;
-static uint16_t s_last_time_lo;
+static unsigned short s_last_time_lo;
 
 static void
 tim3_isr(void)
@@ -84,7 +84,7 @@ gyros__update_tick(gyros_abstime_t next_timeout)
         TIM(3)->OC1R = next_timeout;
         TIM(3)->SR &= ~TIM_SR_OCF1;
 
-        if ((int16_t)((uint16_t)next_timeout - (uint16_t)TIM(3)->CNTR) <= 0)
+        if ((short)((unsigned short)next_timeout - (unsigned short)TIM(3)->CNTR) <= 0)
         {
             /* Oops, we missed the OC1 tick.  Make the interrupt happen by
              * enabling the OC2 interrupt (which is always on). */
@@ -97,7 +97,7 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    uint16_t time_lo = TIM(3)->CNTR, time_hi;
+    unsigned short time_lo = TIM(3)->CNTR, time_hi;
 
     if (time_lo < s_last_time_lo)
         ++s_time_hi;
