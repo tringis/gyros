@@ -30,15 +30,9 @@
 #define INCLUDED__gyros_at91sam7s_config_h__200901021701
 
 /*---------------------------------------------------------------------*
- * Application specific configuration
+ * Application specific configuration  (see gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
-
-#define GYROS_CONFIG_DEBUG 0
-#define GYROS_CONFIG_DELETE 0
-#define GYROS_CONFIG_ITERATE 0
-#define GYROS_CONFIG_STACK_USED 0
-#define GYROS_CONFIG_TIME_TYPE long long
-#define GYROS_CONFIG_WAIT 0
+#define GYROS_CONFIG_DEBUG                     1
 
 /*---------------------------------------------------------------------*
  * GyrOS generic configuration
