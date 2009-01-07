@@ -69,7 +69,7 @@ gyros__task_zombify(gyros_task_t *task)
     gyros__list_remove(&gyros__state.current->timeout_list);
     gyros__list_remove(&gyros__state.current->task_list);
 #if GYROS_CONFIG_WAIT
-    gyros__list_insert_before(&task->task_list, &gyros__zombies);
+    gyros__list_insert_before(&task->main_list, &gyros__zombies);
 
     /* Wake the tasks in reverse order to preserve the order of the
      * tasks (of equal priority) in the list. */
