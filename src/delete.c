@@ -31,6 +31,7 @@
 
 #include "private.h"
 
+#if GYROS_CONFIG_DELETE
 void
 gyros_task_delete(gyros_task_t *task)
 {
@@ -55,3 +56,4 @@ gyros_task_delete(gyros_task_t *task)
         gyros_mutex_unlock(&gyros__iterate_mutex);
     }
 }
+#endif

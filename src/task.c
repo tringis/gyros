@@ -37,19 +37,20 @@
 
 #if GYROS_CONFIG_ITERATE
 struct gyros__list_node gyros__tasks = GYROS__LIST_INITVAL(gyros__tasks);
+gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
 #endif
+
 #if GYROS_CONFIG_WAIT
 struct gyros__list_node gyros__zombies = GYROS__LIST_INITVAL(gyros__zombies);
 struct gyros__list_node gyros__reapers = GYROS__LIST_INITVAL(gyros__reapers);
 #endif
+
 static gyros_task_t s_idle_task;
+
 gyros__state_t gyros__state = {
     &s_idle_task,
     GYROS__LIST_INITVAL(gyros__state.running)
 };
-#if GYROS_CONFIG_ITERATE
-gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
-#endif
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)

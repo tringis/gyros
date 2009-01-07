@@ -29,14 +29,14 @@
 #ifndef INCLUDED__gyros_private_debug_h__200812022021
 #define INCLUDED__gyros_private_debug_h__200812022021
 
-#ifndef GYROS_DEBUG
-#  define GYROS_DEBUG 0
-#endif
+#if GYROS_CONFIG_DEBUG
 
 #if GYROS_CONFIG_DEBUG
 #define GYROS_TASK_DEBUG_MAGIC         0xefcd6711
 
 void gyros_error(const char *msg);
+#endif
+
 #endif
 
 #endif

@@ -33,6 +33,7 @@
 
 #include "private.h"
 
+#if GYROS_CONFIG_WAIT
 gyros_task_t*
 gyros_task_wait(void)
 {
@@ -102,3 +103,4 @@ gyros_task_timedwait(gyros_abstime_t timeout)
 
     return task;
 }
+#endif
