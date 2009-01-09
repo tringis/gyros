@@ -56,6 +56,7 @@ gyros_interrupt_restore(unsigned long flags)
         "msr    cpsr_c, %0\n\t"
         :: "r" (flags) : "memory");
 }
+#endif
 
 /* Reschedule, i.e. make sure the right task is running. */
 static __inline void
@@ -63,7 +64,6 @@ gyros__reschedule(void)
 {
     __asm__ __volatile__("swi" ::: "memory");
 }
-#endif
 
 /* Enable interrupts in the ARM core. */
 void gyros__interrupt_enable(void);

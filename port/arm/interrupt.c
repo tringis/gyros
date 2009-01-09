@@ -52,12 +52,6 @@ gyros_interrupt_restore(unsigned long flags)
         "msr    cpsr_c, %0\n\t"
         :: "r" (flags) : "memory");
 }
-
-void
-gyros__reschedule(void)
-{
-    __asm__ __volatile__("swi" ::: "memory");
-}
 #endif
 
 void
