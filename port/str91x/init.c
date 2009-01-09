@@ -132,4 +132,6 @@ gyros__target_init(void)
     TIM(3)->OC2R = 1;             /* Make OC2 happen right away */
     TIM(3)->CNTR = 0;             /* Reset value (exact value ignored) */
     TIM(3)->CR1 |= 0x8000;        /* Start timer */
+
+    gyros__interrupt_enable();
 }

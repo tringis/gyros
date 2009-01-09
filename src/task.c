@@ -158,7 +158,6 @@ gyros_start(void)
     gyros__state.current = &s_idle_task;
 
     gyros__target_init();
-    gyros__interrupt_enable();
 
     for (;;)
         ;

@@ -76,4 +76,6 @@ gyros__target_init(void)
     dummy = AT91C_BASE_PITC->PITC_PIVR;
     AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
         (PIT_PERIOD - 1);
+
+    gyros__interrupt_enable();
 }

@@ -50,8 +50,7 @@ void gyros__task_exit(void);
  *---------------------------------------------------------------------*/
 
 /* Initialize the target by programming a timer to provide the timer
- * interrupt.  Interrupts are disabled when this function is called,
- * and should not be enabled by this function. */
+ * interrupt, and enable interrupts. */
 void gyros__target_init(void);
 
 /* Target specific initialization of the task struct. */
