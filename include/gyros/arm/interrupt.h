@@ -32,7 +32,7 @@
 #include <gyros/arm/arm_defs.h>
 
 #ifndef GYROS_THUMB
-static __inline__ unsigned long
+static inline unsigned long
 gyros_interrupt_disable(void)
 {
     unsigned long temp, flags;
@@ -48,7 +48,7 @@ gyros_interrupt_disable(void)
 }
 
 /* Restore interrupts (IRQ and FIQ) in the ARM core. */
-static __inline__ void
+static inline void
 gyros_interrupt_restore(unsigned long flags)
 {
     /* Inline assembly to set the IRQ bit in CPSR. */
@@ -72,7 +72,7 @@ gyros_in_interrupt(void)
 #endif
 
 /* Reschedule, i.e. make sure the right task is running. */
-static __inline void
+static inline void
 gyros__reschedule(void)
 {
     __asm__ __volatile__("swi" ::: "memory");

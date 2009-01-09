@@ -42,13 +42,13 @@ struct gyros__list_node {
 #define GYROS__LIST_CONTAINER(node, type, member) \
     ((type*)((char*)(node)-(unsigned long)(&((type*)0)->member)))
 
-static __inline int
+static inline int
 gyros__list_empty(struct gyros__list_node *list)
 {
     return list->next == list;
 }
 
-static __inline void
+static inline void
 gyros__list_insert_before(struct gyros__list_node *new_node,
                           struct gyros__list_node *list_node)
 {
@@ -60,7 +60,7 @@ gyros__list_insert_before(struct gyros__list_node *new_node,
     prev_node->next = new_node;
 }
 
-static __inline void
+static inline void
 gyros__list_remove(struct gyros__list_node *node)
 {
     node->prev->next = node->next;
