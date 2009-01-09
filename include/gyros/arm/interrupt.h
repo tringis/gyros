@@ -56,6 +56,19 @@ gyros_interrupt_restore(unsigned long flags)
         "msr    cpsr_c, %0\n\t"
         :: "r" (flags) : "memory");
 }
+
+int
+gyros_in_interrupt(void)
+{
+    unsigned long cpsr;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %0, cpsr\n\t"
+        : "=r" (cpsr) :: "memory");
+
+    return (cpsr & 0x1f) != ARM_MODE_SYS;
+}
 #endif
 
 /* Reschedule, i.e. make sure the right task is running. */

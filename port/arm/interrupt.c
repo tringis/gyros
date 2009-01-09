@@ -52,6 +52,19 @@ gyros_interrupt_restore(unsigned long flags)
         "msr    cpsr_c, %0\n\t"
         :: "r" (flags) : "memory");
 }
+
+int
+gyros_in_interrupt(void)
+{
+    unsigned long cpsr;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %0, cpsr\n\t"
+        : "=r" (cpsr) :: "memory");
+
+    return (cpsr & 0x1f) != ARM_MODE_SYS;
+}
 #endif
 
 void
@@ -65,17 +78,4 @@ gyros__interrupt_enable(void)
         "bic    %0, %0, #0xc0\n\t"
         "msr    cpsr_c, %0"
         : "=r" (temp) :: "memory");
-}
-
-int
-gyros_in_interrupt(void)
-{
-    unsigned long cpsr;
-
-    /* Inline assembly to set the IRQ bit in CPSR. */
-    __asm__ __volatile__(
-        "mrs    %0, cpsr\n\t"
-        : "=r" (cpsr) :: "memory");
-
-    return (cpsr & 0x1f) != ARM_MODE_SYS;
 }
