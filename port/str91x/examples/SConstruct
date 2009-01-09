@@ -34,11 +34,13 @@ target_env = target_base_env.Clone()
 target_arm_env = target_base_env.Clone()
 if thumb:
     target_env.Append(CPPDEFINES=['GYROS_THUMB'],
+                      ASFLAGS=['-mthumb-interwork', '-mthumb'],
                       CCFLAGS=['-mthumb-interwork', '-mthumb'],
-                      ASFLAGS=['-mthumb-interwork'])
+                      LINKFLAGS=['-mthumb-interwork', '-mthumb'])
     target_arm_env.Append(CPPDEFINES=['GYROS_THUMB'],
+                          ASFLAGS=['-mthumb-interwork', '-marm'],
                           CCFLAGS=['-mthumb-interwork', '-marm'],
-                          ASFLAGS=['-mthumb-interwork'])
+                          LINKFLAGS=['-mthumb-interwork', '-marm'])
 
 Export("host_env", "target_env", "target_arm_env")
 
