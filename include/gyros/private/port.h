@@ -60,6 +60,10 @@ void gyros__target_task_init(gyros_task_t *task,
                              void *stack,
                              int stack_size);
 
+/* Reschedule, i.e. make sure the first task in the running list
+ * becomes current. */
+void gyros__reschedule(void);
+
 #if GYROS_CONFIG_DYNTICK
 /* Called when there are no timeouts scheduled. */
 void gyros__suspend_tick(void);
