@@ -1,6 +1,11 @@
 SConsignFile()
 
 ######################################################################
+# Configurable
+######################################################################
+thumb = True
+
+######################################################################
 # Create root environments
 ######################################################################
 env = Environment()
@@ -9,24 +14,33 @@ env = Environment()
 # Create environments
 ######################################################################
 host_env = env.Clone()
-target_env = env.Clone(CC = 'arm-elf-gcc',
-                       AR = 'arm-elf-ar',
-                       RANLIB = 'arm-elf-ranlib',
-                       ASFLAGS = ['-g', '-mcpu=arm7tdmi'],
-                       CCFLAGS = ['-Wall', '-g', '-O2', '-mcpu=arm7tdmi'],
-                       CPPPATH = ['#/include',
-                                  '#/../include',
-                                  '#/../../../include'],
-                       LIBPATH = ['..'],
-                       LIBS = ['gyros-at91sam7s', 'gcc'],
-                       LINKFLAGS = ['-nostdlib', '-Wl,--nmagic',
-                                    '-Tat91sam7s64.ld'],
-                       OBJPREFIX = '.at91sam7s-',
-                       PROGSUFFIX = '.elf')
+target_base_env = env.Clone(CC = 'arm-elf-gcc',
+                            AR = 'arm-elf-ar',
+                            RANLIB = 'arm-elf-ranlib',
+                            ASFLAGS = ['-g', '-mcpu=arm7tdmi'],
+                            CCFLAGS = ['-Wall', '-g', '-O2', '-mcpu=arm7tdmi'],
+                            CPPPATH = ['#/include',
+                                       '#/../include',
+                                       '#/../../../include'],
+                            LIBPATH = ['..'],
+                            LIBS = ['gyros-at91sam7s', 'gcc'],
+                            LINKFLAGS = ['-nostdlib', '-Wl,--nmagic',
+                                         '-Tat91sam7s64.ld'],
+                            OBJPREFIX = '.at91sam7s-',
+                            PROGSUFFIX = '.elf')
+target_base_env.PrependENVPath('PATH', '/opt/arm-elf/gcc/bin')
 
-target_env.PrependENVPath('PATH', '/opt/arm-elf/gcc/bin')
+target_env = target_base_env.Clone()
+target_arm_env = target_base_env.Clone()
+if thumb:
+    target_env.Append(CPPDEFINES=['GYROS_THUMB'],
+                      CCFLAGS=['-mthumb-interwork', '-mthumb'],
+                      ASFLAGS=['-mthumb-interwork'])
+    target_arm_env.Append(CPPDEFINES=['GYROS_THUMB'],
+                          CCFLAGS=['-mthumb-interwork', '-marm'],
+                          ASFLAGS=['-mthumb-interwork'])
 
-Export("host_env", "target_env")
+Export("host_env", "target_env", "target_arm_env")
 
 ######################################################################
 # Include subtargets

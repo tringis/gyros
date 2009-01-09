@@ -41,6 +41,9 @@ gyros__target_task_init(gyros_task_t *task,
     task->context.lr = (unsigned)gyros__task_exit;
     task->context.pc = (unsigned)entry + 4;
     task->context.psr = ARM_MODE_SYS;
+#ifdef GYROS_THUMB
+    task->context.psr |= ARM_THUMB_BIT;
+#endif
 
 #if GYROS_CONFIG_STACK_USED
     {

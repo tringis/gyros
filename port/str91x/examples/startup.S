@@ -98,25 +98,8 @@ __reset_handler:
 	// Setup main stack pointer
 	ldr	sp, =__hwinit_stack_top
 
-#ifdef __thumb__
-	// Switch to thumb mode
-	adr	r0, 1f + 1
-	bx	r0
-	.thumb
-1:
-#endif
-
 	// Call gyros__hwinit
 	bl	gyros__hwinit
-
-#ifdef __thumb__
-	// Switch back to ARM mode
-	adr	r0, 1f
-	bx	r0
-	.align
-	.arm
-1:
-#endif
 
 	// Setup stack pointers and go to system mode
 	ldr	r0, =__stack_top
@@ -160,24 +143,12 @@ __reset_handler:
 	bne	1b
 2:
 
-#ifdef __thumb__
-	// Switch to thumb mode
-	adr	r0, 1f + 1
-	bx	r0
-	.thumb
-1:
-#endif
-
 	// Call main
 	mov	r0, #0
 	bl	main
 
 	// Loop forever
 	b	.
-
-	// ARM code below
-	.align
-	.arm
 
 	// __crt_memcpy:
 	// r0 - destination address
