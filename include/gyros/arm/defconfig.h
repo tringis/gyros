@@ -26,35 +26,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
-#define INCLUDED__gyros_private_defconfig_h__200901021029
+#ifndef INCLUDED__gyros_arm_defconfig_h__200901101017
+#define INCLUDED__gyros_arm_defconfig_h__200901101017
 
-#ifndef GYROS_CONFIG_DEBUG
-#define GYROS_CONFIG_DEBUG 1
-#endif
-
-#ifndef GYROS_CONFIG_DELETE
-#define GYROS_CONFIG_DELETE 1
-#endif
-
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
-
-#ifndef GYROS_CONFIG_ITERATE
-#define GYROS_CONFIG_ITERATE 1
-#endif
-
-#ifndef GYROS_CONFIG_STACK_USED
-#define GYROS_CONFIG_STACK_USED 1
-#endif
-
-#ifndef GYROS_CONFIG_TIME_TYPE
-#define GYROS_CONFIG_TIME_TYPE long long
-#endif
-
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
+#ifdef __THUMB_INTERWORK__
+#define GYROS_CONFIG_THUMB                     1
+#else
+#define GYROS_CONFIG_THUMB                     0
 #endif
 
 #endif

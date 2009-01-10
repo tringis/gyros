@@ -30,16 +30,12 @@
 #define INCLUDED__gyros_str91x_config_h__200901021029
 
 /*---------------------------------------------------------------------*
- * Application specific configuration  (see gyros/private/defconfig.h)
+ * Application specific configuration  (see gyros/target/defconfig.h
+ *                                      and gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_DEBUG                     1
 
-/*---------------------------------------------------------------------*
- * GyrOS generic configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_DYNTICK                   0
-
-#include <gyros/private/defconfig.h>
+#include <gyros/target/defconfig.h>
 
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration

@@ -35,10 +35,6 @@
 
 #define MAX_PERIOD      0x8000
 
-#if !GYROS_CONFIG_DYNTICK
-#error str91x target needs GYROS_CONFIG_DYNTICK
-#endif
-
 static gyros_abstime_t s_time_hi;
 static unsigned short s_last_time_lo;
 

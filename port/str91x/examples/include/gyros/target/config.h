@@ -34,12 +34,9 @@
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_DEBUG                     1
 
-/*---------------------------------------------------------------------*
- * GyrOS generic configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_DYNTICK                   1
+#define GYROS_CONFIG_DYNTICK                   0
 
-#include <gyros/private/defconfig.h>
+#include <gyros/target/defconfig.h>
 
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
