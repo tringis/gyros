@@ -97,7 +97,8 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    unsigned short time_lo = TIM(3)->CNTR, time_hi;
+    unsigned short time_lo = TIM(3)->CNTR;
+    gyros_abstime_t time_hi;
 
     if (time_lo < s_last_time_lo)
         ++s_time_hi;
