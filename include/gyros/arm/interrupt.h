@@ -32,7 +32,7 @@
 #include <gyros/target/config.h>
 #include <gyros/arm/arm_defs.h>
 
-#if GYROS_CONFIG_THUMB
+#if !GYROS_CONFIG_THUMB
 static inline unsigned long
 gyros_interrupt_disable(void)
 {

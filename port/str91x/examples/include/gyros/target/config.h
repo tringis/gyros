@@ -44,7 +44,7 @@
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
  *---------------------------------------------------------------------*/
-#ifdef __GYROS_INTERWORK__
+#ifdef __THUMB_INTERWORK__
 #define GYROS_CONFIG_THUMB                     1
 #else
 #define GYROS_CONFIG_THUMB                     0
