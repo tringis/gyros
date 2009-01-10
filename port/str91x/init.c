@@ -35,22 +35,24 @@
 
 #define MAX_PERIOD      0x8000
 
+#define GTIM            TIM(GYROS_CONFIG_STR91X_TIMER)
+
 static gyros_abstime_t s_time_hi;
 static unsigned short s_last_time_lo;
 
 static void
-tim3_isr(void)
+tim_isr(void)
 {
 #if GYROS_CONFIG_DYNTICK
     /* Disable the OC2 interrupt in case it was enabled. */
-    TIM(3)->CR2 &= ~TIM_CR2_OC2IE;
+    GTIM->CR2 &= ~TIM_CR2_OC2IE;
 #else
     /* Clear the OC1 interrupt. */
-    TIM(3)->SR &= ~TIM_SR_OCF1;
+    GTIM->SR &= ~TIM_SR_OCF1;
 
     /* Move OC1 forward one timer period. */
-    s_last_time_lo = TIM(3)->OC1R;
-    TIM(3)->OC1R = s_last_time_lo + GYROS_CONFIG_TIMER_PERIOD;
+    s_last_time_lo = GTIM->OC1R;
+    GTIM->OC1R = s_last_time_lo + GYROS_CONFIG_TIMER_PERIOD;
 #endif
 
     /* Note that it's important to call gyros_time() here, because we
@@ -66,8 +68,8 @@ gyros__suspend_tick(void)
 {
     /* We can't suspend the tick, because it would make gyros_time()
      * fail, so we set it to the maximum period. */
-    TIM(3)->OC1R = s_last_time_lo + MAX_PERIOD;
-    TIM(3)->SR &= ~TIM_SR_OCF1;
+    GTIM->OC1R = s_last_time_lo + MAX_PERIOD;
+    GTIM->SR &= ~TIM_SR_OCF1;
 }
 
 void
@@ -77,26 +79,26 @@ gyros__update_tick(gyros_abstime_t next_timeout)
 
     if (dt >= MAX_PERIOD)
     {
-        TIM(3)->OC1R = s_last_time_lo + MAX_PERIOD;
-        TIM(3)->SR &= ~TIM_SR_OCF1;
+        GTIM->OC1R = s_last_time_lo + MAX_PERIOD;
+        GTIM->SR &= ~TIM_SR_OCF1;
     }
     else if (dt <= 0)
     {
         /* Oops, we're late!  Make the interrupt happen by enabling
          * the OC2 interrupt (which is always on). */
-        TIM(3)->CR2 |= TIM_CR2_OC2IE;
+        GTIM->CR2 |= TIM_CR2_OC2IE;
     }
     else
     {
-        TIM(3)->OC1R = next_timeout;
-        TIM(3)->SR &= ~TIM_SR_OCF1;
+        GTIM->OC1R = next_timeout;
+        GTIM->SR &= ~TIM_SR_OCF1;
 
         if ((short)((unsigned short)next_timeout -
-                    (unsigned short)TIM(3)->CNTR) <= 0)
+                    (unsigned short)GTIM->CNTR) <= 0)
         {
             /* Oops, we missed the OC1 tick.  Make the interrupt happen by
              * enabling the OC2 interrupt (which is always on). */
-            TIM(3)->CR2 |= TIM_CR2_OC2IE;
+            GTIM->CR2 |= TIM_CR2_OC2IE;
         }
     }
 }
@@ -105,7 +107,7 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    unsigned short time_lo = TIM(3)->CNTR;
+    unsigned short time_lo = GTIM->CNTR;
     gyros_abstime_t time_hi;
 
     if (time_lo < s_last_time_lo)
@@ -122,7 +124,7 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    gyros_abstime_t time = (s_time_hi << 16) | (TIM(3)->CNTR - s_last_time_lo);
+    gyros_abstime_t time = (s_time_hi << 16) | (GTIM->CNTR - s_last_time_lo);
 
     gyros_interrupt_restore(flags);
 
@@ -137,26 +139,32 @@ gyros__target_init(void)
     SCU->PCGR0 |= SCU_P0_VIC;
     SCU->PRR0 |= SCU_P0_VIC;
 
+#if GYROS_CONFIG_STR91X_TIMER < 2
+    /* Enable TIM0 and TIM1 */
+    SCU->PCGR1 |= SCU_P1_TIM01;
+    SCU->PRR1 |= SCU_P1_TIM01;
+#else
     /* Enable TIM2 and TIM3 */
     SCU->PCGR1 |= SCU_P1_TIM23;
     SCU->PRR1 |= SCU_P1_TIM23;
-
-    TIM(3)->CR1 = 0;          /* disable timer */
-    TIM(3)->CR2 = 0;
-    TIM(3)->SR  = 0;          /* clear any interrupt events */
-
-    gyros_target_set_isr(GYROS_IRQ_TIM3, tim3_isr);
-
-    TIM(3)->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_TIMER_RESOLUTION - 1;
-    TIM(3)->CR2 |= 0x4000;        /* Enable OC1 interrupt */
-#if GYROS_CONFIG_DYNTICK
-    TIM(3)->OC1R = MAX_PERIOD;
-#else
-    TIM(3)->OC1R = GYROS_CONFIG_TIMER_PERIOD;
 #endif
-    TIM(3)->OC2R = 1;             /* Make OC2 happen right away */
-    TIM(3)->CNTR = 0;             /* Reset value (exact value ignored) */
-    TIM(3)->CR1 |= 0x8000;        /* Start timer */
+
+    GTIM->CR1 = 0;          /* disable timer */
+    GTIM->CR2 = 0;
+    GTIM->SR  = 0;          /* clear any interrupt events */
+
+    gyros_target_set_isr(GYROS_IRQ_TIM0 + GYROS_CONFIG_STR91X_TIMER, tim_isr);
+
+    GTIM->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_TIMER_RESOLUTION - 1;
+    GTIM->CR2 |= 0x4000;        /* Enable OC1 interrupt */
+#if GYROS_CONFIG_DYNTICK
+    GTIM->OC1R = MAX_PERIOD;
+#else
+    GTIM->OC1R = GYROS_CONFIG_TIMER_PERIOD;
+#endif
+    GTIM->OC2R = 1;             /* Make OC2 happen right away */
+    GTIM->CNTR = 0;             /* Reset value (exact value ignored) */
+    GTIM->CR1 |= 0x8000;        /* Start timer */
 
     gyros__interrupt_enable();
 }

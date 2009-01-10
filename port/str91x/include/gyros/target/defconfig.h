@@ -33,6 +33,10 @@
 #define GYROS_CONFIG_DYNTICK                   1
 #endif
 
+#ifndef GYROS_CONFIG_STR91X_TIMER
+#define GYROS_CONFIG_STR91X_TIMER              3
+#endif
+
 #include <gyros/arm/defconfig.h>
 #include <gyros/private/defconfig.h>
 
