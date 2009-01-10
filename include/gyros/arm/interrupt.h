@@ -58,7 +58,7 @@ gyros_interrupt_restore(unsigned long flags)
         :: "r" (flags) : "memory");
 }
 
-int
+static inline int
 gyros_in_interrupt(void)
 {
     unsigned long cpsr;
