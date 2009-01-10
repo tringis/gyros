@@ -34,19 +34,11 @@
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_DEBUG                     1
 
-#define GYROS_CONFIG_DYNTICK                   0
-
 #include <gyros/target/defconfig.h>
 
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
  *---------------------------------------------------------------------*/
-#ifdef __THUMB_INTERWORK__
-#define GYROS_CONFIG_THUMB                     1
-#else
-#define GYROS_CONFIG_THUMB                     0
-#endif
-
 #define GYROS_CONFIG_STR91X_PCLK               48000000
 
 #define GYROS_CONFIG_TIMER_RESOLUTION          1000000

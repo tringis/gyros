@@ -40,12 +40,6 @@
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
  *---------------------------------------------------------------------*/
-#ifdef __THUMB_INTERWORK__
-#define GYROS_CONFIG_THUMB                     1
-#else
-#define GYROS_CONFIG_THUMB                     0
-#endif
-
 #define GYROS_CONFIG_AT91SAM7S_MCLK            47923200
 
 #define GYROS_CONFIG_TIMER_RESOLUTION          1000
