@@ -29,9 +29,10 @@
 #ifndef INCLUDE__gyros_arm_interrupt_h__200212292232
 #define INCLUDE__gyros_arm_interrupt_h__200212292232
 
+#include <gyros/target/config.h>
 #include <gyros/arm/arm_defs.h>
 
-#ifndef GYROS_THUMB
+#if GYROS_CONFIG_THUMB
 static inline unsigned long
 gyros_interrupt_disable(void)
 {

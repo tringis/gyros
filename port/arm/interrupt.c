@@ -28,7 +28,7 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 
-#ifdef GYROS_THUMB
+#if GYROS_CONFIG_THUMB
 unsigned long
 gyros_interrupt_disable(void)
 {

@@ -33,12 +33,10 @@ target_base_env.PrependENVPath('PATH', '/opt/arm-elf/gcc/bin')
 target_env = target_base_env.Clone()
 target_arm_env = target_base_env.Clone()
 if thumb:
-    target_env.Append(CPPDEFINES=['GYROS_THUMB'],
-                      ASFLAGS=['-mthumb-interwork', '-mthumb'],
+    target_env.Append(ASFLAGS=['-mthumb-interwork', '-mthumb'],
                       CCFLAGS=['-mthumb-interwork', '-mthumb'],
                       LINKFLAGS=['-mthumb-interwork', '-mthumb'])
-    target_arm_env.Append(CPPDEFINES=['GYROS_THUMB'],
-                          ASFLAGS=['-mthumb-interwork', '-marm'],
+    target_arm_env.Append(ASFLAGS=['-mthumb-interwork', '-marm'],
                           CCFLAGS=['-mthumb-interwork', '-marm'],
                           LINKFLAGS=['-mthumb-interwork', '-marm'])
 
