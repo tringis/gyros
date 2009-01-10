@@ -41,8 +41,17 @@ static unsigned short s_last_time_lo;
 static void
 tim3_isr(void)
 {
-    /* Disable the OC2 interrupt in cast it was enabled. */
+#if GYROS_CONFIG_DYNTICK
+    /* Disable the OC2 interrupt in case it was enabled. */
     TIM(3)->CR2 &= ~TIM_CR2_OC2IE;
+#else
+    /* Clear the OC1 interrupt. */
+    TIM(3)->SR &= ~TIM_SR_OCF1;
+
+    /* Move OC1 forward one timer period. */
+    s_last_time_lo = TIM(3)->OC1R;
+    TIM(3)->OC1R = s_last_time_lo + GYROS_CONFIG_TIMER_PERIOD;
+#endif
 
     /* Note that it's important to call gyros_time() here, because we
      * need to call it before 0xffff ticks have passed not to miss
@@ -50,6 +59,8 @@ tim3_isr(void)
     gyros__wake_timedout_tasks(gyros_time());
 }
 
+
+#if GYROS_CONFIG_DYNTICK
 void
 gyros__suspend_tick(void)
 {
@@ -80,7 +91,8 @@ gyros__update_tick(gyros_abstime_t next_timeout)
         TIM(3)->OC1R = next_timeout;
         TIM(3)->SR &= ~TIM_SR_OCF1;
 
-        if ((short)((unsigned short)next_timeout - (unsigned short)TIM(3)->CNTR) <= 0)
+        if ((short)((unsigned short)next_timeout -
+                    (unsigned short)TIM(3)->CNTR) <= 0)
         {
             /* Oops, we missed the OC1 tick.  Make the interrupt happen by
              * enabling the OC2 interrupt (which is always on). */
@@ -105,6 +117,18 @@ gyros_time(void)
 
     return (time_hi << 16) | time_lo;
 }
+#else
+gyros_abstime_t
+gyros_time(void)
+{
+    unsigned long flags = gyros_interrupt_disable();
+    gyros_abstime_t time = (s_time_hi << 16) | (TIM(3)->CNTR - s_last_time_lo);
+
+    gyros_interrupt_restore(flags);
+
+    return time;
+}
+#endif
 
 void
 gyros__target_init(void)
@@ -125,7 +149,11 @@ gyros__target_init(void)
 
     TIM(3)->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_TIMER_RESOLUTION - 1;
     TIM(3)->CR2 |= 0x4000;        /* Enable OC1 interrupt */
+#if GYROS_CONFIG_DYNTICK
     TIM(3)->OC1R = MAX_PERIOD;
+#else
+    TIM(3)->OC1R = GYROS_CONFIG_TIMER_PERIOD;
+#endif
     TIM(3)->OC2R = 1;             /* Make OC2 happen right away */
     TIM(3)->CNTR = 0;             /* Reset value (exact value ignored) */
     TIM(3)->CR1 |= 0x8000;        /* Start timer */

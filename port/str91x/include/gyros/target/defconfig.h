@@ -33,10 +33,6 @@
 #define GYROS_CONFIG_DYNTICK                   1
 #endif
 
-#if !GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK needed by target
-#endif
-
 #include <gyros/arm/defconfig.h>
 #include <gyros/private/defconfig.h>
 

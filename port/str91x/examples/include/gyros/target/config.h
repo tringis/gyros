@@ -44,6 +44,10 @@
 
 #define GYROS_CONFIG_TIMER_RESOLUTION          1000000
 
+#if !GYROS_CONFIG_DYNTICK
+#define GYROS_CONFIG_TIMER_PERIOD              1000
+#endif
+
 #define GYROS_CONFIG_US_TO_TICKS(us)           (us)
 #define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
 #define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000000)
