@@ -26,11 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_at91sam7s_config_h__200901021701
-#define INCLUDED__gyros_at91sam7s_config_h__200901021701
+#ifndef INCLUDED__gyros_str91x_config_h__200901021701
+#define INCLUDED__gyros_str91x_config_h__200901021701
 
 /*---------------------------------------------------------------------*
- * Application specific configuration  (see gyros/private/defconfig.h)
+ * Application specific configuration  (see gyros/target/defconfig.h
+ *                                      and gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_DEBUG                     1
 
