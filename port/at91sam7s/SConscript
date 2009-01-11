@@ -15,6 +15,7 @@ common_srcs = SConscript('../../src/SConscript')
 srcs = common_srcs + [ 'exceptions.S',
                        '../arm/stack_used.c',
                        '../arm/task_init.c',
+                       'idle.c',
                        'init.c',
                        'interrupt.c' ]
 

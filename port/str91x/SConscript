@@ -16,9 +16,10 @@ srcs = common_srcs + [ 'exceptions.S',
                        '../arm/stack_used.c',
                        '../arm/task_init.c',
                        'init.c',
-                       'interrupt.c' ]
+                       'interrupt.c']
 
-arm_objs = target_arm_env.StaticObject('../arm/interrupt.c')
+arm_objs = map(target_arm_env.StaticObject, ['../arm/interrupt.c',
+                                             'idle.c'])
 
 ######################################################################
 # Library target

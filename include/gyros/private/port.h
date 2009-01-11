@@ -64,6 +64,11 @@ void gyros__target_task_init(gyros_task_t *task,
  * becomes current. */
 void gyros__reschedule(void);
 
+/* Called continuously by the idle task.  Can be used to put the CPU
+ * in a low power state while waiting for an interrupt.  Must not
+ * sleep or call a blocking function. */
+void gyros__idle(void);
+
 #if GYROS_CONFIG_DYNTICK
 /* Called when there are no timeouts scheduled. */
 void gyros__suspend_tick(void);

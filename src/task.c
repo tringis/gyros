@@ -160,7 +160,7 @@ gyros_start(void)
     gyros__target_init();
 
     for (;;)
-        ;
+        gyros__idle();
 }
 
 void
