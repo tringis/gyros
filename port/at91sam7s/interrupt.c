@@ -84,6 +84,8 @@ gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr)
     AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & AT91C_AIC_PRIOR) | mode;
     AT91C_AIC_SVR[irq] = (unsigned)isr;
 
+    *AT91C_AIC_IECR = 1 << irq;
+
     return 1;
 }
 
