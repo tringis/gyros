@@ -44,9 +44,7 @@
 
 #define GYROS_CONFIG_TIMER_RESOLUTION          1000000
 
-#if !GYROS_CONFIG_DYNTICK
-#define GYROS_CONFIG_TIMER_PERIOD              1000
-#endif
+#if GYROS_CONFIG_DYNTICK
 
 #define GYROS_CONFIG_US_TO_TICKS(us)           (us)
 #define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
@@ -55,5 +53,19 @@
 #define GYROS_CONFIG_TICKS_TO_US(us)           (us)
 #define GYROS_CONFIG_TICKS_TO_MS(ms)           ((ms) / 1000)
 #define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000000)
+
+#else /* GYROS_CONFIG_DYNTICK */
+
+#define GYROS_CONFIG_TIMER_PERIOD              1000
+
+#define GYROS_CONFIG_US_TO_TICKS(us)           ((us) / 1000)
+#define GYROS_CONFIG_MS_TO_TICKS(ms)           (ms)
+#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000)
+
+#define GYROS_CONFIG_TICKS_TO_US(us)           ((us) * 1000)
+#define GYROS_CONFIG_TICKS_TO_MS(ms)           (ms)
+#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000)
+
+#endif
 
 #endif
