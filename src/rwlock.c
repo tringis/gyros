@@ -103,7 +103,6 @@ int
 gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
-    int ret;
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_magic != GYROS_RWLOCK_DEBUG_MAGIC)
@@ -112,7 +111,7 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_error("rwlock_rdlock called from interrupt");
 #endif
 
-    if (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
+    while (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
     {
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
         gyros__task_set_timeout(timeout);
@@ -123,17 +122,17 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
+        if (gyros__state.current->timed_out)
+        {
+            gyros_interrupt_restore(flags);
+            return 0;
+        }
     }
-    if (gyros__state.current->timed_out)
-        ret = 0;
-    else
-    {
-        rwlock->readers++;
-        ret = 1;
-    }
+
+    rwlock->readers++;
     gyros_interrupt_restore(flags);
 
-    return ret;
+    return 1;
 }
 
 void
@@ -196,7 +195,6 @@ int
 gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
-    int ret;
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_magic != GYROS_RWLOCK_DEBUG_MAGIC)
@@ -205,8 +203,8 @@ gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_error("rwlock_wrlock called from interrupt");
 #endif
 
-    if ((rwlock->writer != 0 &&
-         rwlock->writer != gyros__state.current) || rwlock->readers)
+    while ((rwlock->writer != 0 &&
+            rwlock->writer != gyros__state.current) || rwlock->readers)
     {
         gyros__task_move(gyros__state.current, &rwlock->wr_task_list);
         gyros__task_set_timeout(timeout);
@@ -217,17 +215,17 @@ gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
+        if (gyros__state.current->timed_out)
+        {
+            gyros_interrupt_restore(flags);
+            return 0;
+        }
     }
-    if (gyros__state.current->timed_out)
-        ret = 0;
-    else
-    {
-        rwlock->writer = gyros__state.current;
-        ret = 1;
-    }
+
+    rwlock->writer = gyros__state.current;
     gyros_interrupt_restore(flags);
 
-    return ret;
+    return 1;
 }
 
 void
