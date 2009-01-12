@@ -77,7 +77,7 @@ gyros_task_timedwait(gyros_abstime_t timeout)
         gyros_error("task_timedwait called from interrupt");
 #endif
 
-    if (gyros__zombies.next == &gyros__zombies)
+    if (gyros__list_empty(&gyros__zombies))
     {
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros__task_set_timeout(timeout);
@@ -85,20 +85,19 @@ gyros_task_timedwait(gyros_abstime_t timeout)
         gyros__state.current->debug_state = "task_timedwait";
         gyros__state.current->debug_object = NULL;
 #endif
-        gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
-        flags = gyros_interrupt_disable();
+        if (gyros__list_empty(&gyros__zombies))
+        {
+            gyros_interrupt_restore(flags);
+            return NULL;
+        }
     }
-    if (gyros__zombies.next == &gyros__zombies)
-        task = 0;
-    else
-    {
-        task = TASK(gyros__zombies.next);
-        gyros__list_remove(&task->main_list);
+
+    task = TASK(gyros__zombies.next);
+    gyros__list_remove(&task->main_list);
 #if GYROS_CONFIG_DEBUG
-        task->debug_magic = 0;
+    task->debug_magic = 0;
 #endif
-    }
     gyros_interrupt_restore(flags);
 
     return task;
