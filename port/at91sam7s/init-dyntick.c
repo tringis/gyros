@@ -108,9 +108,11 @@ gyros__target_init(void)
     gyros_target_set_isr(GYROS_IRQ_TC0 + GYROS_CONFIG_TIMER_NUM,
                          GYROS_IRQ_MODE_INT_LEVEL, tc_isr);
 
-    /* Connect TCLK1 to XC1 and select XC1 for our timer. */
-    AT91C_BASE_TCB->TCB_BMR &= ~(3 << (2 * GYROS_CONFIG_TIMER_NUM));
-    TC->TC_CMR = AT91C_TC_CLKS_XC1;
+    /* Enable the timer peripheral */
+    AT91C_BASE_PMC->PMC_PCER = 1U << (AT91C_ID_TC0 + GYROS_CONFIG_TIMER_NUM);
+
+    /* Select the desired clock source. */
+    TC->TC_CMR = GYROS_CONFIG_TIMER_CLK;
 
     /* Set up an interrupt at MAX_PERIOD and enable the RC interrupt. */
     TC->TC_RC = MAX_PERIOD;
