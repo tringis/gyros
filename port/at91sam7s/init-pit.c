@@ -26,14 +26,56 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_at91sam7s_defconfig_h__200901101016
-#define INCLUDED__gyros_at91sam7s_defconfig_h__200901101016
+#include <gyros/interrupt.h>
+#include <gyros/private/port.h>
 
-#ifndef GYROS_CONFIG_DYNTICK
-#define GYROS_CONFIG_DYNTICK                   1
+#include "at91sam7s.h"
+
+#define DIV_AND_CEIL(a,b)      (((a) + (b) - 1) / (b))
+
+#define PIT_FREQ       (GYROS_CONFIG_AT91SAM7S_MCLK / 16)
+#define PIT_PERIOD     DIV_AND_CEIL(PIT_FREQ, GYROS_CONFIG_TIMER_RESOLUTION)
+
+#if PIT_PERIOD > 65535
+#error PIT period out of range.
 #endif
 
-#include <gyros/arm/defconfig.h>
-#include <gyros/private/defconfig.h>
+volatile gyros_abstime_t s_time;
 
-#endif
+static void
+pit_isr(void)
+{
+    if (AT91C_BASE_PITC->PITC_PISR & AT91C_SYSC_PITS)
+    {
+        unsigned status = AT91C_BASE_PITC->PITC_PIVR;
+
+        s_time += status >> 20;
+        gyros__wake_timedout_tasks(gyros_time());
+    }
+}
+
+gyros_abstime_t
+gyros_time(void)
+{
+    unsigned long flags = gyros_interrupt_disable();
+    gyros_abstime_t time = s_time;
+
+    gyros_interrupt_restore(flags);
+
+    return time;
+}
+
+void
+gyros__target_init(void)
+{
+    unsigned dummy;
+
+    gyros_target_aic_init();
+    gyros_target_add_sys_isr(pit_isr);
+
+    dummy = AT91C_BASE_PITC->PITC_PIVR;
+    AT91C_BASE_PITC->PITC_PIMR = AT91C_SYSC_PITEN | AT91C_SYSC_PITIEN |
+        (PIT_PERIOD - 1);
+
+    gyros__interrupt_enable();
+}
