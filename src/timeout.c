@@ -53,7 +53,7 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
     gyros__state.current->timed_out = 0;
 #if GYROS_CONFIG_DYNTICK
     if (s_timeouts.next == &gyros__state.current->timeout_list)
-        gyros__update_tick(timeout);
+        gyros__update_tick(gyros_time(), timeout);
 #endif
 }
 
@@ -73,6 +73,6 @@ gyros__wake_timedout_tasks(gyros_abstime_t now)
     if (gyros__list_empty(&s_timeouts))
         gyros__suspend_tick();
     else
-        gyros__update_tick(TIMEOUT_TASK(s_timeouts.next)->timeout);
+        gyros__update_tick(now, TIMEOUT_TASK(s_timeouts.next)->timeout);
 #endif
 }

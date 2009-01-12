@@ -74,7 +74,7 @@ void gyros__idle(void);
 void gyros__suspend_tick(void);
 
 /* Called to program the timer for the next scheduled timeout. */
-void gyros__update_tick(gyros_abstime_t next_timeout);
+void gyros__update_tick(gyros_abstime_t now, gyros_abstime_t next_timeout);
 #endif
 
 #endif

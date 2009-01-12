@@ -76,9 +76,9 @@ gyros__suspend_tick(void)
 }
 
 void
-gyros__update_tick(gyros_abstime_t next_timeout)
+gyros__update_tick(gyros_abstime_t now, gyros_abstime_t next_timeout)
 {
-    gyros_reltime_t dt = next_timeout - gyros_time();
+    gyros_reltime_t dt = next_timeout - now;
 
     if (dt >= MAX_PERIOD)
         GTIM->OC1R = s_last_time_lo + MAX_PERIOD;
