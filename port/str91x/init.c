@@ -33,11 +33,10 @@
 
 #include "str91x.h"
 
-#define MAX_PERIOD      0x8000
-
 #define GTIM            TIM(GYROS_CONFIG_STR91X_TIMER)
 
 #if GYROS_CONFIG_DYNTICK
+#define MAX_PERIOD      0x8000
 static gyros_abstime_t s_time_hi;
 static unsigned short s_last_time_lo;
 #else
@@ -53,18 +52,17 @@ tim_isr(void)
 #if GYROS_CONFIG_DYNTICK
     /* Disable the OC2 interrupt in case it was enabled. */
     GTIM->CR2 &= ~TIM_CR2_OC2IE;
-#else
-    ++s_time;
-    /* Move OC1 forward one timer period. */
-    GTIM->OC1R += GYROS_CONFIG_TIMER_PERIOD;
-#endif
 
     /* Note that it's important to call gyros_time() here when using
      * dynticks, because we need to call it before 0xffff ticks have
      * passed not to miss time. */
     gyros__wake_timedout_tasks(gyros_time());
+#else
+    /* Move OC1 forward one timer period. */
+    GTIM->OC1R += GYROS_CONFIG_TIMER_PERIOD;
+    gyros__wake_timedout_tasks(++s_time);
+#endif
 }
-
 
 #if GYROS_CONFIG_DYNTICK
 void
@@ -82,30 +80,28 @@ gyros__update_tick(gyros_abstime_t now, gyros_abstime_t next_timeout)
 
     if (dt >= MAX_PERIOD)
         GTIM->OC1R = s_last_time_lo + MAX_PERIOD;
-    else if (dt <= 0)
-    {
-        /* Oops, we're late!  Make the interrupt happen by enabling
-         * the OC2 interrupt (which is always on). */
-        GTIM->CR2 |= TIM_CR2_OC2IE;
-    }
     else
     {
         GTIM->OC1R = next_timeout;
 
-        if ((short)((unsigned short)next_timeout -
-                    (unsigned short)GTIM->CNTR) <= 0)
+        /* If dt is small enough that CNTR may already be past the
+         * value we just set OC1R to, we check if it did indeed miss
+         * the value, and in that case force a timer interrupt using
+         * OC2 (which is always on). */
+        if (dt < MAX_PERIOD / 4 &&
+            (short)((unsigned short)next_timeout - GTIM->CNTR) <= 0)
         {
-            /* Oops, we missed the OC1 tick.  Make the interrupt happen by
-             * enabling the OC2 interrupt (which is always on). */
             GTIM->CR2 |= TIM_CR2_OC2IE;
         }
     }
 }
+#endif
 
 gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
+#if GYROS_CONFIG_DYNTICK
     unsigned short time_lo = GTIM->CNTR;
     gyros_abstime_t time_hi;
 
@@ -117,19 +113,14 @@ gyros_time(void)
     gyros_interrupt_restore(flags);
 
     return (time_hi << 16) | time_lo;
-}
 #else
-gyros_abstime_t
-gyros_time(void)
-{
-    unsigned long flags = gyros_interrupt_disable();
     gyros_abstime_t time = s_time;
 
     gyros_interrupt_restore(flags);
 
     return time;
-}
 #endif
+}
 
 void
 gyros__target_init(void)
