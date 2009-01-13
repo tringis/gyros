@@ -79,6 +79,8 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros_error("uninitialized mutex in mutex_lock");
     if (gyros_in_interrupt())
         gyros_error("mutex_lock called from interrupt");
+    if (m->owner == gyros__state.current)
+        gyros_error("mutex_lock deadlock");
 #endif
 
     while (m->owner)

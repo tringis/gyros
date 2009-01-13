@@ -57,6 +57,8 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         gyros_error("uninitialized rwlock in rwlock_rdlock");
     if (gyros_in_interrupt())
         gyros_error("rwlock_rdlock called from interrupt");
+    if (rwlock->writer == gyros__state.current)
+        gyros_error("rwlock_rdlock deadlock");
 #endif
 
     while (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
@@ -109,6 +111,8 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_error("uninitialized rwlock in rwlock_rdlock");
     if (gyros_in_interrupt())
         gyros_error("rwlock_rdlock called from interrupt");
+    if (rwlock->writer == gyros__state.current)
+        gyros_error("gyros_rwlock_timedrdlock deadlock");
 #endif
 
     while (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
@@ -145,6 +149,8 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
         gyros_error("uninitialized rwlock in rwlock_wrlock");
     if (gyros_in_interrupt())
         gyros_error("rwlock_wrlock called from interrupt");
+    if (rwlock->writer == gyros__state.current)
+        gyros_error("gyros_rwlock_wrlock deadlock");
 #endif
 
     while ((rwlock->writer != 0 &&
@@ -201,6 +207,8 @@ gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros_error("uninitialized rwlock in rwlock_wrlock");
     if (gyros_in_interrupt())
         gyros_error("rwlock_wrlock called from interrupt");
+    if (rwlock->writer == gyros__state.current)
+        gyros_error("gyros_rwlock_timedwrlock deadlock");
 #endif
 
     while ((rwlock->writer != 0 &&
