@@ -26,43 +26,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-/** \file Mainpage.dox
-  * \brief Main page documentation.
+/** \file Example.dox
+  * \brief GyrOS application examples.
   */
 
-/** \mainpage GyrOS Documentation
+/** \page examples Application example
 
-GyrOS is an open source portable real time operating system (RTOS)
-with an easy to use C API.  It is easy to port to new platforms,
-partly because it is written in C, and partly because the bits that
-need to be ported are few and clearly defined.
+\code
+#include <gyros/task.h>
 
-\section features Features
-- Easy to \ref porting "port" to new architectures.
-- Preemtive multitasking.
-- Small memory footprint (both code and RAM).
-- Low power consumption thanks to dynamic timers.
-- Debug support to catch common usage errors and see current task status.
-- Several synchronization techniques:
-  - \ref gyros/sem.h "Semaphore" (binary or counting)
-  - \ref gyros/mutex.h "Mutex" with priority inheritance
-  - \ref gyros/cond.h "Condition variable"
-  - \ref gyros/rwlock.h "Read/write lock"
-  - Task \ref gyros_task_suspend "suspend" and \ref gyros_task_resume
-    "resume"
-- Permissive BSD-style license allowing for both commercial and
-  non-commercial use.
+gyros_task_t task1;
+char task1_stack[256];
 
-\section supported_hw Supported hardware
+static void
+task1_main(void *arg)
+{
+    ...
+}
 
-ARM based:
-- Atmel AT91SAM7S (ARM7TDMI core)
-- STMicroelectronics STR91x (ARM966E-S core)
-
-\section further_reading Further reading
-
-- \subpage building
-- \subpage porting
-- \subpage examples
+int
+main()
+{
+    gyros_task_create(&task1, "task1", task1_main, NULL,
+                      task1_stack, sizeof(task1_stack), 10);
+    gyros_start();
+}
+\endcode
 
 */
