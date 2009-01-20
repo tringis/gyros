@@ -79,8 +79,8 @@
       0, 1, GYROS__LIST_INITVAL(name.task_list) }
 
 
-/** Semaphore (sem). */
-typedef struct gyros_sem
+/** \brief Semaphore (sem) object. */
+typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */

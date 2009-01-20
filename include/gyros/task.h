@@ -39,9 +39,11 @@
 #include <gyros/private/list.h>
 #include <gyros/time.h>
 
-/** The structure representing a GyrOS task.  Most members of this
-  * stucture are for internal GyrOS use only, and are not meant to be
-  * accessed directly. */
+/** \brief Task object.
+  *
+  * This is the structure representing a GyrOS task.  Most members of
+  * this stucture are for internal GyrOS use only, and are not meant
+  * to be accessed directly. */
 typedef struct
 {
     struct gyros__context context; /**< \internal */

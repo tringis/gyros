@@ -61,8 +61,9 @@
     { GYROS_COND_DEBUG_INITIALIZER                \
       GYROS__LIST_INITVAL(name.task_list) }
 
-/** Condition variable (cond). */
-typedef struct gyros_cond {
+/** \brief Condition variable (cond) object. */
+typedef struct
+{
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
 #endif

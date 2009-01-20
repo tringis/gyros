@@ -71,8 +71,8 @@
       GYROS__LIST_INITVAL(name.rd_task_list),    \
       GYROS__LIST_INITVAL(name.wr_task_list) }
 
-/** Read/write lock (rwlock). */
-typedef struct gyros_rwlock
+/** \brief Read/write lock (rwlock) object. */
+typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */

@@ -66,8 +66,8 @@
       (gyros_task_t*)0, 0,                                              \
       GYROS__LIST_INITVAL(name.task_list) }
 
-/** Mutual exclusion (mutex) struct. */
-typedef struct gyros_mutex
+/** \brief Mutual exclusion (mutex) object. */
+typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
