@@ -89,7 +89,7 @@ void gyros_mutex_init(gyros_mutex_t *m);
   * \param m            Mutex struct pointer.
   * \return             Non-zero if @a m was locked, else zero.
   */
-int gyros_mutex_trylock(gyros_mutex_t *m);
+int gyros_mutex_try_lock(gyros_mutex_t *m);
 
 /** Lock @a m.
   *

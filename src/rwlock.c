@@ -77,16 +77,16 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
 }
 
 int
-gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock)
+gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
 {
     unsigned long flags = gyros_interrupt_disable();
     int ret;
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_tryrdlock");
+        gyros_error("uninitialized rwlock in rwlock_try_rdlock");
     if (gyros_in_interrupt())
-        gyros_error("rwlock_tryrdlock called from interrupt");
+        gyros_error("rwlock_try_rdlock called from interrupt");
 #endif
 
     if (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
@@ -170,7 +170,7 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
 }
 
 int
-gyros_rwlock_trywrlock(gyros_rwlock_t *rwlock)
+gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
 {
     unsigned long flags = gyros_interrupt_disable();
     int ret;

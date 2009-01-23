@@ -101,7 +101,7 @@ void gyros_rwlock_rdlock(gyros_rwlock_t *rwlock);
   *
   * \param rwlock       Read/write lock struct pointer.
   */
-int gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock);
+int gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock);
 
 /** Aquire a reader lock on @a rwlock, unless @a timeout is passed
   * before the lock can be aquired without blocking.
@@ -123,7 +123,7 @@ void gyros_rwlock_wrlock(gyros_rwlock_t *rwlock);
   *
   * \param rwlock       Read/write lock struct pointer.
   */
-int gyros_rwlock_trywrlock(gyros_rwlock_t *rwlock);
+int gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock);
 
 /** Aquire a writer lock on @a rwlock, unless @a timeout is passed
   * before the lock can be aquired without blocking.

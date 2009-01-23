@@ -45,15 +45,15 @@ gyros_mutex_init(gyros_mutex_t *m)
 }
 
 int
-gyros_mutex_trylock(gyros_mutex_t *m)
+gyros_mutex_try_lock(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
-        gyros_error("uninitialized mutex in mutex_trylock");
+        gyros_error("uninitialized mutex in mutex_try_lock");
     if (gyros_in_interrupt())
-        gyros_error("mutex_trylock called from interrupt");
+        gyros_error("mutex_try_lock called from interrupt");
 #endif
 
     if (m->owner)
