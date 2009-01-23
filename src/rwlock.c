@@ -102,7 +102,7 @@ gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock)
 }
 
 int
-gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
+gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -112,7 +112,7 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     if (gyros_in_interrupt())
         gyros_error("rwlock_rdlock called from interrupt");
     if (rwlock->writer == gyros__state.current)
-        gyros_error("gyros_rwlock_timedrdlock deadlock");
+        gyros_error("gyros_rwlock_rdlock_until deadlock");
 #endif
 
     while (rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list))
@@ -120,7 +120,7 @@ gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "rwlock_timedrdlock";
+        gyros__state.current->debug_state = "rwlock_rdlock_until";
         gyros__state.current->debug_object = rwlock;
 #endif
         gyros_interrupt_restore(flags);
@@ -198,7 +198,7 @@ gyros_rwlock_trywrlock(gyros_rwlock_t *rwlock)
 }
 
 int
-gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
+gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -208,7 +208,7 @@ gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     if (gyros_in_interrupt())
         gyros_error("rwlock_wrlock called from interrupt");
     if (rwlock->writer == gyros__state.current)
-        gyros_error("gyros_rwlock_timedwrlock deadlock");
+        gyros_error("gyros_rwlock_wrlock_until deadlock");
 #endif
 
     while ((rwlock->writer != 0 &&
@@ -217,7 +217,7 @@ gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &rwlock->wr_task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "rwlock_timedwrlock";
+        gyros__state.current->debug_state = "rwlock_wrlock_until";
         gyros__state.current->debug_object = rwlock;
 #endif
         gyros_interrupt_restore(flags);

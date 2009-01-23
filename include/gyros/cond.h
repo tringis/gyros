@@ -95,8 +95,8 @@ void gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m);
   * \return             Non-zero if the semaphore was signalled, or
   *                     zero if @a timeout was reached.
   */
-int gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m,
-                         gyros_abstime_t timeout);
+int gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
+                          gyros_abstime_t timeout);
 
 /** Signal one task waiting for the condition variable @a c.
   *

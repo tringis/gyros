@@ -67,14 +67,14 @@ gyros_task_wait(void)
 }
 
 gyros_task_t*
-gyros_task_timedwait(gyros_abstime_t timeout)
+gyros_task_wait_until(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
     gyros_task_t *task;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros_error("task_timedwait called from interrupt");
+        gyros_error("task_wait_until called from interrupt");
 #endif
 
     if (gyros__list_empty(&gyros__zombies))
@@ -82,7 +82,7 @@ gyros_task_timedwait(gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &gyros__reapers);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "task_timedwait";
+        gyros__state.current->debug_state = "task_wait_until";
         gyros__state.current->debug_object = NULL;
 #endif
         gyros__cond_reschedule();

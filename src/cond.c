@@ -67,22 +67,23 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 }
 
 int
-gyros_cond_timedwait(gyros_cond_t *c, gyros_mutex_t *m, gyros_abstime_t timeout)
+gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
+                      gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
-        gyros_error("uninitialized cond in cond_timedwait");
+        gyros_error("uninitialized cond in cond_wait_until");
     if (gyros_in_interrupt())
-        gyros_error("cond_timedwait called from interrupt");
+        gyros_error("cond_wait_until called from interrupt");
 #endif
 
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
     gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-    gyros__state.current->debug_state = "cond_timedwait";
+    gyros__state.current->debug_state = "cond_wait_until";
     gyros__state.current->debug_object = c;
 #endif
     gyros_interrupt_restore(flags);

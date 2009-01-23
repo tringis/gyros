@@ -111,7 +111,7 @@ int gyros_rwlock_tryrdlock(gyros_rwlock_t *rwlock);
   * \return             Non-zero if the semaphore was signalled, or
   *                     zero if @a timeout was reached.
   */
-int gyros_rwlock_timedrdlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
+int gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
 /** Aquire a writer lock on @a rwlock.
   *
@@ -133,7 +133,7 @@ int gyros_rwlock_trywrlock(gyros_rwlock_t *rwlock);
   * \return             Non-zero if the semaphore was signalled, or
   *                     zero if @a timeout was reached.
   */
-int gyros_rwlock_timedwrlock(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
+int gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
 /** Unlock the read/write lock @a rwlock.
   *

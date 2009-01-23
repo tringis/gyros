@@ -125,7 +125,7 @@ gyros_task_t *gyros_task_wait(void);
   * \return             Struct pointer to finished task, or @c NULL
   *                     if @a timeout was reached.
   */
-gyros_task_t *gyros_task_timedwait(gyros_abstime_t timeout);
+gyros_task_t *gyros_task_wait_until(gyros_abstime_t timeout);
 
 /** Return struct pointer to current task.
   *

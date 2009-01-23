@@ -120,7 +120,7 @@ void gyros_sem_wait(gyros_sem_t *s);
   * \return             Non-zero if the semaphore was signalled, or
   *                     zero if @a timeout was reached.
   */
-int gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout);
+int gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout);
 
 /** Signal the semaphore @a s.
   *

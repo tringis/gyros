@@ -83,15 +83,15 @@ gyros_sem_wait(gyros_sem_t *s)
 }
 
 int
-gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout)
+gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
-        gyros_error("uninitialized sem in sem_timedwait");
+        gyros_error("uninitialized sem in sem_wait_until");
     if (gyros_in_interrupt())
-        gyros_error("sem_timedwait called from interrupt");
+        gyros_error("sem_wait_until called from interrupt");
 #endif
 
     if (s->value == 0)
@@ -99,7 +99,7 @@ gyros_sem_timedwait(gyros_sem_t *s, gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "sem_timedwait";
+        gyros__state.current->debug_state = "sem_wait_until";
         gyros__state.current->debug_object = s;
 #endif
         gyros_interrupt_restore(flags);
