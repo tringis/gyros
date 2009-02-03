@@ -32,6 +32,21 @@
 
 /** \page porting Porting GyrOS
 
+The GyrOS source code is divided into three parts:
+
+\li The first is the generic part, which consists of code common for
+    all ports.  This is the major part of GyrOS, and it's where task
+    management and synchronization objects are implemented.
+\li The second part is the a architecture specific part, which is code
+    used by a whole set of processors or microcontroller, e.g. support
+    for ARM.  The architecture code implements things like low level
+    task switching and interrupt masking.
+\li The third part is the code which is specific for the target
+    processor or microcontroller, like the ARM based Atmel AT91SAM7S.
+    This part implements timers, startup code and exception handling,
+    and is normally quite straightforward to implement if the
+    architecture is already supported.
+
 \section arch_support Architecture support
 
 \subsection gyros__target_init

@@ -34,8 +34,8 @@
 
 GyrOS is an open source portable real time operating system (RTOS)
 with an easy to use C API.  It is easy to port to new platforms,
-partly because it is written in C, and partly because the bits that
-need to be ported are few and clearly defined.
+partly because it is written in C, but mostly because the bits that
+must be ported are few and clearly defined.
 
 \section features Features
 - Easy to \ref porting "port" to new architectures.
