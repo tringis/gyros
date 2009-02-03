@@ -38,8 +38,8 @@
  * application.
  *---------------------------------------------------------------------*/
 
-/* Called by the port by the timer interrupt to wake up any sleeping
- * tasks. */
+/* Called by the port's timer interrupt handler to wake up any
+ * sleeping tasks. */
 void gyros__wake_timedout_tasks(gyros_abstime_t now);
 
 /* Called by the port when a task exists its main function. */
@@ -66,7 +66,8 @@ void gyros__reschedule(void);
 
 /* Called continuously by the idle task.  Can be used to put the CPU
  * in a low power state while waiting for an interrupt.  Must not
- * sleep or call a blocking function. */
+ * sleep or call a blocking function.  The most simple implementation
+ * is an empty function. */
 void gyros__idle(void);
 
 #if GYROS_CONFIG_DYNTICK

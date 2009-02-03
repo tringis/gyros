@@ -29,8 +29,15 @@
 #ifndef INCLUDED__gyros_task_h__200206071335
 #define INCLUDED__gyros_task_h__200206071335
 
-/** \file task.h
+/** \defgroup task_group Task management
+  *
+  * TBD
+  */
+/*@{*/
+
+/** \file
  * \brief Task management.
+  * \copydoc task_group
  */
 
 #include <gyros/target/config.h>
@@ -170,5 +177,7 @@ void gyros_yield(void);
   * \return             Number of bytes stack used.
   */
 int gyros_task_stack_used(gyros_task_t *task);
+
+/*@}*/
 
 #endif

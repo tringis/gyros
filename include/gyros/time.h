@@ -29,9 +29,30 @@
 #ifndef INCLUDE__gyros_time_h__200808291459
 #define INCLUDE__gyros_time_h__200808291459
 
-/** \file time.h
- * \brief Data types.
- */
+/** \defgroup time Time management
+  *
+  * There are two distinct data types for expressing time in GyrOS:
+  *
+  * \li \ref gyros_abstime_t is used for absolute time, meaning a
+  *     fixed time in the past or in the future.  It expresses
+  *     <em>when</em>, not <em>for how long</em>.
+  * \li \ref gyros_reltime_t is used for relative time, meaning a
+  *     fixed time in the past or in the future.  It expresses <em>for
+  *     how long</em>, not <em>when</em>.
+  *
+  * Both these types are scalar types, but the exact type is
+  * configurable using \ref GYROS_CONFIG_TIME_TYPE.
+  *
+  * All GyrOS functions that has a timeout, e.g.
+  * gyros_sem_wait_until(), takes an absolute time as argument, which
+  * means that the timeout is normally calculated by adding a relative
+  * time to the return value of gyros_time().
+  */
+/*@{*/
+
+/** \file
+  * \brief Time management.
+  */
 
 #include <gyros/target/config.h>
 
@@ -96,5 +117,7 @@ static inline int gyros_time_reached(gyros_abstime_t time)
 {
     return (gyros_reltime_t)(time - gyros_time()) <= 0;
 }
+
+/*@}*/
 
 #endif

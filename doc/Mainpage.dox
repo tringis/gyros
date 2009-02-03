@@ -39,18 +39,18 @@ need to be ported are few and clearly defined.
 
 \section features Features
 - Easy to \ref porting "port" to new architectures.
-- Preemtive multitasking.
+- Preemtive \ref task_group "multitasking".
 - Small memory footprint (both code and RAM).
 - Low power consumption thanks to dynamic timers.
-- Debug support to catch common usage errors and see current task status.
+- \ref debug_group to catch common usage errors and see current task status.
 - Several synchronization techniques:
-  - \ref gyros/sem.h "Semaphore" (binary or counting)
-  - \ref gyros/mutex.h "Mutex" with priority inheritance
-  - \ref gyros/cond.h "Condition variable"
-  - \ref gyros/rwlock.h "Read/write lock"
+  - \ref sem_group (binary or counting)
+  - \ref mutex_group (mutex) with priority inheritance
+  - \ref cond_group
+  - \ref rwlock_group
   - Task \ref gyros_task_suspend "suspend" and \ref gyros_task_resume
     "resume"
-- Permissive BSD-style license allowing for both commercial and
+- Permissive BSD-style \subpage license "license" allowing for both commercial and
   non-commercial use.
 
 \section supported_hw Supported hardware

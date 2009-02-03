@@ -29,8 +29,7 @@
 #ifndef INCLUDED__gyros_mutex_h__200808272211
 #define INCLUDED__gyros_mutex_h__200808272211
 
-/** @file mutex.h
-  * \brief Mutual exclusion (mutex).
+/** \defgroup mutex_group Mutual exclusion
   *
   * A mutex must be initialized before use, either using
   * GYROS_MUTEX_INITVAL() when defining the mutex, or using
@@ -39,6 +38,12 @@
   * Mutexes are not recursive, so calling gyros_mutex_lock() twice
   * from the same task (without calling gyros_mutex_unlock()
   * inbetween) will result in a deadlock.
+  */
+/*@{*/
+
+/** \file
+  * \brief Mutual exclusion (mutex).
+  * \copydoc mutex_group
   */
 
 #include <gyros/target/config.h>
@@ -102,5 +107,7 @@ void gyros_mutex_lock(gyros_mutex_t *m);
   * \param m            Mutex struct pointer.
   */
 void gyros_mutex_unlock(gyros_mutex_t *m);
+
+/*@}*/
 
 #endif

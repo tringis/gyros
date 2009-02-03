@@ -29,8 +29,7 @@
 #ifndef INCLUDED__gyros_rwlock_h__200812121950
 #define INCLUDED__gyros_rwlock_h__200812121950
 
-/** \file rwlock.h
-  * \brief Read/write lock (rwlock).
+/** \defgroup rwlock_group Read/write locks
   *
   * A read/write lock (rwlock) allows multiple read locks
   * simultaneously, but write locks are exclusive, locking out all
@@ -43,6 +42,12 @@
   * Read/write locks are not recursive, so calling a lock function
   * twice (without calling gyros_rwlock_unlock() inbetween) from the
   * same task will result in a deadlock.
+  */
+/*@{*/
+
+/** \file
+  * \brief Read/write lock (rwlock).
+  * \copydoc rwlock_group
   */
 
 #include <gyros/target/config.h>
@@ -140,5 +145,7 @@ int gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
   * \param rwlock       Read/write lock struct pointer.
   */
 void gyros_rwlock_unlock(gyros_rwlock_t *rwlock);
+
+/*@}*/
 
 #endif

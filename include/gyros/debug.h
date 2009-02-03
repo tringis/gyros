@@ -29,14 +29,19 @@
 #ifndef INCLUDED__gyros_debug_h__200812221657
 #define INCLUDED__gyros_debug_h__200812221657
 
-/** @file debug.h
-  * \brief Debugging support.
+/** \defgroup debug_group Debugging support
   *
   * Debugging is enabled when compiled with @c GYROS_DEBUG set to a
   * non-zero value.  When debugging is enabled, many common invalid
   * uses of the GyrOS API is detected, and more information about the
   * status of each task tracked, e.g. if a task is blocking on a
   * mutex, and if so, which mutex.
+  */
+/*@{*/
+
+/** \file
+  * \brief Debugging support.
+  * \copydoc debug_group
   */
 
 /** Set the error handler to @a msg. The default error handler just
@@ -45,5 +50,7 @@
   * \param handler          Error handler function pointer.
   */
 void gyros_set_error_handler(void (*handler)(const char *msg));
+
+/*@}*/
 
 #endif

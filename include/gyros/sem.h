@@ -29,12 +29,17 @@
 #ifndef INCLUDED__gyros_sem_h__200808281430
 #define INCLUDED__gyros_sem_h__200808281430
 
-/** \file sem.h
-  * \brief Semaphores.
+/** \defgroup sem_group Semaphores
   *
   * A semaphore must be initialized before use, either using
   * GYROS_SEM_INITVAL() or GYROS_BINARY_SEM_INITVAL() when defining
   * the semaphore, or using gyros_sem_init().
+  */
+/*@{*/
+
+/** \file
+  * \brief Semaphores.
+  * \copydoc sem_group
  */
 
 #include <limits.h>
@@ -127,5 +132,7 @@ int gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout);
   * \param s            Semaphore struct pointer.
   */
 void gyros_sem_signal(gyros_sem_t *s);
+
+/*@}*/
 
 #endif

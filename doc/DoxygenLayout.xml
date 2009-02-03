@@ -126,14 +126,14 @@
 
   <!-- Layout definition for a group page -->
   <group>
-    <briefdescription visible="yes"/>
+    <detaileddescription title=""/>
     <groupgraph visible="$GROUP_GRAPHS"/>
     <memberdecl>
+      <files visible="yes" title=""/>
       <classes visible="yes" title=""/>
       <namespaces visible="yes" title=""/>
       <dirs visible="yes" title=""/>
       <nestedgroups visible="yes" title=""/>
-      <files visible="yes" title=""/>
       <defines title=""/>
       <typedefs title=""/>
       <enums title=""/>
@@ -148,7 +148,6 @@
       <properties title=""/>
       <friends title=""/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <defines title=""/>

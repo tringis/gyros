@@ -29,12 +29,17 @@
 #ifndef INCLUDED__gyros_cond_h__200808272231
 #define INCLUDED__gyros_cond_h__200808272231
 
-/** \file cond.h
-  * \brief Condition variable.
+/** \defgroup cond_group Condition variables
   *
   * A condition variable must be initialized before use, either using
   * GYROS_COND_INITVAL() when defining the condition variable, or
   * using gyros_cond_init().
+  */
+/*@{*/
+
+/** \file
+  * \brief Condition variable.
+  * \copydoc cond_group
   */
 
 #include <gyros/target/config.h>
@@ -109,5 +114,7 @@ void gyros_cond_signal_one(gyros_cond_t *c);
   * \param c            Condition variable struct pointer.
   */
 void gyros_cond_signal_all(gyros_cond_t *c);
+
+/*@}*/
 
 #endif
