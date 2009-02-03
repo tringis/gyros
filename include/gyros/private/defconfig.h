@@ -33,10 +33,6 @@
 #define GYROS_CONFIG_DEBUG 1
 #endif
 
-#ifndef GYROS_CONFIG_DELETE
-#define GYROS_CONFIG_DELETE 1
-#endif
-
 #ifndef GYROS_CONFIG_DYNTICK
 #error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
 #endif
