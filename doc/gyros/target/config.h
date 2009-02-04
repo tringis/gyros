@@ -29,28 +29,46 @@
 #ifndef INCLUDED__gyros_private_defconfig_h__200901021029
 #define INCLUDED__gyros_private_defconfig_h__200901021029
 
-#ifndef GYROS_CONFIG_DEBUG
+/** \defgroup config_group GyrOS configuration
+  *
+  * A few aspects of GyrOS can be configured as build time using the
+  * include file \c gyros/target/config.h.  This file is port specific
+  * and should be copied from the port's examples directory,
+  * e.g. @c port/at91sam7s/examples/include/gyros/target/config.h.
+  */
+
+/*@{*/
+
+/** \file
+  * \brief GyrOS configuration.
+  * \copydoc config_group
+  */
+
+/** If defined to a non-zero value, this variable enables debugging
+  * support.  The cost of enabling debugging support is higher memory
+  * usage and a small performance penalty.  See "\ref debug_group". */
 #define GYROS_CONFIG_DEBUG 1
-#endif
 
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
-
-#ifndef GYROS_CONFIG_ITERATE
+/** If defined to a non-zero value, this variable enables support for
+  * gyros_task_iterate() at the cost of a few extra bytes memory usage
+  * per task. */
 #define GYROS_CONFIG_ITERATE 1
-#endif
 
-#ifndef GYROS_CONFIG_STACK_USED
+/** If defined to a non-zero value, this variable enables support for
+  * gyros_task_stack_used() at the cost of a performance hit when
+  * creating a new task.  The reason for the performance hit is that
+  * the task's stack must be filled with a known data pattern. */
 #define GYROS_CONFIG_STACK_USED 1
-#endif
 
-#ifndef GYROS_CONFIG_TIME_TYPE
+/** Base data type for \ref gyros_abstime_t and \ref
+  * gyros_reltime_t. */
 #define GYROS_CONFIG_TIME_TYPE long long
-#endif
 
-#ifndef GYROS_CONFIG_WAIT
+/** If defined to a non-zero value, this variable enables support for
+  * gyros_task_wait() and gyros_task_wait_until() at the cost of a few
+  * extra bytes memory usage per task. */
 #define GYROS_CONFIG_WAIT 1
-#endif
+
+/*@}*/
 
 #endif
