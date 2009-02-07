@@ -193,5 +193,9 @@ gyros_task_create(gyros_task_t *task,
 #endif
     add_task_to_list(task, &gyros__state.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list);
+#if GYROS_CONFIG_MESSAGE_QUEUE
+    GYROS__LIST_NODE_INIT(&task->msg_list);
+    task->receiving = 0;
+#endif
     gyros_interrupt_restore(flags);
 }
