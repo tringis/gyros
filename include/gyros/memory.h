@@ -26,23 +26,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
+#ifndef INCLUDED__gyros_memory_h__200902072124
+#define INCLUDED__gyros_memory_h__200902072124
 
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
+/** \defgroup memory_group Memory management
+  *
+  * TBD
   */
+/*@{*/
 
-#include <gyros/cond.h>
-#include <gyros/debug.h>
-#include <gyros/interrupt.h>
-#include <gyros/iterate.h>
-#include <gyros/memory.h>
-#include <gyros/mutex.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
-#include <gyros/time.h>
+/** \file
+ * \brief memory management.
+  * \copydoc task_group
+ */
+
+/** Create a zone pool, which is a memory pool where all blocks (or
+  * zones) have the same size.  Zone pools are interrupt safe, meaning
+  * that zones can be allocated and freed from interrupts.
+  *
+  * \param pool         Address of memory area to be used for the
+  *                     pool.
+  * \param pool_size    Size in bytes of memory area to be used for
+  *                     the pool.
+  * \param zone_size    Size of each zone.
+  */
+void gyros_zpool_init(void *pool, unsigned pool_size, unsigned zone_size);
+
+/** Get the total number zones in the zone pool.
+  *
+  * \return             Total number of zones.
+  */
+unsigned gyros_zpool_get_size(void *pool);
+
+/** Get the number of unallocated zones in the zone pool.
+  *
+  * \return             Total number of unallocated (free) zones.
+  */
+unsigned gyros_zpool_get_free(void *pool);
+
+/** Allocate a zone from the zone pool.
+  *
+  * \param pool         Address of zone pool.
+  * \return             Address to zone, or @c NULL if there were
+  *                     no free zones.
+  */
+void *gyros_zalloc(void *pool);
+
+/** Free memory at @a addr.  Does nothing if @a addr is @c NULL.
+  *
+  * \param addr         Address of memory to be freed.
+  */
+void gyros_free(void *addr);
+
+/*@}*/
 
 #endif

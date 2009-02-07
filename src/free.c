@@ -26,23 +26,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
-
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
-  */
-
-#include <gyros/cond.h>
-#include <gyros/debug.h>
-#include <gyros/interrupt.h>
-#include <gyros/iterate.h>
 #include <gyros/memory.h>
-#include <gyros/mutex.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
-#include <gyros/time.h>
 
-#endif
+#include <stddef.h>
+
+struct gyros__allocator_header
+{
+    void (*free)(void *addr);
+};
+
+struct gyros__block_header
+{
+    struct gyros__allocator_header *allocator_header;
+};
+
+void
+gyros_free(void *addr)
+{
+    if (addr != NULL)
+    {
+        struct gyros__block_header *h = (struct gyros__block_header*)addr - 1;
+
+        h->allocator_header->free(addr);
+    }
+}
