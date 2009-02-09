@@ -40,6 +40,7 @@
 #include <gyros/memory.h>
 #include <gyros/message.h>
 #include <gyros/mutex.h>
+#include <gyros/mq.h>
 #include <gyros/rwlock.h>
 #include <gyros/sem.h>
 #include <gyros/sleep.h>
