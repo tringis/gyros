@@ -68,11 +68,6 @@ typedef struct
     struct gyros__list_node task_list; /**< \internal */
 #endif
 
-#if GYROS_CONFIG_MESSAGE_QUEUE
-    struct gyros__list_node msg_list; /**< \internal */
-    unsigned char receiving; /**< \internal */
-#endif
-
     const char *name; /**< Task name. */
     void *stack; /**< Task stack base address. */
     int stack_size; /**< Task stack size in bytes. */
