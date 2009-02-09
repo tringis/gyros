@@ -37,17 +37,18 @@
 
 #if GYROS_CONFIG_MESSAGE_QUEUE
 void
-gyros_send(gyros_task_t *task, gyros_msg_t *msg)
+gyros_send(gyros_task_t *task, void *msg)
 {
     unsigned long flags = gyros_interrupt_disable();
+    gyros_msghdr_t *msghdr = msg;
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
         gyros_error("send to non-task");
 #endif
 
-    msg->sender = gyros_in_interrupt() ? NULL : gyros__state.current;
-    gyros__list_insert_before(&msg->list, &task->msg_list);
+    msghdr->sender = gyros_in_interrupt() ? NULL : gyros__state.current;
+    gyros__list_insert_before(&msghdr->list, &task->msg_list);
     if (task->receiving)
     {
         task->receiving = 0;
@@ -60,18 +61,18 @@ gyros_send(gyros_task_t *task, gyros_msg_t *msg)
         gyros_interrupt_restore(flags);
 }
 
-gyros_msg_t*
+void*
 gyros_receive(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    gyros_msg_t *msg;
+    gyros_msghdr_t *msghdr;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
         gyros_error("receive called from interrupt");
 #endif
 
-    if (gyros__list_empty(&gyros__state.current->msg_list))
+    while (gyros__list_empty(&gyros__state.current->msg_list))
     {
         gyros__state.current->receiving = 1;
         gyros__list_remove(&gyros__state.current->main_list);
@@ -84,12 +85,50 @@ gyros_receive(void)
         flags = gyros_interrupt_disable();
         gyros__state.current->receiving = 0;
     }
-    msg = GYROS__LIST_CONTAINER(gyros__state.current->msg_list.next,
-                                gyros_msg_t, list);
+    msghdr = GYROS__LIST_CONTAINER(gyros__state.current->msg_list.next,
+                                   gyros_msghdr_t, list);
     gyros__list_remove(gyros__state.current->msg_list.next);
     gyros_interrupt_restore(flags);
 
-    return msg;
+    return msghdr;
+}
+
+void*
+gyros_receive_until(gyros_abstime_t timeout)
+{
+    unsigned long flags = gyros_interrupt_disable();
+    gyros_msghdr_t *msghdr;
+
+#if GYROS_CONFIG_DEBUG
+    if (gyros_in_interrupt())
+        gyros_error("receive called from interrupt");
+#endif
+
+    if (gyros__list_empty(&gyros__state.current->msg_list))
+    {
+        gyros__state.current->receiving = 1;
+        gyros__list_remove(&gyros__state.current->main_list);
+        gyros__task_set_timeout(timeout);
+#if GYROS_CONFIG_DEBUG
+        gyros__state.current->debug_state = "receive";
+        gyros__state.current->debug_object = NULL;
+#endif
+        gyros_interrupt_restore(flags);
+        gyros__cond_reschedule();
+        flags = gyros_interrupt_disable();
+        gyros__state.current->receiving = 0;
+        if (gyros__list_empty(&gyros__state.current->msg_list))
+        {
+            gyros_interrupt_restore(flags);
+            return NULL;
+        }
+    }
+    msghdr = GYROS__LIST_CONTAINER(gyros__state.current->msg_list.next,
+                                   gyros_msghdr_t, list);
+    gyros__list_remove(gyros__state.current->msg_list.next);
+    gyros_interrupt_restore(flags);
+
+    return msghdr;
 }
 
 #endif

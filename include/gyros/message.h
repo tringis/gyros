@@ -46,16 +46,14 @@
 #include <gyros/task.h>
 #include <gyros/time.h>
 
-/** \brief Message struct.
+/** \brief Message header struct.
   *
-  * This is the struct representing a message.  Since the message
-  * itself does not contain any data, it is normally used as the first
-  * member of an application specific struct that also contains the
-  * actual data, as illustrated by the following example:
+  * This struct must be the first member of any struct representing a
+  * message.  See the following example:
 \code
 struct my_message
 {
-    gyros_msg_t header;
+    gyros_msghdr_t hdr;
     int my_data;
 };
 \endcode
@@ -67,20 +65,20 @@ typedef struct
     /** Pointer to the sender task, or @c NULL if the message was sent
       * from interrupt context. */
     gyros_task_t *sender;
-} gyros_msg_t;
+} gyros_msghdr_t;
 
 /** Send the message @a msg to @a task.
   *
   * \param task         Task to which the message is sent.
   * \param msg          Message to send.
   */
-void gyros_send(gyros_task_t *task, gyros_msg_t *msg);
+void gyros_send(gyros_task_t *task, void *msg);
 
 /** Receive the next message from the current task's message queue.
   *
   * \return             Address of message.  Never NULL.
   */
-gyros_msg_t *gyros_receive(void);
+void *gyros_receive(void);
 
 /** Receive the next message from the current task's message queue, or
   * return @a NULL if @a timeout has passed.
@@ -89,7 +87,7 @@ gyros_msg_t *gyros_receive(void);
   * \return             Address of message, or @c NULL if @a timeout
   *                     was reached before a message was received.
   */
-gyros_msg_t *gyros_receive_until(gyros_abstime_t timeout);
+void *gyros_receive_until(gyros_abstime_t timeout);
 
 /*@}*/
 
