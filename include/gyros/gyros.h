@@ -38,6 +38,7 @@
 #include <gyros/interrupt.h>
 #include <gyros/iterate.h>
 #include <gyros/memory.h>
+#include <gyros/message.h>
 #include <gyros/mutex.h>
 #include <gyros/rwlock.h>
 #include <gyros/sem.h>
