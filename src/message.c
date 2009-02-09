@@ -110,7 +110,7 @@ gyros_receive_until(gyros_abstime_t timeout)
         gyros__list_remove(&gyros__state.current->main_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "receive";
+        gyros__state.current->debug_state = "receive_until";
         gyros__state.current->debug_object = NULL;
 #endif
         gyros_interrupt_restore(flags);
