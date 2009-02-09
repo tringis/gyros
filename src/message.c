@@ -26,14 +26,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#if GYROS_CONFIG_MESSAGE_QUEUE
+#include <gyros/message.h>
 
 #include <gyros/interrupt.h>
+#include <gyros/target/config.h>
 
 #include <stddef.h>
 
 #include "private.h"
 
+#if GYROS_CONFIG_MESSAGE_QUEUE
 void
 gyros_send(gyros_task_t *task, gyros_msg_t *msg)
 {
@@ -45,7 +47,7 @@ gyros_send(gyros_task_t *task, gyros_msg_t *msg)
 #endif
 
     msg->sender = gyros_in_interrupt() ? NULL : gyros__state.current;
-    gyros__list_insert_before(&task->msg_list, &msg->list);
+    gyros__list_insert_before(&msg->list, &task->msg_list);
     if (task->receiving)
     {
         task->receiving = 0;

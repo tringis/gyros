@@ -43,6 +43,7 @@
 #include <gyros/target/config.h>
 #include <gyros/private/debug.h>
 #include <gyros/private/list.h>
+#include <gyros/task.h>
 #include <gyros/time.h>
 
 /** \brief Message struct.
