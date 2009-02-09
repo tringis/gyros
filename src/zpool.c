@@ -87,7 +87,7 @@ gyros_zalloc(void *pool)
     }
 
     ep->bitmap[word] |= mask;
-    ep->free_blocks++;
+    ep->free_blocks--;
     gyros_interrupt_restore(flags);
 
     bh = (struct block*)((char*)ep + ep->first_block_offset +
@@ -109,6 +109,6 @@ gyros_zpool_free(void *addr)
 
     flags = gyros_interrupt_disable();
     bh->pool->bitmap[bh->index / BPU] &= ~(1U << (bh->index % BPU));
-    bh->pool->free_blocks--;
+    bh->pool->free_blocks++;
     gyros_interrupt_restore(flags);
 }
