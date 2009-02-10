@@ -112,7 +112,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
     if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
         gyros_error("uninitialized mq in mq_send");
     if (gyros_in_interrupt())
-        gyros_error("mq_receive called from interrupt");
+        gyros_error("mq_receive_until called from interrupt");
 #endif
 
     if (gyros__list_empty(&mq->msg_list))
@@ -120,7 +120,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
         gyros__task_move(gyros__state.current, &mq->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "mq_receive";
+        gyros__state.current->debug_state = "mq_receive_until";
         gyros__state.current->debug_object = mq;
 #endif
         gyros_interrupt_restore(flags);
