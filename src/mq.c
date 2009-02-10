@@ -77,12 +77,15 @@ gyros_mq_receive(gyros_mq_t *mq)
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
         gyros_error("uninitialized mq in mq_send");
-    if (gyros_in_interrupt())
-        gyros_error("mq_receive called from interrupt");
 #endif
 
     while (gyros__list_empty(&mq->msg_list))
     {
+        if (gyros_in_interrupt())
+        {
+            gyros_interrupt_restore(flags);
+            return NULL;
+        }
         gyros__task_move(gyros__state.current, &mq->task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "mq_receive";
