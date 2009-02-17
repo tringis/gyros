@@ -67,7 +67,7 @@ gyros_sem_wait(gyros_sem_t *s)
         gyros_error("sem_wait called from interrupt");
 #endif
 
-    while (s->value == 0)
+    while (unlikely(s->value == 0))
     {
         gyros__task_move(gyros__state.current, &s->task_list);
 #if GYROS_CONFIG_DEBUG
@@ -94,7 +94,7 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         gyros_error("sem_wait_until called from interrupt");
 #endif
 
-    if (s->value == 0)
+    if (unlikely(s->value == 0))
     {
         gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_set_timeout(timeout);
@@ -127,7 +127,7 @@ gyros_sem_signal(gyros_sem_t *s)
         gyros_error("uninitialized sem in sem_signal");
 #endif
 
-    if (s->value >= s->max_value)
+    if (unlikely(s->value >= s->max_value))
         gyros_interrupt_restore(flags);
     else
     {

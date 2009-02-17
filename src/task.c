@@ -132,7 +132,7 @@ gyros__cond_reschedule(void)
         gyros_error("cond_reschedule called from interrupt");
 #endif
 
-    if (TASK(gyros__state.running.next) != gyros__state.current)
+    if (unlikely(TASK(gyros__state.running.next) != gyros__state.current))
         gyros__reschedule();
     gyros_interrupt_restore(flags);
 }

@@ -79,7 +79,7 @@ gyros_mq_receive(gyros_mq_t *mq)
         gyros_error("uninitialized mq in mq_send");
 #endif
 
-    while (gyros__list_empty(&mq->msg_list))
+    while (unlikely(gyros__list_empty(&mq->msg_list)))
     {
         if (gyros_in_interrupt())
         {
@@ -115,7 +115,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
         gyros_error("mq_receive_until called from interrupt");
 #endif
 
-    if (gyros__list_empty(&mq->msg_list))
+    if (unlikely(gyros__list_empty(&mq->msg_list)))
     {
         gyros__task_move(gyros__state.current, &mq->task_list);
         gyros__task_set_timeout(timeout);

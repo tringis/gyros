@@ -56,7 +56,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
         gyros_error("mutex_try_lock called from interrupt");
 #endif
 
-    if (m->owner)
+    if (unlikely(m->owner != NULL))
     {
         gyros_interrupt_restore(flags);
         return 0;
@@ -83,7 +83,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros_error("mutex_lock deadlock");
 #endif
 
-    while (m->owner)
+    while (unlikely(m->owner != NULL))
     {
         gyros__task_move(gyros__state.current, &m->task_list);
         /* Implement priority inheritance to prevent priority
@@ -122,12 +122,12 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 #endif
 
     m->owner = NULL;
-    if (gyros__state.current->raised_priority)
+    if (unlikely(gyros__state.current->raised_priority))
     {
         gyros__state.current->raised_priority = 0;
         gyros__state.current->priority = m->owner_priority;
     }
-    if (gyros__list_empty(&m->task_list))
+    if (likely(gyros__list_empty(&m->task_list)))
         gyros_interrupt_restore(flags);
     else
     {
