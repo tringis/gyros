@@ -138,7 +138,7 @@ gyros_task_t *gyros_task_wait_until(gyros_abstime_t timeout);
   *
   * \return             Struct pointer to current task.
   */
-gyros_task_t *gyros_task_current(void);
+gyros_task_t *gyros_task_current(void) __attribute__((__const__));
 
 /** Get the priority of @a task.
   *
