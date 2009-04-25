@@ -32,7 +32,7 @@
 #if GYROS_CONFIG_DEBUG
 
 #if GYROS_CONFIG_DEBUG
-#define GYROS_TASK_DEBUG_MAGIC         0xefcd6711
+#define GYROS_TASK_DEBUG_MAGIC         ((unsigned)0xefcd6711)
 
 void gyros_error(const char *msg);
 #endif
