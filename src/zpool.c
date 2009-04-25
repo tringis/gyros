@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #include <gyros/interrupt.h>
+#include <gyros/private/debug.h>
 
 #define BPU (8U * sizeof(unsigned)) /* BPU = Bits Per Unsigned */
 
