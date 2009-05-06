@@ -58,7 +58,7 @@
  |                 - must not be run in user or system mode               |
  *------------------------------------------------------------------------*/
 .macro restore_context
-#if GYROS_CONFIG_CONTEXT_HOOK
+#if GYROS_CONFIG_CONTEXT_HOOK || GYROS_CONFIG_TRACE
 	ldr	r0, =gyros__context_hook
 	mov	lr, pc
 	bx	r0

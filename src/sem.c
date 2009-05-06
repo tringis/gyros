@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/sem.h>
 
 #include "private.h"
@@ -67,8 +68,10 @@ gyros_sem_wait(gyros_sem_t *s)
         gyros_error("sem_wait called from interrupt");
 #endif
 
+    GYROS__TRACE_SEM(WAIT, s);
     while (unlikely(s->value == 0))
     {
+        GYROS__TRACE_SEM(BLOCK, s);
         gyros__task_move(gyros__state.current, &s->task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "sem_wait";
@@ -79,6 +82,7 @@ gyros_sem_wait(gyros_sem_t *s)
         flags = gyros_interrupt_disable();
     }
     s->value--;
+    GYROS__TRACE_SEM(AQUIRED, s);
     gyros_interrupt_restore(flags);
 }
 
@@ -94,8 +98,10 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         gyros_error("sem_wait_until called from interrupt");
 #endif
 
+    GYROS__TRACE_SEM(WAIT, s);
     if (unlikely(s->value == 0))
     {
+        GYROS__TRACE_SEM(BLOCK, s);
         gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
@@ -112,6 +118,7 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         }
     }
     s->value--;
+    GYROS__TRACE_SEM(AQUIRED, s);
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -127,6 +134,7 @@ gyros_sem_signal(gyros_sem_t *s)
         gyros_error("uninitialized sem in sem_signal");
 #endif
 
+    GYROS__TRACE_SEM(SIGNAL, s);
     if (unlikely(s->value >= s->max_value))
         gyros_interrupt_restore(flags);
     else

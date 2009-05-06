@@ -26,43 +26,78 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
-#define INCLUDED__gyros_private_defconfig_h__200901021029
+#ifndef INCLUDED__gyros_trace_h__200905062204
+#define INCLUDED__gyros_trace_h__200905062204
 
-#ifndef GYROS_CONFIG_DEBUG
-#define GYROS_CONFIG_DEBUG 1
-#endif
+#include <gyros/task.h>
+#include <gyros/sem.h>
+#include <gyros/mutex.h>
+#include <gyros/cond.h>
 
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
+/** \file trace.h
+ * \brief Trace functions.
+ */
 
-#ifndef GYROS_CONFIG_ITERATE
-#define GYROS_CONFIG_ITERATE 1
-#endif
+enum gyros_trace_kind
+{
+    GYROS_TRACE_IRQ,
+    GYROS_TRACE_CONTEXT,
+    GYROS_TRACE_TIMEOUT,
+    GYROS_TRACE_SEM_WAIT,
+    GYROS_TRACE_SEM_BLOCK,
+    GYROS_TRACE_SEM_AQUIRED,
+    GYROS_TRACE_SEM_SIGNAL,
+    GYROS_TRACE_MUTEX_LOCK,
+    GYROS_TRACE_MUTEX_BLOCK,
+    GYROS_TRACE_MUTEX_AQUIRED,
+    GYROS_TRACE_MUTEX_UNLOCK
+};
 
-#ifndef GYROS_CONFIG_STACK_USED
-#define GYROS_CONFIG_STACK_USED 1
-#endif
+struct gyros_trace_irq
+{
+};
 
-#ifndef GYROS_CONFIG_TIME_TYPE
-#define GYROS_CONFIG_TIME_TYPE long long
-#endif
+struct gyros_trace_context
+{
+    gyros_task_t *next;
+};
 
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
-#endif
+struct gyros_trace_sem
+{
+    gyros_sem_t *sem;
+    unsigned value;
+};
 
-#ifndef GYROS_CONFIG_CONTEXT_HOOK
-#define GYROS_CONFIG_CONTEXT_HOOK 0
-#endif
+struct gyros_trace_mutex
+{
+    gyros_mutex_t *mutex;
+};
 
-#ifndef GYROS_CONFIG_IRQ_HOOK
-#define GYROS_CONFIG_IRQ_HOOK 0
-#endif
+struct gyros_trace_cond
+{
+    gyros_cond_t *cond;
+};
 
-#ifndef GYROS_CONFIG_TRACE
-#define GYROS_CONFIG_TRACE 0
-#endif
+typedef struct
+{
+    gyros_abstime_t timestamp;
+    gyros_task_t *task;
+
+    union
+    {
+        struct gyros_trace_irq irq;
+        struct gyros_trace_context context;
+        struct gyros_trace_sem sem;
+        struct gyros_trace_mutex mutex;
+    } info;
+} gyros_trace_t;
+
+void gyros_trace_init(void *log, int log_size);
+
+void gyros_trace_enable(void);
+
+void gyros_trace_disable(void);
+
+gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
 
 #endif

@@ -26,43 +26,59 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
-#define INCLUDED__gyros_private_defconfig_h__200901021029
+#include <gyros/trace.h>
 
-#ifndef GYROS_CONFIG_DEBUG
-#define GYROS_CONFIG_DEBUG 1
-#endif
+#include <stddef.h>
 
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
+#include "private.h"
 
-#ifndef GYROS_CONFIG_ITERATE
-#define GYROS_CONFIG_ITERATE 1
-#endif
+int gyros__trace_enabled;
 
-#ifndef GYROS_CONFIG_STACK_USED
-#define GYROS_CONFIG_STACK_USED 1
-#endif
+static gyros_trace_t *s_log_begin;
+static gyros_trace_t *s_log_end;
+static gyros_trace_t *s_log_pos;
 
-#ifndef GYROS_CONFIG_TIME_TYPE
-#define GYROS_CONFIG_TIME_TYPE long long
-#endif
+void
+gyros_trace_init(void *log, int log_size)
+{
+    int n = log_size / sizeof(gyros_trace_t);
 
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
-#endif
+    s_log_begin = log; /* TODO: Fix alignment!!! */
+    s_log_end = s_log_begin + n;
+    s_log_pos = s_log_begin;
+}
 
-#ifndef GYROS_CONFIG_CONTEXT_HOOK
-#define GYROS_CONFIG_CONTEXT_HOOK 0
-#endif
+void
+gyros_trace_enable(void)
+{
+    gyros__trace_enabled = 1;
+}
 
-#ifndef GYROS_CONFIG_IRQ_HOOK
-#define GYROS_CONFIG_IRQ_HOOK 0
-#endif
+void
+gyros_trace_disable(void)
+{
+    gyros__trace_enabled = 0;
+}
 
-#ifndef GYROS_CONFIG_TRACE
-#define GYROS_CONFIG_TRACE 0
-#endif
+gyros_trace_t*
+gyros_trace_iterate(gyros_trace_t *prev)
+{
+    if (!prev)
+        return s_log_pos;
 
-#endif
+    return ++prev == s_log_pos ? NULL : prev;
+}
+
+gyros_trace_t*
+gyros__trace(enum gyros_trace_kind kind)
+{
+    gyros_trace_t *t = s_log_pos++;
+
+    if (unlikely(s_log_pos == s_log_end))
+        s_log_pos = s_log_begin;
+
+    t->timestamp = gyros_time();
+    t->task = gyros__state.current;
+
+    return t;
+}

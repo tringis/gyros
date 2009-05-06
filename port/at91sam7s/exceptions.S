@@ -60,6 +60,11 @@ gyros__swi_handler:
 	.global	gyros__irq_handler
 gyros__irq_handler:
 	save_context
+#if GYROS_CONFIG_IRQ_HOOK || GYROS_CONFIG_TRACE
+	ldr	r0, =gyros__irq_hook
+	mov	lr, pc
+	bx	r0
+#endif
 	ldr	r0, =AIC_IVR
 	ldr	r0, [r0]
 	mov	lr, pc

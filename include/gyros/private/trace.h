@@ -26,43 +26,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
-#define INCLUDED__gyros_private_defconfig_h__200901021029
+#ifndef INCLUDED__gyros_private_trace_h__200905062242
+#define INCLUDED__gyros_private_trace_h__200905062242
 
-#ifndef GYROS_CONFIG_DEBUG
-#define GYROS_CONFIG_DEBUG 1
+#include <gyros/trace.h>
+#include <gyros/target/config.h>
+
+#if GYROS_CONFIG_TRACE
+
+extern int gyros__trace_enabled;
+
+#define GYROS__TRACE_SEM(kind, s)                                             \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_SEM_ ## kind);     \
+        gyros__t->info.sem.sem = (s);                                         \
+        gyros__t->info.sem.value = (s)->value;                                \
+    }
+
+#define GYROS__TRACE_MUTEX(kind, m)                                           \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MUTEX_ ## kind);   \
+        gyros__t->info.mutex.mutex = (m);                                     \
+    }
+
+#else
+
+#define GYROS__TRACE_SEM(kind, s)
+#define GYROS__TRACE_MUTEX(kind, m)
+
 #endif
 
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
-
-#ifndef GYROS_CONFIG_ITERATE
-#define GYROS_CONFIG_ITERATE 1
-#endif
-
-#ifndef GYROS_CONFIG_STACK_USED
-#define GYROS_CONFIG_STACK_USED 1
-#endif
-
-#ifndef GYROS_CONFIG_TIME_TYPE
-#define GYROS_CONFIG_TIME_TYPE long long
-#endif
-
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
-#endif
-
-#ifndef GYROS_CONFIG_CONTEXT_HOOK
-#define GYROS_CONFIG_CONTEXT_HOOK 0
-#endif
-
-#ifndef GYROS_CONFIG_IRQ_HOOK
-#define GYROS_CONFIG_IRQ_HOOK 0
-#endif
-
-#ifndef GYROS_CONFIG_TRACE
-#define GYROS_CONFIG_TRACE 0
-#endif
+gyros_trace_t *gyros__trace(enum gyros_trace_kind kind);
 
 #endif

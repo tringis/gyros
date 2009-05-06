@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/mutex.h>
 
 #include <stddef.h>
@@ -56,6 +57,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
         gyros_error("mutex_try_lock called from interrupt");
 #endif
 
+    GYROS__TRACE_MUTEX(LOCK, m);
     if (unlikely(m->owner != NULL))
     {
         gyros_interrupt_restore(flags);
@@ -64,6 +66,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
 
     m->owner = gyros__state.current;
     m->owner_priority = gyros__state.current->priority;
+    GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -83,6 +86,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros_error("mutex_lock deadlock");
 #endif
 
+    GYROS__TRACE_MUTEX(LOCK, m);
     while (unlikely(m->owner != NULL))
     {
         gyros__task_move(gyros__state.current, &m->task_list);
@@ -104,6 +108,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
 
     m->owner = gyros__state.current;
     m->owner_priority = gyros__state.current->priority;
+    GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 }
 
@@ -127,6 +132,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
         gyros__state.current->raised_priority = 0;
         gyros__state.current->priority = m->owner_priority;
     }
+    GYROS__TRACE_MUTEX(UNLOCK, m);
     if (likely(gyros__list_empty(&m->task_list)))
         gyros_interrupt_restore(flags);
     else

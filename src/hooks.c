@@ -28,26 +28,55 @@
  **************************************************************************/
 #include <gyros/hooks.h>
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
+
+#include <stddef.h>
 
 #include "private.h"
 
+#if GYROS_CONFIG_CONTEXT_HOOK
 static void (*s_context_hook)(gyros_task_t *current, gyros_task_t *next);
-static void (*s_irq_hook)(void);
+#endif
 
+#if GYROS_CONFIG_IRQ_HOOK
+static void (*s_irq_hook)(void);
+#endif
+
+#if GYROS_CONFIG_CONTEXT_HOOK || GYROS_CONFIG_TRACE
 void
 gyros__context_hook(void)
 {
-    if (s_context_hook)
-        s_context_hook(gyros__state.current, TASK(gyros__state.running.next));
-}
+    gyros_task_t *next = TASK(gyros__state.running.next);
 
+#if GYROS_CONFIG_TRACE
+    if (unlikely(gyros__trace_enabled))
+        gyros__trace(GYROS_TRACE_IRQ)->info.context.next = next;
+#endif
+
+#if GYROS_CONFIG_CONTEXT_HOOK
+    if (unlikely(s_context_hook != NULL))
+        s_context_hook(gyros__state.current, next);
+#endif
+}
+#endif
+
+#if GYROS_CONFIG_IRQ_HOOK || GYROS_CONFIG_TRACE
 void
 gyros__irq_hook(void)
 {
-    if (s_irq_hook)
-        s_irq_hook();
-}
+#if GYROS_CONFIG_TRACE
+    if (unlikely(gyros__trace_enabled))
+        gyros__trace(GYROS_TRACE_IRQ)->task = NULL;
+#endif
 
+#if GYROS_CONFIG_IRQ_HOOK
+    if (unlikely(s_irq_hook != NULL))
+        s_irq_hook();
+#endif
+}
+#endif
+
+#if GYROS_CONFIG_CONTEXT_HOOK
 void
 gyros_set_context_hook(void (*context_hook)(gyros_task_t *current,
                                             gyros_task_t *next))
@@ -57,7 +86,9 @@ gyros_set_context_hook(void (*context_hook)(gyros_task_t *current,
     s_context_hook = context_hook;
     gyros_interrupt_restore(flags);
 }
+#endif
 
+#if GYROS_CONFIG_IRQ_HOOK
 void gyros_set_irq_hook(void (*irq_hook)(void))
 {
     unsigned long flags = gyros_interrupt_disable();
@@ -65,3 +96,4 @@ void gyros_set_irq_hook(void (*irq_hook)(void))
     s_irq_hook = irq_hook;
     gyros_interrupt_restore(flags);
 }
+#endif
