@@ -40,6 +40,19 @@
   * \copydoc task_group
  */
 
+/** Calculate the pool size in bytes required to store an exact number
+  * of zones.
+  *
+  * \param num_zones    Number of zones.
+  * \param zone_size    Size of the zones.
+  * \return             Required pool size in bytes.
+  */
+#define GYROS_ZPOOL_SIZE(num_zones, zone_size)                          \
+    (sizeof(void*) +                                                    \
+     (4 + ((num_zones) + 8 * sizeof(unsigned) - 1) /                    \
+           (8 * sizeof(unsigned))) +                                    \
+     (num_zones) * (sizeof(unsigned) + sizeof(void*)))
+
 /** Create a zone pool, which is a memory pool where all blocks (or
   * zones) have the same size.  Zone pools are interrupt safe, meaning
   * that zones can be allocated and freed from interrupts.
