@@ -27,6 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 
+#include <gyros/target/config.h>
+
 /**************************************************************************
  * Macros                                                                 *
  **************************************************************************/	
@@ -56,6 +58,11 @@
  |                 - must not be run in user or system mode               |
  *------------------------------------------------------------------------*/
 .macro restore_context
+#if GYROS_CONFIG_CONTEXT_HOOK
+	ldr	r0, =gyros__context_hook
+	mov	lr, pc
+	bx	r0
+#endif
 	// Load address of gyros__state to r0
 	ldr		r0, =gyros__state
 	// Load gyros__state.running.next to lr

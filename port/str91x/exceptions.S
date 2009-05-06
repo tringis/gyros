@@ -60,6 +60,11 @@ gyros__swi_handler:
 	.global	gyros__irq_handler
 gyros__irq_handler:
 	save_context
+#if GYROS_CONFIG_IRQ_HOOK
+	ldr	r0, =gyros__irq_hook
+	mov	lr, pc
+	bx	r0
+#endif
 	ldr	r0, =VIC0_VAR
 	ldr	r0, [r0]
 	ldr	r1, =VIC1_VAR

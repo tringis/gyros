@@ -35,6 +35,7 @@
 
 #include <gyros/cond.h>
 #include <gyros/debug.h>
+#include <gyros/hooks.h>
 #include <gyros/interrupt.h>
 #include <gyros/iterate.h>
 #include <gyros/memory.h>

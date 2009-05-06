@@ -26,39 +26,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_defconfig_h__200901021029
-#define INCLUDED__gyros_private_defconfig_h__200901021029
+#include <gyros/hooks.h>
+#include <gyros/interrupt.h>
 
-#ifndef GYROS_CONFIG_DEBUG
-#define GYROS_CONFIG_DEBUG 1
-#endif
+#include "private.h"
 
-#ifndef GYROS_CONFIG_DYNTICK
-#error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
-#endif
+static void (*s_context_hook)(gyros_task_t *current, gyros_task_t *next);
+static void (*s_irq_hook)(void);
 
-#ifndef GYROS_CONFIG_ITERATE
-#define GYROS_CONFIG_ITERATE 1
-#endif
+void
+gyros__context_hook(void)
+{
+    if (s_context_hook)
+        s_context_hook(gyros__state.current, TASK(gyros__state.running.next));
+}
 
-#ifndef GYROS_CONFIG_STACK_USED
-#define GYROS_CONFIG_STACK_USED 1
-#endif
+void
+gyros__irq_hook(void)
+{
+    if (s_irq_hook)
+        s_irq_hook();
+}
 
-#ifndef GYROS_CONFIG_TIME_TYPE
-#define GYROS_CONFIG_TIME_TYPE long long
-#endif
+void
+gyros_set_context_hook(void (*context_hook)(gyros_task_t *current,
+                                            gyros_task_t *next))
+{
+    unsigned long flags = gyros_interrupt_disable();
 
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
-#endif
+    s_context_hook = context_hook;
+    gyros_interrupt_restore(flags);
+}
 
-#ifndef GYROS_CONFIG_CONTEXT_HOOK
-#define GYROS_CONFIG_CONTEXT_HOOK 0
-#endif
+void gyros_set_irq_hook(void (*irq_hook)(void))
+{
+    unsigned long flags = gyros_interrupt_disable();
 
-#ifndef GYROS_CONFIG_IRQ_HOOK
-#define GYROS_CONFIG_IRQ_HOOK 0
-#endif
-
-#endif
+    s_irq_hook = irq_hook;
+    gyros_interrupt_restore(flags);
+}
