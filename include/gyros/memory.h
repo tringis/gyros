@@ -50,8 +50,10 @@
 #define GYROS_ZPOOL_SIZE(num_zones, zone_size)                          \
     (sizeof(void*) +                                                    \
      (4 + ((num_zones) + 8 * sizeof(unsigned) - 1) /                    \
-           (8 * sizeof(unsigned))) +                                    \
-     (num_zones) * (sizeof(unsigned) + sizeof(void*)))
+          (8 * sizeof(unsigned)) * sizeof(unsigned)) +                  \
+     (num_zones) * (sizeof(unsigned) + sizeof(void*) +                  \
+                    ((zone_size) + sizeof(unsigned) - 1) /              \
+                    sizeof(unsigned) * sizeof(unsigned)))
 
 /** Create a zone pool, which is a memory pool where all blocks (or
   * zones) have the same size.  Zone pools are interrupt safe, meaning
