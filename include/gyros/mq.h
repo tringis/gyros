@@ -82,7 +82,7 @@ typedef struct
   */
 #define GYROS_MQ_INITVAL(name) \
     { GYROS_MQ_DEBUG_INITIALIZER                                        \
-      GYROS__LIST_INITVAL(name.msg_list)                                \
+      GYROS__LIST_INITVAL(name.msg_list),                               \
       GYROS__LIST_INITVAL(name.task_list) }
 
 /** \brief Message queue (mq) object. */
