@@ -43,7 +43,7 @@ enum gyros_trace_kind
     GYROS_TRACE_EMPTY,
     GYROS_TRACE_IRQ,
     GYROS_TRACE_CONTEXT,
-    GYROS_TRACE_TIMEOUT,
+    GYROS_TRACE_WAKE,
     GYROS_TRACE_SEM_WAIT,
     GYROS_TRACE_SEM_BLOCK,
     GYROS_TRACE_SEM_AQUIRED,
@@ -64,6 +64,11 @@ struct gyros_trace_irq
 struct gyros_trace_context
 {
     gyros_task_t *next;
+};
+
+struct gyros_trace_wake
+{
+    gyros_task_t *task;
 };
 
 struct gyros_trace_sem
@@ -92,6 +97,7 @@ typedef struct
     {
         struct gyros_trace_irq irq;
         struct gyros_trace_context context;
+        struct gyros_trace_wake wake;
         struct gyros_trace_sem sem;
         struct gyros_trace_mutex mutex;
         struct gyros_trace_cond cond;

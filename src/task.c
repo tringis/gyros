@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/target/config.h>
 #include <gyros/task.h>
 
@@ -114,6 +115,11 @@ gyros__task_move(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_wake(gyros_task_t *task)
 {
+#if GYROS_CONFIG_TRACE
+    if (unlikely(gyros__trace_enabled))
+        gyros__trace(GYROS_TRACE_WAKE)->info.wake.task = task;
+#endif
+
 #if GYROS_CONFIG_DEBUG
     task->debug_state = "running";
     task->debug_object = NULL;
