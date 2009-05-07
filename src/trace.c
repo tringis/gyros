@@ -54,15 +54,15 @@ gyros_trace_init(void *log, int log_size)
 }
 
 void
-gyros_trace_enable(void)
+gyros_trace_on(void)
 {
     gyros__trace_enabled = 1;
 }
 
 void
-gyros_trace_disable(void)
+gyros_trace_off(int when)
 {
-    gyros__trace_enabled = 0;
+    gyros__trace_enabled = when < 0 ? 0 : -when;
 }
 
 gyros_trace_t*
@@ -82,6 +82,9 @@ gyros_trace_t*
 gyros__trace(enum gyros_trace_kind kind)
 {
     gyros_trace_t *t = s_log_pos++;
+
+    if (unlikely(gyros__trace_enabled < 0))
+        ++gyros__trace_enabled;
 
     if (unlikely(s_log_pos == s_log_end))
         s_log_pos = s_log_begin;

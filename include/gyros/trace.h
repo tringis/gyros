@@ -106,9 +106,9 @@ typedef struct
 
 void gyros_trace_init(void *log, int log_size);
 
-void gyros_trace_enable(void);
+void gyros_trace_on(void);
 
-void gyros_trace_disable(void);
+void gyros_trace_off(int when);
 
 gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
 
