@@ -36,7 +36,7 @@ gyros_task_get_priority(gyros_task_t *task)
 {
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros_error("get_priority non-task");
+        gyros_error("get_priority non-task", task);
 #endif
 
     return task->priority;
@@ -49,7 +49,7 @@ gyros_task_set_priority(gyros_task_t *task, unsigned short priority)
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros_error("set_priority non-task");
+        gyros_error("set_priority non-task", task);
 #endif
 
     if (task->priority != priority)

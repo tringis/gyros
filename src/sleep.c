@@ -39,7 +39,7 @@ gyros_sleep_until(gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros_error("tried to sleep in interrupt");
+        gyros_error("tried to sleep in interrupt", NULL);
 #endif
 
     gyros__list_remove(&gyros__state.current->main_list);

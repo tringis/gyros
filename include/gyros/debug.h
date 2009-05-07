@@ -48,8 +48,11 @@
   * hangs forever in a loop with interrupts disabled.
   *
   * \param handler          Error handler function pointer.
+  * \param object           Object related to the error, e.g.
+  *                         the mutex causing a deadlock.
   */
-void gyros_set_error_handler(void (*handler)(const char *msg));
+void gyros_set_error_handler(void (*handler)(const char *msg,
+                                             void *object));
 
 /*@}*/
 

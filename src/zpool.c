@@ -111,7 +111,7 @@ gyros_zpool_free(void *addr)
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_DEBUG
     if ((bh->pool->bitmap[bh->index / BPU] & (1U << (bh->index % BPU))) == 0)
-        gyros_error("double free in gyros_zpool_free");
+        gyros_error("double free in gyros_zpool_free", addr);
 #endif
     bh->pool->bitmap[bh->index / BPU] &= ~(1U << (bh->index % BPU));
     bh->pool->free_blocks++;

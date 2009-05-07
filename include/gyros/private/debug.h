@@ -35,7 +35,7 @@
 
 #define GYROS_TASK_DEBUG_MAGIC         ((unsigned)0xefcd6711)
 
-void gyros_error(const char *msg);
+void gyros_error(const char *msg, void *object);
 
 #endif
 

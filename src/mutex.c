@@ -52,9 +52,9 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
-        gyros_error("uninitialized mutex in mutex_try_lock");
+        gyros_error("uninitialized mutex in mutex_try_lock", m);
     if (gyros_in_interrupt())
-        gyros_error("mutex_try_lock called from interrupt");
+        gyros_error("mutex_try_lock called from interrupt", m);
 #endif
 
     GYROS__TRACE_MUTEX(LOCK, m);
@@ -79,11 +79,11 @@ gyros_mutex_lock(gyros_mutex_t *m)
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
-        gyros_error("uninitialized mutex in mutex_lock");
+        gyros_error("uninitialized mutex in mutex_lock", m);
     if (gyros_in_interrupt())
-        gyros_error("mutex_lock called from interrupt");
+        gyros_error("mutex_lock called from interrupt", m);
     if (m->owner == gyros__state.current)
-        gyros_error("mutex_lock deadlock");
+        gyros_error("mutex_lock deadlock", m);
 #endif
 
     GYROS__TRACE_MUTEX(LOCK, m);
@@ -119,11 +119,11 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
-        gyros_error("uninitialized mutex in mutex__unlock");
+        gyros_error("uninitialized mutex in mutex__unlock", m);
     if (m->owner == NULL)
-        gyros_error("mutex__unlock called for unlocked mutex");
+        gyros_error("mutex__unlock called for unlocked mutex", m);
     if (m->owner != gyros__state.current)
-        gyros_error("mutex__unlock called by non owner task");
+        gyros_error("mutex__unlock called by non owner task", m);
 #endif
 
     m->owner = NULL;

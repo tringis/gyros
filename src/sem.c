@@ -63,9 +63,9 @@ gyros_sem_wait(gyros_sem_t *s)
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
-        gyros_error("uninitialized sem in sem_wait");
+        gyros_error("uninitialized sem in sem_wait", s);
     if (gyros_in_interrupt())
-        gyros_error("sem_wait called from interrupt");
+        gyros_error("sem_wait called from interrupt", s);
 #endif
 
     GYROS__TRACE_SEM(WAIT, s);
@@ -93,9 +93,9 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
-        gyros_error("uninitialized sem in sem_wait_until");
+        gyros_error("uninitialized sem in sem_wait_until", s);
     if (gyros_in_interrupt())
-        gyros_error("sem_wait_until called from interrupt");
+        gyros_error("sem_wait_until called from interrupt", s);
 #endif
 
     GYROS__TRACE_SEM(WAIT, s);
@@ -131,7 +131,7 @@ gyros_sem_signal(gyros_sem_t *s)
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
-        gyros_error("uninitialized sem in sem_signal");
+        gyros_error("uninitialized sem in sem_signal", s);
 #endif
 
     GYROS__TRACE_SEM(SIGNAL, s);

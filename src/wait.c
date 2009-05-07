@@ -42,7 +42,7 @@ gyros_task_wait(void)
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros_error("task_wait called from interrupt");
+        gyros_error("task_wait called from interrupt", NULL);
 #endif
 
     while (gyros__zombies.next == &gyros__zombies)
@@ -74,7 +74,7 @@ gyros_task_wait_until(gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros_error("task_wait_until called from interrupt");
+        gyros_error("task_wait_until called from interrupt", NULL);
 #endif
 
     if (gyros__list_empty(&gyros__zombies))

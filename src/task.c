@@ -135,7 +135,7 @@ gyros__cond_reschedule(void)
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros_error("cond_reschedule called from interrupt");
+        gyros_error("cond_reschedule called from interrupt", NULL);
 #endif
 
     if (unlikely(TASK(gyros__state.running.next) != gyros__state.current))

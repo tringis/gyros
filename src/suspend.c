@@ -40,7 +40,7 @@ gyros_task_suspend(gyros_task_t *task)
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros_error("resume non-task");
+        gyros_error("resume non-task", task);
 #endif
 
     gyros__list_remove(&task->main_list);
@@ -61,7 +61,7 @@ gyros_task_resume(gyros_task_t *task)
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros_error("resume non-task");
+        gyros_error("resume non-task", task);
 #endif
 
     gyros__task_move(task, &gyros__state.running);

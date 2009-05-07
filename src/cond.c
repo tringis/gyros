@@ -49,9 +49,9 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
-        gyros_error("uninitialized cond in cond_wait");
+        gyros_error("uninitialized cond in cond_wait", c);
     if (gyros_in_interrupt())
-        gyros_error("cond_wait called from interrupt");
+        gyros_error("cond_wait called from interrupt", c);
 #endif
 
     GYROS__TRACE_COND(WAIT, c);
@@ -76,9 +76,9 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
-        gyros_error("uninitialized cond in cond_wait_until");
+        gyros_error("uninitialized cond in cond_wait_until", c);
     if (gyros_in_interrupt())
-        gyros_error("cond_wait_until called from interrupt");
+        gyros_error("cond_wait_until called from interrupt", c);
 #endif
 
     GYROS__TRACE_COND(WAIT, c);
@@ -104,7 +104,7 @@ gyros_cond_signal_one(gyros_cond_t *c)
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
-        gyros_error("uninitialized cond in cond_signal_one");
+        gyros_error("uninitialized cond in cond_signal_one", c);
 #endif
 
     GYROS__TRACE_COND(SIGNAL_ONE, c);
@@ -125,7 +125,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
-        gyros_error("uninitialized cond in signal_all");
+        gyros_error("uninitialized cond in signal_all", c);
 #endif
 
     GYROS__TRACE_COND(SIGNAL_ALL, c);

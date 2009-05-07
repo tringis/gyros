@@ -26,16 +26,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/debug.h>
 #include <gyros/interrupt.h>
 #include <gyros/private/debug.h>
 #include <gyros/target/config.h>
 
 #if GYROS_CONFIG_DEBUG
-static void (*s_handler)(const char *msg);
+static void (*s_handler)(const char *msg, void *object);
 #endif
 
 void
-gyros_set_error_handler(void (*handler)(const char *msg))
+gyros_set_error_handler(void (*handler)(const char *msg,
+                                        void *object))
 {
 #if GYROS_CONFIG_DEBUG
     unsigned long flags = gyros_interrupt_disable();
@@ -47,10 +49,10 @@ gyros_set_error_handler(void (*handler)(const char *msg))
 
 #if GYROS_CONFIG_DEBUG
 void
-gyros_error(const char *msg)
+gyros_error(const char *msg, void *object)
 {
     if (s_handler)
-        s_handler(msg);
+        s_handler(msg, object);
 
     gyros_interrupt_disable();
     for (;;)

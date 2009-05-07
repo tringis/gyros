@@ -53,7 +53,7 @@ gyros_mq_send(gyros_mq_t *mq, void *msg)
 
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
-        gyros_error("uninitialized mq in mq_send");
+        gyros_error("uninitialized mq in mq_send", mq);
 #endif
 
     gyros__list_insert_before(&msghdr->list, &mq->msg_list);
@@ -76,7 +76,7 @@ gyros_mq_receive(gyros_mq_t *mq)
 
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
-        gyros_error("uninitialized mq in mq_send");
+        gyros_error("uninitialized mq in mq_send", mq);
 #endif
 
     while (unlikely(gyros__list_empty(&mq->msg_list)))
@@ -110,9 +110,9 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
-        gyros_error("uninitialized mq in mq_send");
+        gyros_error("uninitialized mq in mq_send", mq);
     if (gyros_in_interrupt())
-        gyros_error("mq_receive_until called from interrupt");
+        gyros_error("mq_receive_until called from interrupt", mq);
 #endif
 
     if (unlikely(gyros__list_empty(&mq->msg_list)))
