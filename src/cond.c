@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/cond.h>
 
 #include "private.h"
@@ -53,6 +54,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
         gyros_error("cond_wait called from interrupt");
 #endif
 
+    GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
 #if GYROS_CONFIG_DEBUG
@@ -79,6 +81,7 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
         gyros_error("cond_wait_until called from interrupt");
 #endif
 
+    GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros__state.current, &c->task_list);
     gyros__task_set_timeout(timeout);
@@ -104,6 +107,7 @@ gyros_cond_signal_one(gyros_cond_t *c)
         gyros_error("uninitialized cond in cond_signal_one");
 #endif
 
+    GYROS__TRACE_COND(SIGNAL_ONE, c);
     if (gyros__list_empty(&c->task_list))
         gyros_interrupt_restore(flags);
     else
@@ -124,6 +128,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
         gyros_error("uninitialized cond in signal_all");
 #endif
 
+    GYROS__TRACE_COND(SIGNAL_ALL, c);
     if (gyros__list_empty(&c->task_list))
         gyros_interrupt_restore(flags);
     else

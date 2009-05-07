@@ -51,10 +51,18 @@ extern int gyros__trace_enabled;
         gyros__t->info.mutex.mutex = (m);                                     \
     }
 
+#define GYROS__TRACE_COND(kind, c)                                            \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_COND_ ## kind);    \
+        gyros__t->info.cond.cond = (c);                                       \
+    }
+
 #else
 
 #define GYROS__TRACE_SEM(kind, s)
 #define GYROS__TRACE_MUTEX(kind, m)
+#define GYROS__TRACE_COND(kind, c)
 
 #endif
 

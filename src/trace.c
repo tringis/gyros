@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/trace.h>
+#include <gyros/interrupt.h>
 
 #include <stddef.h>
 
@@ -41,11 +42,15 @@ static gyros_trace_t *s_log_pos;
 void
 gyros_trace_init(void *log, int log_size)
 {
+    static gyros_trace_t *i;
     int n = log_size / sizeof(gyros_trace_t);
 
     s_log_begin = log; /* TODO: Fix alignment!!! */
     s_log_end = s_log_begin + n;
     s_log_pos = s_log_begin;
+
+    for (i = s_log_begin; i != s_log_end; ++i)
+        i->kind = GYROS_TRACE_EMPTY;
 }
 
 void
@@ -64,9 +69,13 @@ gyros_trace_t*
 gyros_trace_iterate(gyros_trace_t *prev)
 {
     if (!prev)
-        return s_log_pos;
+        prev = s_log_pos;
+    else if (prev == s_log_pos)
+        return NULL;
 
-    return ++prev == s_log_pos ? NULL : prev;
+    prev = (prev == s_log_begin ? s_log_end : prev) - 1;
+
+    return prev->kind == GYROS_TRACE_EMPTY ? NULL : prev;
 }
 
 gyros_trace_t*
@@ -77,8 +86,9 @@ gyros__trace(enum gyros_trace_kind kind)
     if (unlikely(s_log_pos == s_log_end))
         s_log_pos = s_log_begin;
 
+    t->kind = kind;
     t->timestamp = gyros_time();
-    t->task = gyros__state.current;
+    t->task = gyros_in_interrupt() ? NULL : gyros__state.current;
 
     return t;
 }

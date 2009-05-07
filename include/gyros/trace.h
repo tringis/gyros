@@ -40,6 +40,7 @@
 
 enum gyros_trace_kind
 {
+    GYROS_TRACE_EMPTY,
     GYROS_TRACE_IRQ,
     GYROS_TRACE_CONTEXT,
     GYROS_TRACE_TIMEOUT,
@@ -50,7 +51,10 @@ enum gyros_trace_kind
     GYROS_TRACE_MUTEX_LOCK,
     GYROS_TRACE_MUTEX_BLOCK,
     GYROS_TRACE_MUTEX_AQUIRED,
-    GYROS_TRACE_MUTEX_UNLOCK
+    GYROS_TRACE_MUTEX_UNLOCK,
+    GYROS_TRACE_COND_WAIT,
+    GYROS_TRACE_COND_SIGNAL_ONE,
+    GYROS_TRACE_COND_SIGNAL_ALL
 };
 
 struct gyros_trace_irq
@@ -80,6 +84,7 @@ struct gyros_trace_cond
 
 typedef struct
 {
+    enum gyros_trace_kind kind;
     gyros_abstime_t timestamp;
     gyros_task_t *task;
 
@@ -89,6 +94,7 @@ typedef struct
         struct gyros_trace_context context;
         struct gyros_trace_sem sem;
         struct gyros_trace_mutex mutex;
+        struct gyros_trace_cond cond;
     } info;
 } gyros_trace_t;
 
