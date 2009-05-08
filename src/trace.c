@@ -62,7 +62,8 @@ gyros_trace_on(void)
 void
 gyros_trace_off(int when)
 {
-    gyros__trace_enabled = when < 0 ? 0 : -when;
+    if (gyros__trace_enabled)
+        gyros__trace_enabled = when < 0 ? 0 : -when;
 }
 
 gyros_trace_t*
