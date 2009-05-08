@@ -64,6 +64,7 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
             break;
     }
     gyros__list_insert_before(&task->main_list_node, i);
+    task->main_list = list;
 }
 
 void

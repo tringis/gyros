@@ -65,6 +65,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
     }
 
     m->owner = gyros__state.current;
+    m->owner_priority = gyros__state.current->priority;
     GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 
@@ -89,6 +90,14 @@ gyros_mutex_lock(gyros_mutex_t *m)
     while (unlikely(m->owner != NULL))
     {
         gyros__task_move(gyros__state.current, &m->task_list);
+        /* Implement priority inheritance to prevent priority
+         * inversion. */
+        if (m->owner->priority < gyros__state.current->priority)
+        {
+            m->owner->raised_priority = 1;
+            m->owner->priority = gyros__state.current->priority;
+            gyros__task_move(m->owner, m->owner->main_list);
+        }
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "mutex_lock";
         gyros__state.current->debug_object = m;
@@ -99,6 +108,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
     }
 
     m->owner = gyros__state.current;
+    m->owner_priority = gyros__state.current->priority;
     GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 }
@@ -118,6 +128,12 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 #endif
 
     m->owner = NULL;
+    if (unlikely(gyros__state.current->raised_priority))
+    {
+        gyros__state.current->raised_priority = 0;
+        gyros__state.current->priority = m->owner_priority;
+        gyros__task_move(gyros__state.current, gyros__state.current->main_list);
+    }
     GYROS__TRACE_MUTEX(UNLOCK, m);
     if (likely(gyros__list_empty(&m->task_list)))
         gyros_interrupt_restore(flags);

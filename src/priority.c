@@ -41,3 +41,23 @@ gyros_task_get_priority(gyros_task_t *task)
 
     return task->priority;
 }
+
+void
+gyros_task_set_priority(gyros_task_t *task, unsigned short priority)
+{
+    unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_CONFIG_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros_error("set_priority non-task", task);
+#endif
+
+    if (task->priority != priority)
+    {
+        task->raised_priority = 0;
+        task->priority = priority;
+        gyros__task_move(task, task->main_list);
+        gyros__cond_reschedule();
+    }
+    gyros_interrupt_restore(flags);
+}

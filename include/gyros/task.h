@@ -56,6 +56,7 @@ typedef struct
     struct gyros__context context; /**< \internal */
 
     struct gyros__list_node main_list_node; /**< \internal */
+    struct gyros__list_node *main_list; /**< \internal */
 
     struct gyros__list_node timeout_list_node; /**< \internal */
     gyros_abstime_t timeout; /**< \internal */
@@ -145,6 +146,13 @@ gyros_task_t *gyros_current(void) __attribute__((__const__));
   * \return             Task priority.
   */
 unsigned short gyros_task_get_priority(gyros_task_t *task);
+
+/** Set the priority of @a task to @ priority.
+  *
+  * \param task         Task struct pointer.
+  * \param priority     New priority.
+  */
+void gyros_task_set_priority(gyros_task_t *task, unsigned short priority);
 
 /** Suspend a task.  The task will be suspended until gyros_task_resume()
   * is called for the task.
