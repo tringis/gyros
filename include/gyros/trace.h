@@ -41,6 +41,8 @@
 enum gyros_trace_kind
 {
     GYROS_TRACE_EMPTY,
+    GYROS_TRACE_TRACE,
+    GYROS_TRACE_STRING,
     GYROS_TRACE_IRQ,
     GYROS_TRACE_CONTEXT,
     GYROS_TRACE_WAKE,
@@ -55,10 +57,6 @@ enum gyros_trace_kind
     GYROS_TRACE_COND_WAIT,
     GYROS_TRACE_COND_SIGNAL_ONE,
     GYROS_TRACE_COND_SIGNAL_ALL
-};
-
-struct gyros_trace_irq
-{
 };
 
 struct gyros_trace_context
@@ -95,7 +93,8 @@ typedef struct
 
     union
     {
-        struct gyros_trace_irq irq;
+        int trace;
+        const char *str;
         struct gyros_trace_context context;
         struct gyros_trace_wake wake;
         struct gyros_trace_sem sem;
@@ -109,6 +108,8 @@ void gyros_trace_init(void *log, int log_size);
 void gyros_trace_on(void);
 
 void gyros_trace_off(int when);
+
+void gyros_trace_string(const char *str);
 
 gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
 

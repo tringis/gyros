@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/trace.h>
+#include <gyros/private/trace.h>
 #include <gyros/interrupt.h>
 
 #include <stddef.h>
@@ -56,14 +56,33 @@ gyros_trace_init(void *log, int log_size)
 void
 gyros_trace_on(void)
 {
+    unsigned long flags = gyros_interrupt_disable();
+
+    gyros__trace(GYROS_TRACE_TRACE)->info.trace = 1;
     gyros__trace_enabled = 1;
+    gyros_interrupt_restore(flags);
 }
 
 void
 gyros_trace_off(int when)
 {
     if (gyros__trace_enabled)
+    {
+        unsigned long flags = gyros_interrupt_disable();
+
+        gyros__trace(GYROS_TRACE_TRACE)->info.trace = when < 0 ? 0 : -when;
         gyros__trace_enabled = when < 0 ? 0 : -when;
+        gyros_interrupt_restore(flags);
+    }
+}
+
+void
+gyros_trace_string(const char *str)
+{
+    unsigned long flags = gyros_interrupt_disable();
+
+    gyros__trace(GYROS_TRACE_STRING)->info.str = str;
+    gyros_interrupt_restore(flags);
 }
 
 gyros_trace_t*
