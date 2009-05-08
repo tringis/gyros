@@ -46,7 +46,7 @@
 #define unlikely(x)     (x)
 #endif
 
-#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list)
+#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
 
 typedef struct
 {

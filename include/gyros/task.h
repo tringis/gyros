@@ -55,9 +55,9 @@ typedef struct
 {
     struct gyros__context context; /**< \internal */
 
-    struct gyros__list_node main_list; /**< \internal */
+    struct gyros__list_node main_list_node; /**< \internal */
 
-    struct gyros__list_node timeout_list; /**< \internal */
+    struct gyros__list_node timeout_list_node; /**< \internal */
     gyros_abstime_t timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
 
@@ -65,7 +65,7 @@ typedef struct
     unsigned short priority; /**< \internal */
 
 #if GYROS_CONFIG_ITERATE
-    struct gyros__list_node task_list; /**< \internal */
+    struct gyros__list_node task_list_node; /**< \internal */
 #endif
 
     const char *name; /**< Task name. */

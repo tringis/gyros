@@ -34,7 +34,8 @@
 
 #include "private.h"
 
-#define TIMEOUT_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list)
+#define TIMEOUT_TASK(t)                                         \
+    GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
 
 static struct gyros__list_node s_timeouts = GYROS__LIST_INITVAL(s_timeouts);
 
@@ -48,11 +49,11 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
         if ((gyros_reltime_t)(timeout - TIMEOUT_TASK(i)->timeout) < 0)
             break;
     }
-    gyros__list_insert_before(&gyros__state.current->timeout_list, i);
+    gyros__list_insert_before(&gyros__state.current->timeout_list_node, i);
     gyros__state.current->timeout = timeout;
     gyros__state.current->timed_out = 0;
 #if GYROS_CONFIG_DYNTICK
-    if (s_timeouts.next == &gyros__state.current->timeout_list)
+    if (s_timeouts.next == &gyros__state.current->timeout_list_node)
         gyros__update_tick(gyros_time(), timeout);
 #endif
 }

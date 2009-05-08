@@ -43,8 +43,8 @@ gyros_task_suspend(gyros_task_t *task)
         gyros_error("resume non-task", task);
 #endif
 
-    gyros__list_remove(&task->main_list);
-    gyros__list_remove(&task->timeout_list);
+    gyros__list_remove(&task->main_list_node);
+    gyros__list_remove(&task->timeout_list_node);
 #if GYROS_CONFIG_DEBUG
     task->debug_state = "suspended";
     task->debug_object = NULL;

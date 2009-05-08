@@ -30,7 +30,7 @@
 
 #if GYROS_CONFIG_ITERATE
 
-#define TASK_LIST_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, task_list)
+#define TASK_LIST_TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, task_list_node)
 
 gyros_task_t*
 gyros_task_iterate(gyros_task_t *previous)
@@ -41,13 +41,13 @@ gyros_task_iterate(gyros_task_t *previous)
         return TASK_LIST_TASK(gyros__tasks.next);
     }
 
-    if (previous->task_list.next == &gyros__tasks)
+    if (previous->task_list_node.next == &gyros__tasks)
     {
         gyros_mutex_unlock(&gyros__iterate_mutex);
         return 0;
     }
 
-    return TASK_LIST_TASK(previous->task_list.next);
+    return TASK_LIST_TASK(previous->task_list_node.next);
 }
 
 #endif
