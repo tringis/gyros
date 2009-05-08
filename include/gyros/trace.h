@@ -43,6 +43,7 @@ enum gyros_trace_kind
     GYROS_TRACE_EMPTY,
     GYROS_TRACE_TRACE,
     GYROS_TRACE_STRING,
+    GYROS_TRACE_RUNNING,
     GYROS_TRACE_IRQ,
     GYROS_TRACE_CONTEXT,
     GYROS_TRACE_WAKE,
@@ -95,6 +96,7 @@ typedef struct
     {
         int trace;
         const char *str;
+        const gyros_task_t *running;
         struct gyros_trace_context context;
         struct gyros_trace_wake wake;
         struct gyros_trace_sem sem;
@@ -110,6 +112,8 @@ void gyros_trace_on(void);
 void gyros_trace_off(int when);
 
 void gyros_trace_string(const char *str);
+
+void gyros_trace_running_tasks(void);
 
 gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
 

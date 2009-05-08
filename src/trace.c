@@ -85,6 +85,21 @@ gyros_trace_string(const char *str)
     gyros_interrupt_restore(flags);
 }
 
+void
+gyros_trace_running_tasks(void)
+{
+    unsigned long flags = gyros_interrupt_disable();
+    struct gyros__list_node *i;
+
+    for (i = gyros__state.running.next;
+         i != &gyros__state.running;
+         i = i->next)
+    {
+        gyros__trace(GYROS_TRACE_STRING)->info.running = TASK(i);
+    }
+    gyros_interrupt_restore(flags);
+}
+
 gyros_trace_t*
 gyros_trace_iterate(gyros_trace_t *prev)
 {
