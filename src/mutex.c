@@ -66,7 +66,6 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
         gyros_error("mutex_try_lock called from interrupt", m);
 #endif
 
-    GYROS__TRACE_MUTEX(LOCK, m);
     if (unlikely(m->owner != NULL))
     {
         gyros_interrupt_restore(flags);
@@ -95,9 +94,9 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros_error("mutex_lock deadlock", m);
 #endif
 
-    GYROS__TRACE_MUTEX(LOCK, m);
     while (unlikely(m->owner != NULL))
     {
+        GYROS__TRACE_MUTEX(BLOCKED, m);
         gyros__task_move(gyros__state.current, &m->task_list);
         /* Implement priority inheritance to prevent priority
          * inversion. */

@@ -79,10 +79,9 @@ gyros_sem_wait(gyros_sem_t *s)
         gyros_error("sem_wait called from interrupt", s);
 #endif
 
-    GYROS__TRACE_SEM(WAIT, s);
     while (unlikely(s->value == 0))
     {
-        GYROS__TRACE_SEM(BLOCK, s);
+        GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros__state.current, &s->task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "sem_wait";
@@ -109,10 +108,9 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         gyros_error("sem_wait_until called from interrupt", s);
 #endif
 
-    GYROS__TRACE_SEM(WAIT, s);
     if (unlikely(s->value == 0))
     {
-        GYROS__TRACE_SEM(BLOCK, s);
+        GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros__state.current, &s->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
