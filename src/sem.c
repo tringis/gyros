@@ -30,6 +30,8 @@
 #include <gyros/private/trace.h>
 #include <gyros/sem.h>
 
+#include <stddef.h>
+
 #include "private.h"
 
 void
@@ -37,11 +39,20 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 {
 #if GYROS_CONFIG_DEBUG
     s->debug_magic = GYROS_SEM_DEBUG_MAGIC;
+    s->name = NULL;
 #endif
 
     s->value = start_value;
     s->max_value = UINT_MAX;
     GYROS__LIST_NODE_INIT(&s->task_list);
+}
+
+void
+gyros_sem_name(gyros_sem_t *s, const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    s->name = name;
+#endif
 }
 
 void

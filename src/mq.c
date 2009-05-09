@@ -39,10 +39,19 @@ gyros_mq_init(gyros_mq_t *mq)
 {
 #if GYROS_CONFIG_DEBUG
     mq->debug_magic = GYROS_MQ_DEBUG_MAGIC;
+    mq->name = NULL;
 #endif
 
     GYROS__LIST_NODE_INIT(&mq->msg_list);
     GYROS__LIST_NODE_INIT(&mq->task_list);
+}
+
+void
+gyros_mq_name(gyros_mq_t *mq, const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    mq->name = name;
+#endif
 }
 
 void

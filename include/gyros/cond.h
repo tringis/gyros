@@ -48,7 +48,7 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
 #define GYROS_COND_DEBUG_MAGIC          ((unsigned)0xe0899aa1)
-#define GYROS_COND_DEBUG_INITIALIZER    GYROS_COND_DEBUG_MAGIC,
+#define GYROS_COND_DEBUG_INITIALIZER    GYROS_COND_DEBUG_MAGIC,(char*)0,
 #else
 #define GYROS_COND_DEBUG_INITIALIZER
 #endif
@@ -71,6 +71,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
+    const char *name;
 #endif
 
     struct gyros__list_node task_list; /**< \internal */
@@ -81,6 +82,16 @@ typedef struct
   * \param c            Condition variable struct pointer.
   */
 void gyros_cond_init(gyros_cond_t *c);
+
+/** Name the condition variable @a c to @a name.  The name is only
+  * used when GYROS_CONFIG_DEBUG is true.
+  *
+  * \param c            Condition variable struct pointer.
+  * \param name         Condition variable name.  Note that only the pointer
+  *                     to the name is stored, so the pointer must remain
+  *                     valid for the lifetime of the condition variable.
+  */
+void gyros_cond_name(gyros_cond_t *c, const char *name);
 
 /** Wait for the condition variable @a c.  The mutex @a is unlocked
   * atomically before waiting, and locked again before returning.

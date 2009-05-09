@@ -39,10 +39,19 @@ gyros_mutex_init(gyros_mutex_t *m)
 {
 #if GYROS_CONFIG_DEBUG
     m->debug_magic = GYROS_MUTEX_DEBUG_MAGIC;
+    m->name = NULL;
 #endif
 
     m->owner = NULL;
     GYROS__LIST_NODE_INIT(&m->task_list);
+}
+
+void
+gyros_mutex_name(gyros_mutex_t *m, const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    m->name = name;
+#endif
 }
 
 int

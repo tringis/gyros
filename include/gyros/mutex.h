@@ -52,7 +52,7 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
 #define GYROS_MUTEX_DEBUG_MAGIC         ((unsigned)0xe398123d)
-#define GYROS_MUTEX_DEBUG_INITIALIZER   GYROS_MUTEX_DEBUG_MAGIC,
+#define GYROS_MUTEX_DEBUG_INITIALIZER   GYROS_MUTEX_DEBUG_MAGIC,(char*)0,
 #else
 #define GYROS_MUTEX_DEBUG_INITIALIZER
 #endif
@@ -76,6 +76,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
+    const char *name;
 #endif
 
     gyros_task_t *owner; /**< \internal */
@@ -88,6 +89,16 @@ typedef struct
   * \param m            Mutex struct pointer.
   */
 void gyros_mutex_init(gyros_mutex_t *m);
+
+/** Name the mutex @a m to @a name.  The name is only used when
+  * GYROS_CONFIG_DEBUG is true.
+  *
+  * \param m            Mutex struct pointer.
+  * \param name         Mutex name.  Note that only the pointer to the
+  *                     name is stored, so the pointer must remain valid
+  *                     for the lifetime of the mutex.
+  */
+void gyros_mutex_name(gyros_mutex_t *m, const char *name);
 
 /** Try locking @a m.
   *

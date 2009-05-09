@@ -56,7 +56,7 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
 #define GYROS_RWLOCK_DEBUG_MAGIC         ((unsigned)0xe151110d)
-#define GYROS_RWLOCK_DEBUG_INITIALIZER   GYROS_RWLOCK_DEBUG_MAGIC,
+#define GYROS_RWLOCK_DEBUG_INITIALIZER   GYROS_RWLOCK_DEBUG_MAGIC,(char*)0,
 #else
 #define GYROS_RWLOCK_DEBUG_INITIALIZER
 #endif
@@ -81,6 +81,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
+    const char *name;
 #endif
 
     gyros_task_t *writer; /**< \internal */
@@ -95,6 +96,16 @@ typedef struct
   * \param rwlock       Read/write lock struct pointer.
   */
 void gyros_rwlock_init(gyros_rwlock_t *rwlock);
+
+/** Name the read/write lock @a rwlock to @a name.  The name is only
+  * used when GYROS_CONFIG_DEBUG is true.
+  *
+  * \param rwlock       Read/write lock struct pointer.
+  * \param name         Read/write lock name.  Note that only the pointer
+  *                     to the name is stored, so the pointer must remain
+  *                     valid for the lifetime of the read/write lock.
+  */
+void gyros_rwlock_name(gyros_rwlock_t *rwlock, const char *name);
 
 /** Aquire a reader lock on @a rwlock.
   *

@@ -30,6 +30,8 @@
 #include <gyros/private/trace.h>
 #include <gyros/cond.h>
 
+#include <stddef.h>
+
 #include "private.h"
 
 void
@@ -37,9 +39,18 @@ gyros_cond_init(gyros_cond_t *c)
 {
 #if GYROS_CONFIG_DEBUG
     c->debug_magic = GYROS_COND_DEBUG_MAGIC;
+    c->name = NULL;
 #endif
 
     GYROS__LIST_NODE_INIT(&c->task_list);
+}
+
+void
+gyros_cond_name(gyros_cond_t *c, const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    c->name = name;
+#endif
 }
 
 void

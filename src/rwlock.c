@@ -38,6 +38,7 @@ gyros_rwlock_init(gyros_rwlock_t *rwlock)
 {
 #if GYROS_CONFIG_DEBUG
     rwlock->debug_magic = GYROS_RWLOCK_DEBUG_MAGIC;
+    rwlock->name = NULL;
 #endif
 
     rwlock->writer = NULL;
@@ -45,6 +46,14 @@ gyros_rwlock_init(gyros_rwlock_t *rwlock)
 
     GYROS__LIST_NODE_INIT(&rwlock->rd_task_list);
     GYROS__LIST_NODE_INIT(&rwlock->wr_task_list);
+}
+
+void
+gyros_rwlock_name(gyros_rwlock_t *rwlock, const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    rwlock->name = name;
+#endif
 }
 
 void

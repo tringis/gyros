@@ -48,7 +48,7 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
 #define GYROS_MQ_DEBUG_MAGIC           ((unsigned)0x736a0997)
-#define GYROS_MQ_DEBUG_INITIALIZER     GYROS_MQ_DEBUG_MAGIC,
+#define GYROS_MQ_DEBUG_INITIALIZER     GYROS_MQ_DEBUG_MAGIC,(char*)0,
 #else
 #define GYROS_MQ_DEBUG_INITIALIZER
 #endif
@@ -90,6 +90,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
+    const char *name;
 #endif
 
     struct gyros__list_node msg_list; /**< \internal */
@@ -101,6 +102,16 @@ typedef struct
   * \param mq           Message queue struct pointer.
   */
 void gyros_mq_init(gyros_mq_t *mq);
+
+/** Name the message queue @a mq to @a name.  The name is only used
+  * when GYROS_CONFIG_DEBUG is true.
+  *
+  * \param mq           Message queue struct pointer.
+  * \param name         Message queue name.  Note that only the pointer
+  *                     to the name is stored, so the pointer must remain
+  *                     valid for the lifetime of the message queue.
+  */
+void gyros_mq_name(gyros_mq_t *mq, const char *name);
 
 /** Send the message @a msg to the message queue @a mq.  May be called
  * from interrupt context.
