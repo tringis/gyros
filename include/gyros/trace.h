@@ -49,24 +49,24 @@ enum gyros_trace_kind
     GYROS_TRACE_IRQ,
     GYROS_TRACE_CONTEXT,
     GYROS_TRACE_WAKE,
-    GYROS_TRACE_SEM_BLOCKED,
-    GYROS_TRACE_SEM_AQUIRED,
-    GYROS_TRACE_SEM_SIGNAL,
-    GYROS_TRACE_MUTEX_BLOCKED,
-    GYROS_TRACE_MUTEX_AQUIRED,
-    GYROS_TRACE_MUTEX_UNLOCK,
     GYROS_TRACE_COND_WAIT,
     GYROS_TRACE_COND_SIGNAL_ONE,
     GYROS_TRACE_COND_SIGNAL_ALL,
     GYROS_TRACE_MQ_SEND,
     GYROS_TRACE_MQ_RECEIVE_BLOCKED,
     GYROS_TRACE_MQ_RECEIVED,
+    GYROS_TRACE_MUTEX_BLOCKED,
+    GYROS_TRACE_MUTEX_AQUIRED,
+    GYROS_TRACE_MUTEX_UNLOCK,
     GYROS_TRACE_RWLOCK_RD_BLOCKED,
     GYROS_TRACE_RWLOCK_RD_AQUIRED,
     GYROS_TRACE_RWLOCK_RD_UNLOCK,
     GYROS_TRACE_RWLOCK_WR_BLOCKED,
     GYROS_TRACE_RWLOCK_WR_AQUIRED,
-    GYROS_TRACE_RWLOCK_WR_UNLOCK
+    GYROS_TRACE_RWLOCK_WR_UNLOCK,
+    GYROS_TRACE_SEM_BLOCKED,
+    GYROS_TRACE_SEM_AQUIRED,
+    GYROS_TRACE_SEM_SIGNAL,
 };
 
 struct gyros_trace_context
@@ -79,17 +79,6 @@ struct gyros_trace_wake
     gyros_task_t *task;
 };
 
-struct gyros_trace_sem
-{
-    gyros_sem_t *sem;
-    unsigned value;
-};
-
-struct gyros_trace_mutex
-{
-    gyros_mutex_t *mutex;
-};
-
 struct gyros_trace_cond
 {
     gyros_cond_t *cond;
@@ -100,9 +89,20 @@ struct gyros_trace_mq
     gyros_mq_t *mq;
 };
 
+struct gyros_trace_mutex
+{
+    gyros_mutex_t *mutex;
+};
+
 struct gyros_trace_rwlock
 {
     gyros_rwlock_t *rwlock;
+};
+
+struct gyros_trace_sem
+{
+    gyros_sem_t *sem;
+    unsigned value;
 };
 
 typedef struct
@@ -118,11 +118,11 @@ typedef struct
         const gyros_task_t *running;
         struct gyros_trace_context context;
         struct gyros_trace_wake wake;
-        struct gyros_trace_sem sem;
-        struct gyros_trace_mutex mutex;
         struct gyros_trace_cond cond;
         struct gyros_trace_mq mq;
+        struct gyros_trace_mutex mutex;
         struct gyros_trace_rwlock rwlock;
+        struct gyros_trace_sem sem;
     } info;
 } gyros_trace_t;
 
