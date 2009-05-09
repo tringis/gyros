@@ -26,8 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/interrupt.h>
 #include <gyros/rwlock.h>
+#include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 
 #include <stddef.h>
 
@@ -73,6 +74,7 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
     while (unlikely(rwlock->writer ||
                     !gyros__list_empty(&rwlock->wr_task_list)))
     {
+        GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "rwlock_rdlock";
@@ -83,6 +85,7 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         flags = gyros_interrupt_disable();
     }
     rwlock->readers++;
+    GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 }
 
@@ -103,6 +106,7 @@ gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
         ret = 0;
     else
     {
+        GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
         rwlock->readers++;
         ret = 1;
     }
@@ -128,6 +132,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     while (unlikely(rwlock->writer ||
                     !gyros__list_empty(&rwlock->wr_task_list)))
     {
+        GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros__state.current, &rwlock->rd_task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
@@ -145,6 +150,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     }
 
     rwlock->readers++;
+    GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -168,6 +174,7 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
                      rwlock->writer != gyros__state.current) ||
                     rwlock->readers))
     {
+        GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros__state.current, &rwlock->wr_task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "rwlock_wrlock";
@@ -178,6 +185,7 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
         flags = gyros_interrupt_disable();
     }
     rwlock->writer = gyros__state.current;
+    GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 }
 
@@ -202,6 +210,7 @@ gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
     else
     {
         rwlock->writer = gyros__state.current;
+        GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
         ret = 1;
     }
     gyros_interrupt_restore(flags);
@@ -227,6 +236,7 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
                      rwlock->writer != gyros__state.current) ||
                     rwlock->readers))
     {
+        GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros__state.current, &rwlock->wr_task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
@@ -244,6 +254,7 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     }
 
     rwlock->writer = gyros__state.current;
+    GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -267,10 +278,12 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
         if (rwlock->writer != gyros__state.current)
             gyros_error("rwlock_unlock called by non owner task", rwlock);
 #endif
+        GYROS__TRACE_RWLOCK(WR_UNLOCK, rwlock);
         rwlock->writer = NULL;
     }
     else
     {
+        GYROS__TRACE_RWLOCK(RD_UNLOCK, rwlock);
         rwlock->readers--;
 #if GYROS_CONFIG_DEBUG
         if (rwlock->readers < 0)

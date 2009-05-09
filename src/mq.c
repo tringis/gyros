@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/mq.h>
+#include <gyros/private/trace.h>
 
 #include <stddef.h>
 
@@ -65,6 +66,7 @@ gyros_mq_send(gyros_mq_t *mq, void *msg)
         gyros_error("uninitialized mq in mq_send", mq);
 #endif
 
+    GYROS__TRACE_MQ(SEND, mq);
     gyros__list_insert_before(&msghdr->list, &mq->msg_list);
     if (gyros__list_empty(&mq->task_list))
         gyros_interrupt_restore(flags);
@@ -95,6 +97,7 @@ gyros_mq_receive(gyros_mq_t *mq)
             gyros_interrupt_restore(flags);
             return NULL;
         }
+        GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros__state.current, &mq->task_list);
 #if GYROS_CONFIG_DEBUG
         gyros__state.current->debug_state = "mq_receive";
@@ -106,6 +109,7 @@ gyros_mq_receive(gyros_mq_t *mq)
     }
     msghdr = GYROS__LIST_CONTAINER(mq->msg_list.next, gyros_mq_msghdr_t, list);
     gyros__list_remove(mq->msg_list.next);
+    GYROS__TRACE_MQ(RECEIVED, mq);
     gyros_interrupt_restore(flags);
 
     return msghdr;
@@ -126,6 +130,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
 
     if (unlikely(gyros__list_empty(&mq->msg_list)))
     {
+        GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros__state.current, &mq->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
@@ -143,6 +148,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
     }
     msghdr = GYROS__LIST_CONTAINER(mq->msg_list.next, gyros_mq_msghdr_t, list);
     gyros__list_remove(mq->msg_list.next);
+    GYROS__TRACE_MQ(RECEIVED, mq);
     gyros_interrupt_restore(flags);
 
     return msghdr;

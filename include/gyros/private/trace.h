@@ -58,6 +58,20 @@ extern int gyros__trace_enabled;
         gyros__t->info.cond.cond = (c);                                       \
     }
 
+#define GYROS__TRACE_MQ(kind, mq)                                             \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MQ_ ## kind);      \
+        gyros__t->info.mq.mq = (mq);                                          \
+    }
+
+#define GYROS__TRACE_RWLOCK(kind, rwlock)                                     \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_RWLOCK_ ## kind);  \
+        gyros__t->info.rwlock.rwlock = (rwlock);                              \
+    }
+
 #else
 
 #define GYROS__TRACE_SEM(kind, s)

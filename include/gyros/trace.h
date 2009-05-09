@@ -33,6 +33,8 @@
 #include <gyros/sem.h>
 #include <gyros/mutex.h>
 #include <gyros/cond.h>
+#include <gyros/mq.h>
+#include <gyros/rwlock.h>
 
 /** \file trace.h
  * \brief Trace functions.
@@ -55,7 +57,16 @@ enum gyros_trace_kind
     GYROS_TRACE_MUTEX_UNLOCK,
     GYROS_TRACE_COND_WAIT,
     GYROS_TRACE_COND_SIGNAL_ONE,
-    GYROS_TRACE_COND_SIGNAL_ALL
+    GYROS_TRACE_COND_SIGNAL_ALL,
+    GYROS_TRACE_MQ_SEND,
+    GYROS_TRACE_MQ_RECEIVE_BLOCKED,
+    GYROS_TRACE_MQ_RECEIVED,
+    GYROS_TRACE_RWLOCK_RD_BLOCKED,
+    GYROS_TRACE_RWLOCK_RD_AQUIRED,
+    GYROS_TRACE_RWLOCK_RD_UNLOCK,
+    GYROS_TRACE_RWLOCK_WR_BLOCKED,
+    GYROS_TRACE_RWLOCK_WR_AQUIRED,
+    GYROS_TRACE_RWLOCK_WR_UNLOCK
 };
 
 struct gyros_trace_context
@@ -84,6 +95,16 @@ struct gyros_trace_cond
     gyros_cond_t *cond;
 };
 
+struct gyros_trace_mq
+{
+    gyros_mq_t *mq;
+};
+
+struct gyros_trace_rwlock
+{
+    gyros_rwlock_t *rwlock;
+};
+
 typedef struct
 {
     enum gyros_trace_kind kind;
@@ -100,6 +121,8 @@ typedef struct
         struct gyros_trace_sem sem;
         struct gyros_trace_mutex mutex;
         struct gyros_trace_cond cond;
+        struct gyros_trace_mq mq;
+        struct gyros_trace_rwlock rwlock;
     } info;
 } gyros_trace_t;
 
