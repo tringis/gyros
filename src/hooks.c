@@ -71,7 +71,7 @@ gyros__irq_hook(void)
 {
 #if GYROS_CONFIG_TRACE
     if (unlikely(gyros__trace_enabled))
-        gyros__trace(GYROS_TRACE_IRQ)->task = NULL;
+        gyros__trace(GYROS_TRACE_IRQ);
 #endif
 
 #if GYROS_CONFIG_IRQ_HOOK
