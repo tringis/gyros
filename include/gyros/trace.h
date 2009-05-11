@@ -71,6 +71,7 @@ enum gyros_trace_kind
 
 struct gyros_trace_context
 {
+    gyros_task_t *prev;
     gyros_task_t *next;
 };
 
