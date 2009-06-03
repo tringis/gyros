@@ -48,8 +48,11 @@ gyros__context_hook(void)
 {
     gyros_task_t *next = TASK(gyros__state.running.next);
 
+    if (next == gyros__state.current)
+        return;
+
 #if GYROS_CONFIG_TRACE
-    if (unlikely(gyros__trace_enabled) && next != gyros__state.current)
+    if (unlikely(gyros__trace_enabled))
     {
         gyros_trace_t *t = gyros__trace(GYROS_TRACE_CONTEXT);
 
