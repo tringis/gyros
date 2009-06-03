@@ -40,36 +40,36 @@ extern int gyros__trace_enabled;
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_COND_ ## kind);    \
-        gyros__t->info.cond.cond = (c);                                       \
+        gyros__t->info.cond = (c);                                            \
     }
 
 #define GYROS__TRACE_MQ(kind, mq)                                             \
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MQ_ ## kind);      \
-        gyros__t->info.mq.mq = (mq);                                          \
+        gyros__t->info.mq = (mq);                                             \
     }
 
 #define GYROS__TRACE_MUTEX(kind, m)                                           \
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MUTEX_ ## kind);   \
-        gyros__t->info.mutex.mutex = (m);                                     \
+        gyros__t->info.mutex = (m);                                           \
     }
 
 #define GYROS__TRACE_RWLOCK(kind, rwlock)                                     \
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_RWLOCK_ ## kind);  \
-        gyros__t->info.rwlock.rwlock = (rwlock);                              \
+        gyros__t->info.rwlock = (rwlock);                                     \
     }
 
 #define GYROS__TRACE_SEM(kind, s)                                             \
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_SEM_ ## kind);     \
-        gyros__t->info.sem.sem = (s);                                         \
-        gyros__t->info.sem.value = (s)->value;                                \
+        gyros__t->info.sem = (s);                                             \
+        gyros__t->info.sem_value = (s)->value;                                \
     }
 
 #else
@@ -83,5 +83,7 @@ extern int gyros__trace_enabled;
 #endif
 
 gyros_trace_t *gyros__trace(enum gyros_trace_kind kind);
+
+void gyros__trace_context(gyros_task_t *next);
 
 #endif

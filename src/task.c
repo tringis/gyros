@@ -118,7 +118,7 @@ gyros__task_wake(gyros_task_t *task)
 {
 #if GYROS_CONFIG_TRACE
     if (unlikely(gyros__trace_enabled))
-        gyros__trace(GYROS_TRACE_WAKE)->info.wake.task = task;
+        gyros__trace(GYROS_TRACE_WAKE)->info.wake_task = task;
 #endif
 
 #if GYROS_CONFIG_DEBUG

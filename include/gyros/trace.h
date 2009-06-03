@@ -62,88 +62,74 @@
 /** Type a single trace log entry. */
 enum gyros_trace_kind
 {
-    GYROS_TRACE_EMPTY,
-    GYROS_TRACE_TRACE,
-    GYROS_TRACE_STRING,
-    GYROS_TRACE_RUNNING,
-    GYROS_TRACE_IRQ,
-    GYROS_TRACE_CONTEXT,
-    GYROS_TRACE_WAKE,
-    GYROS_TRACE_COND_WAIT,
-    GYROS_TRACE_COND_SIGNAL_ONE,
-    GYROS_TRACE_COND_SIGNAL_ALL,
-    GYROS_TRACE_MQ_SEND,
-    GYROS_TRACE_MQ_RECEIVE_BLOCKED,
-    GYROS_TRACE_MQ_RECEIVED,
-    GYROS_TRACE_MUTEX_BLOCKED,
-    GYROS_TRACE_MUTEX_AQUIRED,
-    GYROS_TRACE_MUTEX_UNLOCK,
-    GYROS_TRACE_RWLOCK_RD_BLOCKED,
-    GYROS_TRACE_RWLOCK_RD_AQUIRED,
-    GYROS_TRACE_RWLOCK_RD_UNLOCK,
-    GYROS_TRACE_RWLOCK_WR_BLOCKED,
-    GYROS_TRACE_RWLOCK_WR_AQUIRED,
-    GYROS_TRACE_RWLOCK_WR_UNLOCK,
-    GYROS_TRACE_SEM_BLOCKED,
-    GYROS_TRACE_SEM_AQUIRED,
-    GYROS_TRACE_SEM_SIGNAL,
+    GYROS_TRACE_EMPTY,              /**< Empty trace */
+    GYROS_TRACE_TRACE,              /**< Trace on/off */
+    GYROS_TRACE_STRING,             /**< String */
+    GYROS_TRACE_RUNNING,            /**< Running task */
+    GYROS_TRACE_IRQ,                /**< Interrupt */
+    GYROS_TRACE_CONTEXT,            /**< Context switch */
+    GYROS_TRACE_WAKE,               /**< Task wakeup */
+    GYROS_TRACE_COND_WAIT,          /**< gyros_cond_wait() blocking */
+    GYROS_TRACE_COND_SIGNAL_ONE,    /**< gyros_cond_signal_one() */
+    GYROS_TRACE_COND_SIGNAL_ALL,    /**< gyros_cond_signal_all() */
+    GYROS_TRACE_MQ_SEND,            /**< gyros_mq_send() */
+    GYROS_TRACE_MQ_RECEIVE_BLOCKED, /**< gyros_mq_receive() blocking */
+    GYROS_TRACE_MQ_RECEIVED,        /**< gyros_mq_receive() returning */
+    GYROS_TRACE_MUTEX_BLOCKED,      /**< gyros_mutex_lock() blocking */
+    GYROS_TRACE_MUTEX_AQUIRED,      /**< gyros_mutex_lock() aquired mutex */
+    GYROS_TRACE_MUTEX_UNLOCK,       /**< gyros_mutex_unlock() */
+    GYROS_TRACE_RWLOCK_RD_BLOCKED,  /**< gyros_rwlock_rdlock() blocking */
+    GYROS_TRACE_RWLOCK_RD_AQUIRED,  /**< gyros_rwlock_rdlock() aquired lock */
+    GYROS_TRACE_RWLOCK_RD_UNLOCK,   /**< gyros_rwlock_unlock()
+                                         unlocked read lock */
+    GYROS_TRACE_RWLOCK_WR_BLOCKED,  /**< gyros_rwlock_wrlock() blocking */
+    GYROS_TRACE_RWLOCK_WR_AQUIRED,  /**< gyros_rwlock_wrlock() aquired lock */
+    GYROS_TRACE_RWLOCK_WR_UNLOCK,   /**< gyros_rwlock_unlock()
+                                         unlocked write lock */
+    GYROS_TRACE_SEM_BLOCKED,        /**< gyros_sem_wait() blocking */
+    GYROS_TRACE_SEM_AQUIRED,        /**< gyros_sem_wait() aquired semaphore */
+    GYROS_TRACE_SEM_SIGNAL,         /**< gyros_sem_signal() */
 };
 
-struct gyros_trace_context
-{
-    gyros_task_t *prev;
-    gyros_task_t *next;
-};
-
-struct gyros_trace_wake
-{
-    gyros_task_t *task;
-};
-
-struct gyros_trace_cond
-{
-    gyros_cond_t *cond;
-};
-
-struct gyros_trace_mq
-{
-    gyros_mq_t *mq;
-};
-
-struct gyros_trace_mutex
-{
-    gyros_mutex_t *mutex;
-};
-
-struct gyros_trace_rwlock
-{
-    gyros_rwlock_t *rwlock;
-};
-
-struct gyros_trace_sem
-{
-    gyros_sem_t *sem;
-    unsigned value;
-};
-
+/** Trace log entry. */
 typedef struct
 {
+    /** Type of trace. */
     enum gyros_trace_kind kind;
+
+    /** Timestamp of trace */
     gyros_abstime_t timestamp;
+
+    /** Task causing the trace, or @a NULL if the trace was caused
+      * from interrupt context. */
     gyros_task_t *task;
 
-    union
+    /** Extra information available for some trace kinds. */
+    union info
     {
+        /** For @c GYROS_TRACE_TRACE: New trace setting (1 = on, 0 =
+          * off, negative value = counter to off). */
         int trace;
+        /** For @c GYROS_TRACE_STRING: String pointer. */
         const char *str;
+        /** For @c GYROS_TRACE_TASK: Task pointer. */
         const gyros_task_t *running;
-        struct gyros_trace_context context;
-        struct gyros_trace_wake wake;
-        struct gyros_trace_cond cond;
-        struct gyros_trace_mq mq;
-        struct gyros_trace_mutex mutex;
-        struct gyros_trace_rwlock rwlock;
-        struct gyros_trace_sem sem;
+        /** For @c GYROS_TRACE_CONTEXT: Next task to run. */
+        gyros_task_t *context_next;
+        /** For @c GYROS_TRACE_WAKEUP: Next task to run. */
+        gyros_task_t *wake_task;
+        /** For @c GYROS_TRACE_COND_*: The condition variable. */
+        gyros_cond_t *cond;
+        /** For @c GYROS_TRACE_MQ_*: The message queue. */
+        gyros_mq_t *mq;
+        /** For @c GYROS_TRACE_MUTEX_*: The mutex. */
+        gyros_mutex_t *mutex;
+        /** For @c GYROS_TRACE_RWLOCK_*: The read/write lock. */
+        gyros_rwlock_t *rwlock;
+        /** For @c GYROS_TRACE_SEM_*: The semaphore. */
+        gyros_sem_t *sem;
+        /** For @c GYROS_TRACE_SEM_*: Semaphore value. */
+        unsigned sem_value;
     } info;
 } gyros_trace_t;
 

@@ -113,8 +113,8 @@ gyros_trace_iterate(gyros_trace_t *prev)
     return prev->kind == GYROS_TRACE_EMPTY ? NULL : prev;
 }
 
-gyros_trace_t*
-gyros__trace(enum gyros_trace_kind kind)
+static gyros_trace_t*
+alloc_trace(enum gyros_trace_kind kind, gyros_task_t *task)
 {
     gyros_trace_t *t = s_log_pos++;
 
@@ -126,7 +126,22 @@ gyros__trace(enum gyros_trace_kind kind)
 
     t->kind = kind;
     t->timestamp = gyros_time();
-    t->task = gyros_in_interrupt() ? NULL : gyros__state.current;
+    t->task = task;
 
     return t;
+}
+
+gyros_trace_t*
+gyros__trace(enum gyros_trace_kind kind)
+{
+    return alloc_trace(kind, gyros_in_interrupt() ? NULL
+                                                  : gyros__state.current);
+}
+
+void
+gyros__trace_context(gyros_task_t *next)
+{
+    gyros_trace_t *t = alloc_trace(GYROS_TRACE_CONTEXT, gyros__state.current);
+
+    t->info.context_next = next;
 }

@@ -53,12 +53,7 @@ gyros__context_hook(void)
 
 #if GYROS_CONFIG_TRACE
     if (unlikely(gyros__trace_enabled))
-    {
-        gyros_trace_t *t = gyros__trace(GYROS_TRACE_CONTEXT);
-
-        t->info.context.prev = gyros__state.current;
-        t->info.context.next = next;
-    }
+        gyros__trace_context(next);
 #endif
 
 #if GYROS_CONFIG_CONTEXT_HOOK
