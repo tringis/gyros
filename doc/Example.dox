@@ -57,6 +57,16 @@ main()
 
 \section trace_dump_example Trace dump example
 \code
+#if GYROS_CONFIG_DEBUG
+#define DUMP_OBJECT(event, obj)                                         \
+    if ((obj)->name)                                                    \
+        uart_printf("%-15s %s", (event), (obj)->name);                  \
+    else                                                                \
+        uart_printf("%-15s %p", (event), (obj));
+#else
+#define DUMP_OBJECT(event, obj) uart_printf("%-15s %p", (event), (obj));
+#endif
+
 static const char*
 trace_kind_type(enum gyros_trace_kind kind)
 {
