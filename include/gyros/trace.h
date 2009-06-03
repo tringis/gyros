@@ -56,6 +56,7 @@
 /*@{*/
 
 /** \file trace.h
+  * \brief Trace support.
   * \copydoc trace_group
   */
 
@@ -91,7 +92,7 @@ enum gyros_trace_kind
     GYROS_TRACE_SEM_SIGNAL,         /**< gyros_sem_signal() */
 };
 
-/** Trace log entry. */
+/** \brief Trace log entry. */
 typedef struct
 {
     /** Type of trace. */
@@ -104,7 +105,7 @@ typedef struct
       * from interrupt context. */
     gyros_task_t *task;
 
-    /** Extra information available for some trace kinds. */
+    /** \brief Extra information available for some trace kinds. */
     union info
     {
         /** For @c GYROS_TRACE_TRACE: New trace setting (1 = on, 0 =

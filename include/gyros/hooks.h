@@ -46,6 +46,7 @@
 /*@{*/
 
 /** \file hooks.h
+  * \brief Hook support.
   * \copydoc hook_group
   */
 
