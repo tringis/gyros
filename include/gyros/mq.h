@@ -90,6 +90,8 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
+    /** Name of the message queue set by gyros_mq_name(), else @c
+      * NULL. */
     const char *name;
 #endif
 

@@ -36,10 +36,30 @@
 #include <gyros/mq.h>
 #include <gyros/rwlock.h>
 
-/** \file trace.h
- * \brief Trace functions.
- */
+/** \defgroup trace_group Tracing support
+  *
+  * Tracing is enabled when compiled with @c GYROS_CONFIG_TRACE set to
+  * a non-zero value.  When tracing is enabled, task activities,
+  * e.g. context switches, and synchronization object interactions,
+  * e.g. locking and unlocking of mutexes are logged with time stamps.
+  * These log entries can be recalled to study the real time behavior
+  * of a program.
+  *
+  * Before tracing can be enabled, a memory area must be reserved to
+  * store the trace log.  The address and size of the memory area is
+  * supplied when calling gyros_trace_init().  Tracing is enabled and
+  * disabled by the running software.  When disabling tracing, there
+  * is an option to perform a number of additional traces before
+  * really stopping, which can be useful to study events up to and
+  * just after a certain condition occurs.
+  */
+/*@{*/
 
+/** \file trace.h
+  * \copydoc trace_group
+  */
+
+/** Type a single trace log entry. */
 enum gyros_trace_kind
 {
     GYROS_TRACE_EMPTY,
@@ -127,16 +147,47 @@ typedef struct
     } info;
 } gyros_trace_t;
 
+/** Initialize tracing.  Must be called before any other trace
+  * functions.
+  *
+  * \param log              Address of log area.  Must be int aligned.
+  * \param log_size         Size of log area in bytes.
+  */
 void gyros_trace_init(void *log, int log_size);
 
+/** Enable tracing.
+  */
 void gyros_trace_on(void);
 
+/** Disable tracing, either right away if @a when is zero, or after @a
+  * when numner of traces.
+  *
+  * \param when             Number of additional traces to log.
+  */
 void gyros_trace_off(int when);
 
+/** Insert a custom string in the trace log.  Note that the pointer to
+  * the string is stored, so the pointer must remain valid even after
+  * this call.
+  *
+  * \param str              String to add to the trace log.
+  */
 void gyros_trace_string(const char *str);
 
+/** Insert a trace of all currently running tasks into the trace log.
+  */
 void gyros_trace_running_tasks(void);
 
+/** Iterate through the trace log.  The first call must be with @a
+  * prev set to @c NULL, and subsequent calls with the return value of
+  * the previous call until @c NULL is returned.
+  *
+  * \param prev             Pointer to previous trace.
+  * \return                 Pointer to next trace, or @c NULL if there
+  *                         are no more traces.
+  */
 gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
+
+/*@}*/
 
 #endif

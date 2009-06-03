@@ -31,13 +31,40 @@
 
 #include <gyros/task.h>
 
-/** \file hooks.h
- * \brief Hook functions.
- */
+/** \defgroup hook_group Hook support
+  *
+  * Hooks are used to call custom code for certain internal gyros
+  * events such as interrupts and context switches.  While the hooks
+  * are designed to be efficient, there is a performance penalty,
+  * which is why hook support is disabled by default.
+  *
+  * GyrOS must be compiled with @c GYROS_CONFIG_CONTEXT_HOOK set to a
+  * non-zero value to enable support for the context switch hook, and
+  * @c GYROS_CONFIG_IRQ_HOOK must be set to a non-zero value to enable
+  * the IRQ hook.
+  */
+/*@{*/
 
+/** \file hooks.h
+  * \copydoc hook_group
+  */
+
+/** Set the context switch hook function to @a context_hook, which can
+  * be @c NULL to disable the hook.  The hook function is called with
+  * pointers to the current and next task structs.
+  *
+  * \param context_hook     Context switch hook function pointer.
+  */
 void gyros_set_context_hook(void (*context_hook)(gyros_task_t *current,
                                                  gyros_task_t *next));
 
+/** Set the IRQ switch hook function to @a irq_hook, which can be @c
+  * NULL to disable the hook.
+  *
+  * \param irq_hook         IRQ hook function pointer.
+  */
 void gyros_set_irq_hook(void (*irq_hook)(void));
+
+/*@}*/
 
 #endif

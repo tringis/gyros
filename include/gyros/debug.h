@@ -31,11 +31,11 @@
 
 /** \defgroup debug_group Debugging support
   *
-  * Debugging is enabled when compiled with @c GYROS_DEBUG set to a
-  * non-zero value.  When debugging is enabled, many common invalid
-  * uses of the GyrOS API is detected, and more information about the
-  * status of each task tracked, e.g. if a task is blocking on a
-  * mutex, and if so, which mutex.
+  * Debugging is enabled when compiled with @c GYROS_CONFIG_DEBUG set
+  * to a non-zero value.  When debugging is enabled, many common
+  * invalid uses of the GyrOS API is detected, and more information
+  * about the status of each task tracked, e.g. if a task is blocking
+  * on a mutex, and if so, which mutex.
   */
 /*@{*/
 
@@ -45,11 +45,14 @@
   */
 
 /** Set the error handler to @a msg. The default error handler just
-  * hangs forever in a loop with interrupts disabled.
+  * hangs forever in a loop with interrupts disabled.  The error
+  * handler is called with two parameters, both a text message
+  * describing the error, and a pointer to the object relevant to the
+  * error, e.g. a pointer to the mutex when a mutex error is detected,
+  * or a task when a task error is detected, or @c NULL when there is
+  * no relevant object.
   *
   * \param handler          Error handler function pointer.
-  * \param object           Object related to the error, e.g.
-  *                         the mutex causing a deadlock.
   */
 void gyros_set_error_handler(void (*handler)(const char *msg,
                                              void *object));
