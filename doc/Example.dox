@@ -30,8 +30,9 @@
   * \brief GyrOS application examples.
   */
 
-/** \page examples Application example
+/** \page examples Application examples
 
+\section minimal_application_example Minimal application example
 \code
 #include <gyros/task.h>
 
@@ -50,6 +51,181 @@ main()
     gyros_task_create(&task1, "task1", task1_main, NULL,
                       task1_stack, sizeof(task1_stack), 10);
     gyros_start();
+}
+\endcode
+
+
+\section trace_dump_example Trace dump example
+\code
+static const char*
+trace_kind_type(enum gyros_trace_kind kind)
+{
+    switch (kind)
+    {
+    case GYROS_TRACE_EMPTY:
+        return "";
+    case GYROS_TRACE_TRACE:
+        return "*TRACE*";
+    case GYROS_TRACE_STRING:
+        return "STRING";
+    case GYROS_TRACE_RUNNING:
+        return "RUNNING";
+    case GYROS_TRACE_IRQ:
+        return "IRQ";
+    case GYROS_TRACE_CONTEXT:
+        return "CONTEXT";
+    case GYROS_TRACE_WAKE:
+        return "WAKE";
+    case GYROS_TRACE_COND_WAIT:
+    case GYROS_TRACE_COND_SIGNAL_ONE:
+    case GYROS_TRACE_COND_SIGNAL_ALL:
+        return "COND";
+    case GYROS_TRACE_MQ_SEND:
+    case GYROS_TRACE_MQ_RECEIVE_BLOCKED:
+    case GYROS_TRACE_MQ_RECEIVED:
+        return "MQ";
+    case GYROS_TRACE_MUTEX_BLOCKED:
+    case GYROS_TRACE_MUTEX_AQUIRED:
+    case GYROS_TRACE_MUTEX_UNLOCK:
+        return "MUTEX";
+    case GYROS_TRACE_RWLOCK_RD_BLOCKED:
+    case GYROS_TRACE_RWLOCK_RD_AQUIRED:
+    case GYROS_TRACE_RWLOCK_RD_UNLOCK:
+    case GYROS_TRACE_RWLOCK_WR_BLOCKED:
+    case GYROS_TRACE_RWLOCK_WR_AQUIRED:
+    case GYROS_TRACE_RWLOCK_WR_UNLOCK:
+        return "RWLOCK";
+    case GYROS_TRACE_SEM_BLOCKED:
+    case GYROS_TRACE_SEM_AQUIRED:
+    case GYROS_TRACE_SEM_SIGNAL:
+        return "SEM";
+    }
+
+    return "UNKNOWN";
+}
+
+void
+trace_dump(void)
+{
+    gyros_trace_t *t, *next_t;
+    int i = 0;
+
+    gyros_trace_off(0);
+    t = gyros_trace_iterate(NULL);
+    next_t = gyros_trace_iterate(t);
+    while (t)
+    {
+        if (t->kind == GYROS_TRACE_EMPTY)
+        {
+            t = next_t;
+            next_t = gyros_trace_iterate(t);
+            continue;
+        }
+
+        printf("%3u %6llu.%06llu [%-8s] %-8s%s",
+               i++, t->timestamp / 1000000,
+               t->timestamp - t->timestamp / 1000000 * 1000000,
+               t->task ? t->task->name : "",
+               trace_kind_type(t->kind),
+               t->kind == GYROS_TRACE_IRQ ? "" : " ");
+
+        switch (t->kind)
+        {
+        case GYROS_TRACE_EMPTY:
+            break;
+        case GYROS_TRACE_TRACE:
+            if (t->info.trace < 0)
+                printf("%d", t->info.trace);
+            else
+                printf("%s", t->info.trace ? "on" : "off");
+            break;
+        case GYROS_TRACE_STRING:
+            puts(t->info.str);
+            break;
+        case GYROS_TRACE_RUNNING:
+            puts(t->info.running->name);
+            break;
+        case GYROS_TRACE_IRQ:
+            break;
+        case GYROS_TRACE_CONTEXT:
+            printf("%s => %s", t->task->name, t->info.context_next->name);
+            break;
+        case GYROS_TRACE_WAKE:
+            puts(t->info.wake_task->name);
+            break;
+
+        case GYROS_TRACE_COND_WAIT:
+            DUMP_OBJECT("WAIT", t->info.cond);
+            break;
+        case GYROS_TRACE_COND_SIGNAL_ONE:
+            DUMP_OBJECT("SIGNAL_ONE", t->info.cond);
+            break;
+        case GYROS_TRACE_COND_SIGNAL_ALL:
+            DUMP_OBJECT("SIGNAL_ALL", t->info.cond);
+            break;
+
+        case GYROS_TRACE_MQ_SEND:
+            DUMP_OBJECT("SEND", t->info.mq);
+            break;
+        case GYROS_TRACE_MQ_RECEIVE_BLOCKED:
+            DUMP_OBJECT("RECEIVE_BLOCKED", t->info.mq);
+            break;
+        case GYROS_TRACE_MQ_RECEIVED:
+            DUMP_OBJECT("RECEIVED", t->info.mq);
+            break;
+
+        case GYROS_TRACE_MUTEX_BLOCKED:
+            DUMP_OBJECT("BLOCKED", t->info.mutex);
+            break;
+        case GYROS_TRACE_MUTEX_AQUIRED:
+            DUMP_OBJECT("AQUIRED", t->info.mutex);
+            break;
+        case GYROS_TRACE_MUTEX_UNLOCK:
+            DUMP_OBJECT("UNLOCK", t->info.mutex);
+            break;
+
+        case GYROS_TRACE_RWLOCK_RD_BLOCKED:
+            DUMP_OBJECT("RD_BLOCKED", t->info.rwlock);
+            break;
+        case GYROS_TRACE_RWLOCK_RD_AQUIRED:
+            DUMP_OBJECT("RD_AQUIRED", t->info.rwlock);
+            break;
+        case GYROS_TRACE_RWLOCK_RD_UNLOCK:
+            DUMP_OBJECT("RD_UNLOCK", t->info.rwlock);
+            break;
+        case GYROS_TRACE_RWLOCK_WR_BLOCKED:
+            DUMP_OBJECT("WR_BLOCKED", t->info.rwlock);
+            break;
+        case GYROS_TRACE_RWLOCK_WR_AQUIRED:
+            DUMP_OBJECT("WR_AQUIRED", t->info.rwlock);
+            break;
+        case GYROS_TRACE_RWLOCK_WR_UNLOCK:
+            DUMP_OBJECT("WR_UNLOCK", t->info.rwlock);
+            break;
+
+        case GYROS_TRACE_SEM_BLOCKED:
+            DUMP_OBJECT("BLOCKED", t->info.sem);
+            printf(" (%u)", t->info.sem_value);
+            break;
+        case GYROS_TRACE_SEM_AQUIRED:
+            DUMP_OBJECT("AQUIRED", t->info.sem);
+            printf(" (%u)", t->info.sem_value);
+            break;
+        case GYROS_TRACE_SEM_SIGNAL:
+            DUMP_OBJECT("SIGNAL", t->info.sem);
+            printf(" (%u)", t->info.sem_value);
+            break;
+        }
+        if (t->kind != GYROS_TRACE_EMPTY)
+        {
+            if (next_t)
+                printf(" [%llu]", t->timestamp - next_t->timestamp);
+            puts("\r\n");
+        }
+
+        t = next_t;
+        next_t = gyros_trace_iterate(t);
+    }
 }
 \endcode
 
