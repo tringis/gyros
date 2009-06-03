@@ -101,7 +101,7 @@ typedef struct
     /** Timestamp of trace */
     gyros_abstime_t timestamp;
 
-    /** Task causing the trace, or @a NULL if the trace was caused
+    /** Task causing the trace, or @c NULL if the trace was caused
       * from interrupt context. */
     gyros_task_t *task;
 
