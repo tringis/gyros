@@ -69,6 +69,18 @@
   * extra bytes memory usage per task. */
 #define GYROS_CONFIG_WAIT 1
 
+/** If defined to a non-zero value, this variable enables support for
+  * the context switch hook. */
+#define GYROS_CONFIG_CONTEXT_HOOK 0
+
+/** If defined to a non-zero value, this variable enables support for
+  * the IRQ hook. */
+#define GYROS_CONFIG_IRQ_HOOK 0
+
+/** If defined to a non-zero value, this variable enables support for
+  * tracing. */
+#define GYROS_CONFIG_TRACE 0
+
 /*@}*/
 
 #endif
