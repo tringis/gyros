@@ -44,10 +44,18 @@
   * \copydoc config_group
   */
 
-/** If defined to a non-zero value, this variable enables debugging
-  * support.  The cost of enabling debugging support is higher memory
-  * usage and a small performance penalty.  See "\ref debug_group". */
+/** If defined to a non-zero value, this variable enables support for
+  * the \ref gyros_set_context_hook "context switch hook". */
+#define GYROS_CONFIG_CONTEXT_HOOK 0
+
+/** If defined to a non-zero value, this variable enables \ref
+  * debug_group "debugging support".  The cost of enabling debugging
+  * support is higher memory usage and a small performance penalty. */
 #define GYROS_CONFIG_DEBUG 1
+
+/** If defined to a non-zero value, this variable enables support for
+  * the \ref gyros_set_irq_hook "IRQ hook". */
+#define GYROS_CONFIG_IRQ_HOOK 0
 
 /** If defined to a non-zero value, this variable enables support for
   * gyros_task_iterate() at the cost of a few extra bytes memory usage
@@ -70,15 +78,7 @@
 #define GYROS_CONFIG_WAIT 1
 
 /** If defined to a non-zero value, this variable enables support for
-  * the context switch hook. */
-#define GYROS_CONFIG_CONTEXT_HOOK 0
-
-/** If defined to a non-zero value, this variable enables support for
-  * the IRQ hook. */
-#define GYROS_CONFIG_IRQ_HOOK 0
-
-/** If defined to a non-zero value, this variable enables support for
-  * tracing. */
+  * \ref trace_group "tracing". */
 #define GYROS_CONFIG_TRACE 0
 
 /*@}*/
