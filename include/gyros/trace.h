@@ -127,10 +127,14 @@ typedef struct
         gyros_mutex_t *mutex;
         /** For @c GYROS_TRACE_RWLOCK_*: The read/write lock. */
         gyros_rwlock_t *rwlock;
-        /** For @c GYROS_TRACE_SEM_*: The semaphore. */
-        gyros_sem_t *sem;
-        /** For @c GYROS_TRACE_SEM_*: Semaphore value. */
-        unsigned sem_value;
+        /** For @c GYROS_TRACE_SEM_*: Semaphore information. */
+        struct gyros_trace_sem_info
+        {
+            /** The semaphore. */
+            gyros_sem_t *sem;
+            /** Semaphore value. */
+            unsigned value;
+        } sem;
     } info;
 } gyros_trace_t;
 

@@ -68,8 +68,8 @@ extern int gyros__trace_enabled;
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_SEM_ ## kind);     \
-        gyros__t->info.sem = (s);                                             \
-        gyros__t->info.sem_value = (s)->value;                                \
+        gyros__t->info.sem.sem = (s);                                         \
+        gyros__t->info.sem.value = (s)->value;                                \
     }
 
 #else
