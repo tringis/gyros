@@ -62,7 +62,7 @@ gyros_timer_name(gyros_timer_t *timer, const char *name)
 }
 
 void
-gyros__timer_schedule(gyros_timer_t *timer)
+gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer)
 {
     struct gyros__list_node *i;
 
@@ -72,6 +72,16 @@ gyros__timer_schedule(gyros_timer_t *timer)
             break;
     }
     gyros__list_insert_before(&timer->list_node, i);
+
+#if GYROS_CONFIG_DYNTICK
+    if (i == gyros__timers.next &&
+        (gyros__list_empty(&gyros__timeouts) ||
+         (gyros_reltime_t)(TIMER(gyros__timers.next)->timeout -
+                           TIMEOUT(gyros__timeouts.next)->timeout) < 0))
+    {
+        gyros__update_tick(now, TIMER(gyros__timers.next)->timeout);
+    }
+#endif
 }
 
 void
@@ -87,7 +97,7 @@ gyros_timer_set(gyros_timer_t *timer, gyros_abstime_t time)
     gyros__list_remove(&timer->list_node);
     timer->timeout = time;
     timer->period = 0;
-    gyros__timer_schedule(timer);
+    gyros__timer_schedule(gyros_time(), timer);
     gyros_interrupt_restore(flags);
 }
 
@@ -104,7 +114,7 @@ gyros_timer_set_periodic(gyros_timer_t *timer, gyros_reltime_t period)
     gyros__list_remove(&timer->list_node);
     timer->timeout = gyros_time() + period;
     timer->period = period;
-    gyros__timer_schedule(timer);
+    gyros__timer_schedule(gyros_time(), timer);
     gyros_interrupt_restore(flags);
 }
 

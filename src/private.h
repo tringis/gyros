@@ -47,14 +47,17 @@
 #define unlikely(x)     (x)
 #endif
 
-#define TASK(t)   GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
-#define TIMER(t)  GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
+#define TASK(t)     GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
+#define TIMEOUT(t)  GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
+#define TIMER(t)    GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
 
 typedef struct
 {
     gyros_task_t *current;
     struct gyros__list_node running;
 } gyros__state_t;
+
+extern struct gyros__list_node gyros__timeouts;
 
 #if GYROS_CONFIG_TIMER
 extern struct gyros__list_node gyros__timers;
@@ -80,7 +83,7 @@ void gyros__task_wake(gyros_task_t *task);
 
 void gyros__task_set_timeout(gyros_abstime_t timeout);
 
-void gyros__timer_schedule(gyros_timer_t *timer);
+void gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 

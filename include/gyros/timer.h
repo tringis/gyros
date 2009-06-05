@@ -31,7 +31,9 @@
 
 /** \defgroup timer_group Timer management
   *
-  * TBD
+  * Timers are objects that generate callbacks at specified times, and
+  * may be either periodic or one shot.  Timers are called from
+  * interrupt context.
   */
 /*@{*/
 

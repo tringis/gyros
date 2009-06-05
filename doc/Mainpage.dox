@@ -54,6 +54,7 @@ must be ported are few and clearly defined.
   - \ref rwlock_group
   - Task \ref gyros_task_suspend "suspend" and \ref gyros_task_resume
     "resume"
+- Periodic and one shot \ref timer_group "timers".
 - Permissive BSD-style \subpage license "license" allowing for both commercial and
   non-commercial use.
 
