@@ -70,10 +70,47 @@ gyros__wake_timedout_tasks(gyros_abstime_t now)
         gyros__task_wake(task);
     }
 
+#if GYROS_CONFIG_TIMER
+    while (!gyros__list_empty(&gyros__timers) &&
+           (gyros_reltime_t)(now - TIMER(gyros__timers.next)->timeout) >= 0)
+    {
+        gyros_timer_t *timer = TIMER(gyros__timers.next);
+
+        gyros__list_remove(&timer->list_node);
+        if (timer->period)
+        {
+            timer->timeout += timer->period;
+            gyros__timer_schedule(timer);
+        }
+        timer->callback(timer->callback_arg);
+    }
+#endif
+
 #if GYROS_CONFIG_DYNTICK
+#if GYROS_CONFIG_TIMER
+    if (gyros__list_empty(&s_timeouts))
+    {
+        if (gyros__list_empty(&gyros__timers))
+            gyros__suspend_tick();
+        else
+            gyros__update_tick(now, TIMER(gyros__timers.next)->timeout);
+    }
+    else
+    {
+        if (gyros__list_empty(&gyros__timers) ||
+            (gyros_reltime_t)(TIMEOUT_TASK(s_timeouts.next)->timeout -
+                              TIMER(gyros__timers.next)->timeout) < 0)
+        {
+            gyros__update_tick(now, TIMEOUT_TASK(s_timeouts.next)->timeout);
+        }
+        else
+            gyros__update_tick(now, TIMER(gyros__timers.next)->timeout);
+    }
+#else
     if (gyros__list_empty(&s_timeouts))
         gyros__suspend_tick();
     else
         gyros__update_tick(now, TIMEOUT_TASK(s_timeouts.next)->timeout);
+#endif
 #endif
 }

@@ -46,6 +46,7 @@
 #include <gyros/sleep.h>
 #include <gyros/task.h>
 #include <gyros/time.h>
+#include <gyros/timer.h>
 #include <gyros/trace.h>
 
 #endif

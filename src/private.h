@@ -37,6 +37,7 @@
 #include <gyros/task.h>
 #include <gyros/mutex.h>
 #include <gyros/private/port.h>
+#include <gyros/timer.h>
 
 #ifdef __GNUC__
 #define likely(x)       __builtin_expect((x),1)
@@ -46,13 +47,18 @@
 #define unlikely(x)     (x)
 #endif
 
-#define TASK(t) GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
+#define TASK(t)   GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
+#define TIMER(t)  GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
 
 typedef struct
 {
     gyros_task_t *current;
     struct gyros__list_node running;
 } gyros__state_t;
+
+#if GYROS_CONFIG_TIMER
+extern struct gyros__list_node gyros__timers;
+#endif
 
 #if GYROS_CONFIG_ITERATE
 extern struct gyros__list_node gyros__tasks;
@@ -73,6 +79,8 @@ void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
 void gyros__task_wake(gyros_task_t *task);
 
 void gyros__task_set_timeout(gyros_abstime_t timeout);
+
+void gyros__timer_schedule(gyros_timer_t *timer);
 
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 

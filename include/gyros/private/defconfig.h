@@ -49,6 +49,10 @@
 #define GYROS_CONFIG_TIME_TYPE long long
 #endif
 
+#ifndef GYROS_CONFIG_TIMER
+#define GYROS_CONFIG_TIMER 1
+#endif
+
 #ifndef GYROS_CONFIG_WAIT
 #define GYROS_CONFIG_WAIT 1
 #endif
