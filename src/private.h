@@ -85,6 +85,12 @@ void gyros__task_set_timeout(gyros_abstime_t timeout);
 
 void gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer);
 
+#if GYROS_CONFIG_DYNTICK
+void gyros__update_dyntick(gyros_abstime_t now);
+#else
+#define gyros__update_dyntick(now) do { } while (0)
+#endif
+
 void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
 void gyros__cond_reschedule(void);

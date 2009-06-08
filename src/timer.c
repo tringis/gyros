@@ -72,16 +72,7 @@ gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer)
             break;
     }
     gyros__list_insert_before(&timer->list_node, i);
-
-#if GYROS_CONFIG_DYNTICK
-    if (i == gyros__timers.next &&
-        (gyros__list_empty(&gyros__timeouts) ||
-         (gyros_reltime_t)(TIMER(gyros__timers.next)->timeout -
-                           TIMEOUT(gyros__timeouts.next)->timeout) < 0))
-    {
-        gyros__update_tick(now, TIMER(gyros__timers.next)->timeout);
-    }
-#endif
+    gyros__update_dyntick(now);
 }
 
 void
