@@ -36,6 +36,29 @@
 
 extern int gyros__trace_enabled;
 
+#define GYROS__TRACE_TIMER(kind, t)                                           \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_TIMER_ ## kind);   \
+        gyros__t->info.timer = (t);                                           \
+    }
+
+#define GYROS__TRACE_TIMER_SET(t)                                             \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_TIMER_SET);        \
+        gyros__t->info.timer_set.timer = (t);                                 \
+        gyros__t->info.timer_set.timeout = (t)->timeout;                      \
+    }
+
+#define GYROS__TRACE_TIMER_SET_PERIODIC(t)                                    \
+    if (unlikely(gyros__trace_enabled))                                       \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_TIMER_SET_PERIODIC);\
+        gyros__t->info.timer_set_periodic.timer = (t);                        \
+        gyros__t->info.timer_set_periodic.period = (t)->period;               \
+    }
+
 #define GYROS__TRACE_COND(kind, c)                                            \
     if (unlikely(gyros__trace_enabled))                                       \
     {                                                                         \
@@ -74,6 +97,9 @@ extern int gyros__trace_enabled;
 
 #else
 
+#define GYROS__TRACE_TIMER(kind, t)
+#define GYROS__TRACE_TIMER_SET(t)
+#define GYROS__TRACE_TIMER_SET_PERIODIC(t)
 #define GYROS__TRACE_COND(kind, c)
 #define GYROS__TRACE_MQ(kind, mq)
 #define GYROS__TRACE_MUTEX(kind, m)

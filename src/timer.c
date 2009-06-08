@@ -27,9 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/timer.h>
 
-#include <limits.h>
 #include <stddef.h>
 
 #include "private.h"
@@ -89,6 +89,7 @@ gyros_timer_set(gyros_timer_t *timer, gyros_abstime_t time)
     gyros__list_remove(&timer->list_node);
     timer->timeout = time;
     timer->period = 0;
+    GYROS__TRACE_TIMER_SET(timer);
     gyros__timer_schedule(timer);
     gyros__dyntick_update(gyros_time());
     gyros_interrupt_restore(flags);
@@ -107,6 +108,7 @@ gyros_timer_set_periodic(gyros_timer_t *timer, gyros_reltime_t period)
     gyros__list_remove(&timer->list_node);
     timer->timeout = gyros_time() + period;
     timer->period = period;
+    GYROS__TRACE_TIMER_SET_PERIODIC(timer);
     gyros__timer_schedule(timer);
     gyros__dyntick_update(gyros_time());
     gyros_interrupt_restore(flags);
@@ -123,6 +125,7 @@ gyros_timer_clear(gyros_timer_t *timer)
 #endif
 
     gyros__list_remove(&timer->list_node);
+    GYROS__TRACE_TIMER(CLEAR, timer);
     gyros_interrupt_restore(flags);
 }
 

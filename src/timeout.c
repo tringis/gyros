@@ -27,10 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 #include <gyros/task.h>
-
-#include <limits.h>
-#include <stddef.h>
 
 #include "private.h"
 
@@ -108,6 +106,7 @@ gyros__tick(gyros_abstime_t now)
             timer->timeout += timer->period;
             gyros__timer_schedule(timer);
         }
+        GYROS__TRACE_TIMER(CALLBACK, timer);
         timer->callback(timer, now, timer->callback_arg);
     }
 #endif
