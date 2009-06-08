@@ -54,7 +54,7 @@ tc_isr(void)
 }
 
 void
-gyros__suspend_tick(void)
+gyros__dyntick_suspend(void)
 {
     /* We can't suspend the tick, because it would make gyros_time()
      * fail, so we set it to the maximum period. */
@@ -62,7 +62,7 @@ gyros__suspend_tick(void)
 }
 
 void
-gyros__update_tick(gyros_abstime_t now, gyros_abstime_t next_timeout)
+gyros__dyntick_set(gyros_abstime_t now, gyros_abstime_t next_timeout)
 {
     gyros_reltime_t dt = next_timeout - now;
 

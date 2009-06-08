@@ -72,7 +72,7 @@ gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer)
             break;
     }
     gyros__list_insert_before(&timer->list_node, i);
-    gyros__update_dyntick(now);
+    gyros__dyntick_update(now);
 }
 
 void
