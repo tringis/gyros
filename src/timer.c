@@ -39,9 +39,8 @@
 struct gyros__list_node gyros__timers = GYROS__LIST_INITVAL(gyros__timers);
 
 void
-gyros_timer_init_callback(gyros_timer_t *timer,
-                          void (*callback)(void *arg),
-                          void *callback_arg)
+gyros_timer_init(gyros_timer_t *timer,
+                 void (*callback)(void *arg), void *callback_arg)
 {
 #if GYROS_CONFIG_DEBUG
     timer->debug_magic = GYROS_TIMER_DEBUG_MAGIC;
