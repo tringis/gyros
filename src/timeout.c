@@ -106,7 +106,7 @@ gyros__tick(gyros_abstime_t now)
         if (timer->period)
         {
             timer->timeout += timer->period;
-            gyros__timer_schedule(now, timer);
+            gyros__timer_schedule(timer);
         }
         timer->callback(timer->callback_arg);
     }

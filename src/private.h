@@ -83,7 +83,7 @@ void gyros__task_wake(gyros_task_t *task);
 
 void gyros__task_set_timeout(gyros_abstime_t timeout);
 
-void gyros__timer_schedule(gyros_abstime_t now, gyros_timer_t *timer);
+void gyros__timer_schedule(gyros_timer_t *timer);
 
 #if GYROS_CONFIG_DYNTICK
 void gyros__dyntick_update(gyros_abstime_t now);
