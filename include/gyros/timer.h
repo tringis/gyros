@@ -56,7 +56,7 @@
 #endif
 
 /** \brief Timer object. */
-typedef struct
+typedef struct gyros_timer
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
@@ -69,7 +69,9 @@ typedef struct
     gyros_abstime_t timeout; /**< \internal */
     gyros_reltime_t period; /**< \internal */
 
-    void (*callback)(void *arg); /**< \internal */
+    void (*callback)(struct gyros_timer *timer,
+                     gyros_abstime_t now,
+                     void *arg); /**< \internal */
     void *callback_arg; /**< \internal */
 } gyros_timer_t;
 
@@ -80,7 +82,9 @@ typedef struct
   * \param callback_arg Argument to callback function.
   */
 void gyros_timer_init(gyros_timer_t *timer,
-                      void (*callback)(void *arg),
+                      void (*callback)(struct gyros_timer *timer,
+                                       gyros_abstime_t now,
+                                       void *arg),
                       void *callback_arg);
 
 /** Name the @a timer to @a name.  The name is only used when

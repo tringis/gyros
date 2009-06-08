@@ -108,7 +108,7 @@ gyros__tick(gyros_abstime_t now)
             timer->timeout += timer->period;
             gyros__timer_schedule(timer);
         }
-        timer->callback(timer->callback_arg);
+        timer->callback(timer, now, timer->callback_arg);
     }
 #endif
 
