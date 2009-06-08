@@ -39,8 +39,8 @@
  *---------------------------------------------------------------------*/
 
 /* Called by the port's timer interrupt handler to wake up any
- * sleeping tasks. */
-void gyros__wake_timedout_tasks(gyros_abstime_t now);
+ * sleeping tasks and handle any timeouts. */
+void gyros__tick(gyros_abstime_t now);
 
 /* Called by the port when a task exists its main function. */
 void gyros__task_exit(void);

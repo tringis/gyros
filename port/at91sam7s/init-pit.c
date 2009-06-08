@@ -50,7 +50,7 @@ pit_isr(void)
         unsigned status = AT91C_BASE_PITC->PITC_PIVR;
 
         s_time += status >> 20;
-        gyros__wake_timedout_tasks(gyros_time());
+        gyros__tick(gyros_time());
     }
 }
 

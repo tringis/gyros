@@ -85,7 +85,7 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 }
 
 void
-gyros__wake_timedout_tasks(gyros_abstime_t now)
+gyros__tick(gyros_abstime_t now)
 {
     while (!gyros__list_empty(&gyros__timeouts) &&
            (gyros_reltime_t)(now - TIMEOUT(gyros__timeouts.next)->timeout) >= 0)

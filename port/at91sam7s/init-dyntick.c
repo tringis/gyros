@@ -50,7 +50,7 @@ static void
 tc_isr(void)
 {
     if (TC->TC_SR & AT91C_TC_CPCS)
-        gyros__wake_timedout_tasks(gyros_time());
+        gyros__tick(gyros_time());
 }
 
 void

@@ -56,11 +56,11 @@ tim_isr(void)
     /* Note that it's important to call gyros_time() here when using
      * dynticks, because we need to call it before 0xffff ticks have
      * passed not to miss time. */
-    gyros__wake_timedout_tasks(gyros_time());
+    gyros__tick(gyros_time());
 #else
     /* Move OC1 forward one timer period. */
     GTIM->OC1R += GYROS_CONFIG_TIMER_PERIOD;
-    gyros__wake_timedout_tasks(++s_time);
+    gyros__tick(++s_time);
 #endif
 }
 
