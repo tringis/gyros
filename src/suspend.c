@@ -50,7 +50,7 @@ gyros_task_suspend(gyros_task_t *task)
     task->debug_object = NULL;
 #endif
     gyros_interrupt_restore(flags);
-    if (task == gyros__state.current)
+    if (task == gyros.current)
         gyros__cond_reschedule();
 }
 
@@ -64,7 +64,7 @@ gyros_task_resume(gyros_task_t *task)
         gyros_error("resume non-task", task);
 #endif
 
-    gyros__task_move(task, &gyros__state.running);
+    gyros__task_move(task, &gyros.running);
     gyros_interrupt_restore(flags);
     if (!gyros_in_interrupt())
         gyros__cond_reschedule();

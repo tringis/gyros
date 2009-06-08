@@ -31,5 +31,5 @@
 gyros_task_t*
 gyros_current(void)
 {
-    return gyros__state.current;
+    return gyros.current;
 }

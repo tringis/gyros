@@ -36,21 +36,23 @@
 
 #include "private.h"
 
-#if GYROS_CONFIG_ITERATE
-struct gyros__list_node gyros__tasks = GYROS__LIST_INITVAL(gyros__tasks);
-gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
-#endif
-
-#if GYROS_CONFIG_WAIT
-struct gyros__list_node gyros__zombies = GYROS__LIST_INITVAL(gyros__zombies);
-struct gyros__list_node gyros__reapers = GYROS__LIST_INITVAL(gyros__reapers);
-#endif
-
 static gyros_task_t s_idle_task;
 
-gyros__state_t gyros__state = {
+gyros_t gyros = {
     &s_idle_task,
-    GYROS__LIST_INITVAL(gyros__state.running)
+    GYROS__LIST_INITVAL(gyros.running),
+    GYROS__LIST_INITVAL(gyros.timeouts),
+#if GYROS_CONFIG_TIMER
+    GYROS__LIST_INITVAL(gyros.timers),
+#endif
+#if GYROS_CONFIG_ITERATE
+    GYROS__LIST_INITVAL(gyros.tasks),
+    GYROS_MUTEX_INITVAL(gyros.iterate_mutex),
+#endif
+#if GYROS_CONFIG_WAIT
+    GYROS__LIST_INITVAL(gyros.zombies),
+    GYROS__LIST_INITVAL(gyros.reapers),
+#endif
 };
 
 static void
@@ -70,18 +72,18 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_zombify(gyros_task_t *task)
 {
-    gyros__list_remove(&gyros__state.current->main_list_node);
-    gyros__list_remove(&gyros__state.current->timeout_list_node);
+    gyros__list_remove(&gyros.current->main_list_node);
+    gyros__list_remove(&gyros.current->timeout_list_node);
 #if GYROS_CONFIG_ITERATE
-    gyros__list_remove(&gyros__state.current->task_list_node);
+    gyros__list_remove(&gyros.current->task_list_node);
 #endif
 #if GYROS_CONFIG_WAIT
-    gyros__list_insert_before(&task->main_list_node, &gyros__zombies);
+    gyros__list_insert_before(&task->main_list_node, &gyros.zombies);
 
     /* Wake the tasks in reverse order to preserve the order of the
      * tasks (of equal priority) in the list. */
-    while (gyros__reapers.prev != &gyros__reapers)
-        gyros__task_wake(TASK(gyros__reapers.prev));
+    while (gyros.reapers.prev != &gyros.reapers)
+        gyros__task_wake(TASK(gyros.reapers.prev));
 #endif
 }
 
@@ -89,19 +91,19 @@ void
 gyros__task_exit(void)
 {
 #if GYROS_CONFIG_ITERATE
-    gyros_mutex_lock(&gyros__iterate_mutex);
+    gyros_mutex_lock(&gyros.iterate_mutex);
 #endif
 
     /* Note that we do not need to call gyros_interrupt_restore()
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
 #if GYROS_CONFIG_DEBUG
-    gyros__state.current->debug_state = "zombie";
-    gyros__state.current->debug_object = NULL;
+    gyros.current->debug_state = "zombie";
+    gyros.current->debug_object = NULL;
 #endif
-    gyros__task_zombify(gyros__state.current);
+    gyros__task_zombify(gyros.current);
 #if GYROS_CONFIG_ITERATE
-    gyros__mutex_unlock(&gyros__iterate_mutex, 0);
+    gyros__mutex_unlock(&gyros.iterate_mutex, 0);
 #endif
     gyros__reschedule();
 }
@@ -126,7 +128,7 @@ gyros__task_wake(gyros_task_t *task)
     task->debug_object = NULL;
 #endif
     gyros__list_remove(&task->timeout_list_node);
-    gyros__task_move(task, &gyros__state.running);
+    gyros__task_move(task, &gyros.running);
 }
 
 void
@@ -139,7 +141,7 @@ gyros__cond_reschedule(void)
         gyros_error("cond_reschedule called from interrupt", NULL);
 #endif
 
-    if (unlikely(TASK(gyros__state.running.next) != gyros__state.current))
+    if (unlikely(TASK(gyros.running.next) != gyros.current))
         gyros__reschedule();
     gyros_interrupt_restore(flags);
 }
@@ -159,10 +161,10 @@ gyros_start(void)
     s_idle_task.stack_size = 0;
 
 #if GYROS_CONFIG_ITERATE
-    gyros__list_insert_before(&s_idle_task.task_list_node, gyros__tasks.next);
+    gyros__list_insert_before(&s_idle_task.task_list_node, gyros.tasks.next);
 #endif
-    add_task_to_list(&s_idle_task, &gyros__state.running);
-    gyros__state.current = &s_idle_task;
+    add_task_to_list(&s_idle_task, &gyros.running);
+    gyros.current = &s_idle_task;
 
     gyros__target_init();
 
@@ -196,9 +198,9 @@ gyros_task_create(gyros_task_t *task,
 
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_ITERATE
-    gyros__list_insert_before(&task->task_list_node, &gyros__tasks);
+    gyros__list_insert_before(&task->task_list_node, &gyros.tasks);
 #endif
-    add_task_to_list(task, &gyros__state.running);
+    add_task_to_list(task, &gyros.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list_node);
 #if GYROS_CONFIG_MESSAGE_QUEUE
     GYROS__LIST_NODE_INIT(&task->msg_list);

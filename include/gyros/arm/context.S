@@ -41,7 +41,7 @@
 	/* Push lr to the SVC mode stack */
 	stmdb		sp!, {lr}
 	/* Load address of current task_t to lr */
-	ldr		lr, =gyros__state
+	ldr		lr, =gyros
 	ldr		lr, [lr]
 	/* Push SYS mode r0-lr to current task_t */
 	stmia		lr, {r0-lr}^
@@ -63,11 +63,11 @@
 	mov	lr, pc
 	bx	r0
 #endif
-	// Load address of gyros__state to r0
-	ldr		r0, =gyros__state
-	// Load gyros__state.running.next to lr
+	// Load address of gyros to r0
+	ldr		r0, =gyros
+	// Load gyros.running.next to lr
 	ldr		r1, [r0, #4]
-	// Set gyros__state.current
+	// Set gyros.current
 	sub		lr, r1, #17*4
 	str		lr, [r0]
 	/* Get the SPSR from the task struct. */ 

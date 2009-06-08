@@ -98,10 +98,10 @@ gyros_mq_receive(gyros_mq_t *mq)
             return NULL;
         }
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
-        gyros__task_move(gyros__state.current, &mq->task_list);
+        gyros__task_move(gyros.current, &mq->task_list);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "mq_receive";
-        gyros__state.current->debug_object = mq;
+        gyros.current->debug_state = "mq_receive";
+        gyros.current->debug_object = mq;
 #endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
@@ -131,11 +131,11 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
     if (unlikely(gyros__list_empty(&mq->msg_list)))
     {
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
-        gyros__task_move(gyros__state.current, &mq->task_list);
+        gyros__task_move(gyros.current, &mq->task_list);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "mq_receive_until";
-        gyros__state.current->debug_object = mq;
+        gyros.current->debug_state = "mq_receive_until";
+        gyros.current->debug_object = mq;
 #endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();

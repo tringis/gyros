@@ -55,25 +55,24 @@ typedef struct
 {
     gyros_task_t *current;
     struct gyros__list_node running;
-} gyros__state_t;
-
-extern struct gyros__list_node gyros__timeouts;
+    struct gyros__list_node timeouts;
 
 #if GYROS_CONFIG_TIMER
-extern struct gyros__list_node gyros__timers;
+    struct gyros__list_node timers;
 #endif
 
 #if GYROS_CONFIG_ITERATE
-extern struct gyros__list_node gyros__tasks;
-extern gyros_mutex_t gyros__iterate_mutex;
+    struct gyros__list_node tasks;
+    gyros_mutex_t iterate_mutex;
 #endif
 
 #if GYROS_CONFIG_WAIT
-extern struct gyros__list_node gyros__zombies;
-extern struct gyros__list_node gyros__reapers;
+    struct gyros__list_node zombies;
+    struct gyros__list_node reapers;
 #endif
+} gyros_t;
 
-extern gyros__state_t gyros__state;
+extern gyros_t gyros;
 
 void gyros__task_zombify(gyros_task_t *task);
 

@@ -45,18 +45,18 @@ gyros_task_wait(void)
         gyros_error("task_wait called from interrupt", NULL);
 #endif
 
-    while (gyros__zombies.next == &gyros__zombies)
+    while (gyros.zombies.next == &gyros.zombies)
     {
-        gyros__task_move(gyros__state.current, &gyros__reapers);
+        gyros__task_move(gyros.current, &gyros.reapers);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "task_wait";
-        gyros__state.current->debug_object = NULL;
+        gyros.current->debug_state = "task_wait";
+        gyros.current->debug_object = NULL;
 #endif
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
-    task = TASK(gyros__zombies.next);
+    task = TASK(gyros.zombies.next);
     gyros__list_remove(&task->main_list_node);
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = 0;
@@ -77,23 +77,23 @@ gyros_task_wait_until(gyros_abstime_t timeout)
         gyros_error("task_wait_until called from interrupt", NULL);
 #endif
 
-    if (gyros__list_empty(&gyros__zombies))
+    if (gyros__list_empty(&gyros.zombies))
     {
-        gyros__task_move(gyros__state.current, &gyros__reapers);
+        gyros__task_move(gyros.current, &gyros.reapers);
         gyros__task_set_timeout(timeout);
 #if GYROS_CONFIG_DEBUG
-        gyros__state.current->debug_state = "task_wait_until";
-        gyros__state.current->debug_object = NULL;
+        gyros.current->debug_state = "task_wait_until";
+        gyros.current->debug_object = NULL;
 #endif
         gyros__cond_reschedule();
-        if (gyros__list_empty(&gyros__zombies))
+        if (gyros__list_empty(&gyros.zombies))
         {
             gyros_interrupt_restore(flags);
             return NULL;
         }
     }
 
-    task = TASK(gyros__zombies.next);
+    task = TASK(gyros.zombies.next);
     gyros__list_remove(&task->main_list_node);
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = 0;

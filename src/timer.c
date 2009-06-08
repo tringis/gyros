@@ -36,8 +36,6 @@
 
 #if GYROS_CONFIG_TIMER
 
-struct gyros__list_node gyros__timers = GYROS__LIST_INITVAL(gyros__timers);
-
 void
 gyros_timer_init(gyros_timer_t *timer,
                  void (*callback)(struct gyros_timer *timer,
@@ -68,7 +66,7 @@ gyros__timer_schedule(gyros_timer_t *timer)
 {
     struct gyros__list_node *i;
 
-    for (i = gyros__timers.next; i != &gyros__timers; i = i->next)
+    for (i = gyros.timers.next; i != &gyros.timers; i = i->next)
     {
         if ((gyros_reltime_t)(timer->timeout - TIMER(i)->timeout) < 0)
             break;

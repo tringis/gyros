@@ -32,36 +32,34 @@
 
 #include "private.h"
 
-struct gyros__list_node gyros__timeouts = GYROS__LIST_INITVAL(gyros__timeouts);
-
 #if GYROS_CONFIG_DYNTICK
 void
 gyros__dyntick_update(gyros_abstime_t now)
 {
 #if GYROS_CONFIG_TIMER
-    if (gyros__list_empty(&gyros__timeouts))
+    if (gyros__list_empty(&gyros.timeouts))
     {
-        if (gyros__list_empty(&gyros__timers))
+        if (gyros__list_empty(&gyros.timers))
             gyros__dyntick_suspend();
         else
-            gyros__dyntick_set(now, TIMER(gyros__timers.next)->timeout);
+            gyros__dyntick_set(now, TIMER(gyros.timers.next)->timeout);
     }
     else
     {
-        if (gyros__list_empty(&gyros__timers) ||
-            (gyros_reltime_t)(TIMEOUT(gyros__timeouts.next)->timeout -
-                              TIMER(gyros__timers.next)->timeout) < 0)
+        if (gyros__list_empty(&gyros.timers) ||
+            (gyros_reltime_t)(TIMEOUT(gyros.timeouts.next)->timeout -
+                              TIMER(gyros.timers.next)->timeout) < 0)
         {
-            gyros__dyntick_set(now, TIMEOUT(gyros__timeouts.next)->timeout);
+            gyros__dyntick_set(now, TIMEOUT(gyros.timeouts.next)->timeout);
         }
         else
-            gyros__dyntick_set(now, TIMER(gyros__timers.next)->timeout);
+            gyros__dyntick_set(now, TIMER(gyros.timers.next)->timeout);
     }
 #else
-    if (gyros__list_empty(&gyros__timeouts))
+    if (gyros__list_empty(&gyros.timeouts))
         gyros__dyntick_suspend();
     else
-        gyros__dyntick_set(now, TIMEOUT(gyros__timeouts.next)->timeout);
+        gyros__dyntick_set(now, TIMEOUT(gyros.timeouts.next)->timeout);
 #endif
 }
 #endif
@@ -71,34 +69,34 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 {
     struct gyros__list_node *i;
 
-    for (i = gyros__timeouts.next; i != &gyros__timeouts; i = i->next)
+    for (i = gyros.timeouts.next; i != &gyros.timeouts; i = i->next)
     {
         if ((gyros_reltime_t)(timeout - TIMEOUT(i)->timeout) < 0)
             break;
     }
-    gyros__list_insert_before(&gyros__state.current->timeout_list_node, i);
-    gyros__state.current->timeout = timeout;
-    gyros__state.current->timed_out = 0;
+    gyros__list_insert_before(&gyros.current->timeout_list_node, i);
+    gyros.current->timeout = timeout;
+    gyros.current->timed_out = 0;
     gyros__dyntick_update(gyros_time());
 }
 
 void
 gyros__tick(gyros_abstime_t now)
 {
-    while (!gyros__list_empty(&gyros__timeouts) &&
-           (gyros_reltime_t)(now - TIMEOUT(gyros__timeouts.next)->timeout) >= 0)
+    while (!gyros__list_empty(&gyros.timeouts) &&
+           (gyros_reltime_t)(now - TIMEOUT(gyros.timeouts.next)->timeout) >= 0)
     {
-        gyros_task_t *task = TIMEOUT(gyros__timeouts.next);
+        gyros_task_t *task = TIMEOUT(gyros.timeouts.next);
 
         task->timed_out = 1;
         gyros__task_wake(task);
     }
 
 #if GYROS_CONFIG_TIMER
-    while (!gyros__list_empty(&gyros__timers) &&
-           (gyros_reltime_t)(now - TIMER(gyros__timers.next)->timeout) >= 0)
+    while (!gyros__list_empty(&gyros.timers) &&
+           (gyros_reltime_t)(now - TIMER(gyros.timers.next)->timeout) >= 0)
     {
-        gyros_timer_t *timer = TIMER(gyros__timers.next);
+        gyros_timer_t *timer = TIMER(gyros.timers.next);
 
         gyros__list_remove(&timer->list_node);
         if (timer->period)

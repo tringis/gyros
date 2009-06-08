@@ -46,9 +46,9 @@ static void (*s_irq_hook)(void);
 void
 gyros__context_hook(void)
 {
-    gyros_task_t *next = TASK(gyros__state.running.next);
+    gyros_task_t *next = TASK(gyros.running.next);
 
-    if (next == gyros__state.current)
+    if (next == gyros.current)
         return;
 
 #if GYROS_CONFIG_TRACE
@@ -58,7 +58,7 @@ gyros__context_hook(void)
 
 #if GYROS_CONFIG_CONTEXT_HOOK
     if (unlikely(s_context_hook != NULL))
-        s_context_hook(gyros__state.current, next);
+        s_context_hook(gyros.current, next);
 #endif
 }
 #endif
