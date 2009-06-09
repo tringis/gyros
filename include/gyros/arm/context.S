@@ -71,7 +71,7 @@
 	sub	lr, r1, #17*4
 	str	lr, [r0]
 	/* Get the SPSR from the task struct. */ 
-1:	ldr	r0, [lr, #16*4]
+	ldr	r0, [lr, #16*4]
 	msr	spsr_cxsf, r0
 	/* Restore all system mode registers for the task. */ 
 	ldmia	lr, {r0-r14}^
