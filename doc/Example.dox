@@ -58,8 +58,9 @@ main()
 \section task_iteration_example Task iteration example
 \code
 void
-cmd_tasklist(char *cmd, char **tokstate)
+tasklist(void)
 {
+#if GYROS_CONFIG_ITERATE
     gyros_task_t *t;
     int i;
 
@@ -88,6 +89,7 @@ cmd_tasklist(char *cmd, char **tokstate)
 
     printf("[ISR]                %4u/%4u\r\n",
            isr_stack_used(), isr_stack_size());
+#endif
 }
 \endcode
 
