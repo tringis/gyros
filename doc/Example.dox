@@ -55,16 +55,53 @@ main()
 \endcode
 
 
+\section task_iteration_example Task iteration example
+\code
+void
+cmd_tasklist(char *cmd, char **tokstate)
+{
+    gyros_task_t *t;
+    int i;
+
+    puts("name              prio  stack  task       pc"
+#if GYROS_CONFIG_DEBUG
+              "         state"
+#endif
+              "\r\n");
+    for (i = 0; i < 79; ++i)
+        putchar('-');
+    puts("\r\n");
+
+    for (t = gyros_task_iterate(0); t; t = gyros_task_iterate(t))
+    {
+        printf("%-16s %3d %4d/%4d %p 0x%08x",
+               t->name, t->priority,
+               gyros_task_stack_used(t), t->stack_size,
+               t, t->context.pc);
+#if GYROS_CONFIG_DEBUG
+        printf(" %s", t->debug_state);
+        if (t->debug_object)
+            printf(" @ %p", t->debug_object);
+#endif
+        puts("\r\n");
+    }
+
+    printf("[ISR]                %4u/%4u\r\n",
+           isr_stack_used(), isr_stack_size());
+}
+\endcode
+
+
 \section trace_dump_example Trace dump example
 \code
 #if GYROS_CONFIG_DEBUG
 #define DUMP_OBJECT(event, obj)                                         \
     if ((obj)->name)                                                    \
-        uart_printf("%-15s %s", (event), (obj)->name);                  \
+        printf("%-15s %s", (event), (obj)->name);                  \
     else                                                                \
-        uart_printf("%-15s %p", (event), (obj));
+        printf("%-15s %p", (event), (obj));
 #else
-#define DUMP_OBJECT(event, obj) uart_printf("%-15s %p", (event), (obj));
+#define DUMP_OBJECT(event, obj) printf("%-15s %p", (event), (obj));
 #endif
 
 static const char*
