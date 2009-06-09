@@ -83,20 +83,24 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 void
 gyros__tick(gyros_abstime_t now)
 {
-    while (!gyros__list_empty(&gyros.timeouts) &&
-           (gyros_reltime_t)(now - TIMEOUT(gyros.timeouts.next)->timeout) >= 0)
+    while (!gyros__list_empty(&gyros.timeouts))
     {
         gyros_task_t *task = TIMEOUT(gyros.timeouts.next);
+
+        if ((gyros_reltime_t)(now - task->timeout) < 0)
+            break;
 
         task->timed_out = 1;
         gyros__task_wake(task);
     }
 
 #if GYROS_CONFIG_TIMER
-    while (!gyros__list_empty(&gyros.timers) &&
-           (gyros_reltime_t)(now - TIMER(gyros.timers.next)->timeout) >= 0)
+    while (!gyros__list_empty(&gyros.timers))
     {
         gyros_timer_t *timer = TIMER(gyros.timers.next);
+
+        if ((gyros_reltime_t)(now - timer->timeout) < 0)
+            break;
 
         gyros__list_remove(&timer->list_node);
         if (timer->period)
