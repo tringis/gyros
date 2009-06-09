@@ -31,7 +31,7 @@
 
 /**************************************************************************
  * Macros                                                                 *
- **************************************************************************/	
+ **************************************************************************/
 
 /*------------------------------------------------------------------------*
  | save_context - stores current task state in task struct                |
@@ -39,18 +39,18 @@
  *------------------------------------------------------------------------*/
 .macro save_context
 	/* Push lr to the SVC mode stack */
-	stmdb		sp!, {lr}
+	stmdb	sp!, {lr}
 	/* Load address of current task_t to lr */
-	ldr		lr, =gyros
-	ldr		lr, [lr]
+	ldr	lr, =gyros
+	ldr	lr, [lr]
 	/* Push SYS mode r0-lr to current task_t */
-	stmia		lr, {r0-lr}^
+	stmia	lr, {r0-lr}^
 	nop
-	mrs		r0, spsr
-	str		r0, [lr, #16*4]
+	mrs	r0, spsr
+	str	r0, [lr, #16*4]
 	/* Pop lr from the SVC mode stack and write it to the current task_t */
-	ldmia		sp!, {r0}
-	str		r0, [lr, #15*4]
+	ldmia	sp!, {r0}
+	str	r0, [lr, #15*4]
 .endm
 
 /*------------------------------------------------------------------------*
@@ -63,22 +63,22 @@
 	mov	lr, pc
 	bx	r0
 #endif
-	// Load address of gyros to r0
-	ldr		r0, =gyros
-	// Load gyros.running.next to lr
-	ldr		r1, [r0, #4]
-	// Set gyros.current
-	sub		lr, r1, #17*4
-	str		lr, [r0]
+	/* Load address of gyros to r0 */
+	ldr	r0, =gyros
+	/* Load gyros.running.next to lr */
+	ldr	r1, [r0, #4]
+	/* Set gyros.current */
+	sub	lr, r1, #17*4
+	str	lr, [r0]
 	/* Get the SPSR from the task struct. */ 
-1:	ldr		r0, [lr, #16*4]
-	msr		spsr_cxsf, r0
+1:	ldr	r0, [lr, #16*4]
+	msr	spsr_cxsf, r0
 	/* Restore all system mode registers for the task. */ 
-	ldmia		lr, {r0-r14}^
+	ldmia	lr, {r0-r14}^
 	nop
 	/* Restore the return address. */ 
-	ldr		lr, [lr, #15*4]
+	ldr	lr, [lr, #15*4]
 	/* And return - correcting the offset in the LR to obtain the */ 
 	/* correct address. */ 
-	subs		pc, lr, #4
+	subs	pc, lr, #4
 .endm
