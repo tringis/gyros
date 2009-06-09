@@ -164,6 +164,29 @@ trace_dump(void)
             puts(t->info.wake_task->name);
             break;
 
+#ifdef GYROS_CONFIG_TIMER
+        case GYROS_TRACE_TIMER_SET:
+            DUMP_OBJECT("SET", t->info.timer_set.timer);
+            printf(", timeout=%llu.%06llu",
+                   t->info.timer_set.timeout / 1000000,
+                   t->info.timer_set.timeout -
+                   t->info.timer_set.timeout / 1000000 * 1000000);
+            break;
+        case GYROS_TRACE_TIMER_SET_PERIODIC:
+            DUMP_OBJECT("SET_PERIODIC", t->info.timer_set_periodic.timer);
+            printf(", period=%llu.%06llu",
+                   t->info.timer_set_periodic.period / 1000000,
+                   t->info.timer_set_periodic.period -
+                   t->info.timer_set_periodic.period / 1000000 * 1000000);
+            break;
+        case GYROS_TRACE_TIMER_CLEAR:
+            DUMP_OBJECT("CLEAR", t->info.timer);
+            break;
+        case GYROS_TRACE_TIMER_CALLBACK:
+            DUMP_OBJECT("CALLBACK", t->info.timer);
+            break;
+#endif
+
         case GYROS_TRACE_COND_WAIT:
             DUMP_OBJECT("WAIT", t->info.cond);
             break;
