@@ -46,14 +46,6 @@ gyros_cond_init(gyros_cond_t *c)
 }
 
 void
-gyros_cond_name(gyros_cond_t *c, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    c->name = name;
-#endif
-}
-
-void
 gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();

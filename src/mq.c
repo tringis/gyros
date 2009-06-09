@@ -48,14 +48,6 @@ gyros_mq_init(gyros_mq_t *mq)
 }
 
 void
-gyros_mq_name(gyros_mq_t *mq, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    mq->name = name;
-#endif
-}
-
-void
 gyros_mq_send(gyros_mq_t *mq, void *msg)
 {
     unsigned long flags = gyros_interrupt_disable();

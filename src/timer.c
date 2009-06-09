@@ -54,14 +54,6 @@ gyros_timer_init(gyros_timer_t *timer,
 }
 
 void
-gyros_timer_name(gyros_timer_t *timer, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    timer->name = name;
-#endif
-}
-
-void
 gyros__timer_schedule(gyros_timer_t *timer)
 {
     struct gyros__list_node *i;

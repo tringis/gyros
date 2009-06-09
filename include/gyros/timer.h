@@ -60,7 +60,7 @@ typedef struct gyros_timer
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
-    /** Name of the timer set by gyros_timer_name(), else @c NULL. */
+    /** Name of the timer set by gyros_debug_name(), else @c NULL. */
     const char *name;
 #endif
 
@@ -86,16 +86,6 @@ void gyros_timer_init(gyros_timer_t *timer,
                                        gyros_abstime_t now,
                                        void *arg),
                       void *callback_arg);
-
-/** Name the @a timer to @a name.  The name is only used when
-  * GYROS_CONFIG_DEBUG is true.
-  *
-  * \param timer        Timer struct pointer.
-  * \param name         Timer name.  Note that only the pointer to the
-  *                     name is stored, so the pointer must remain valid
-  *                     for the lifetime of the timer.
-  */
-void gyros_timer_name(gyros_timer_t *timer, const char *name);
 
 /** Set @a timer to activate at @a time.  The timer is rescheduled
   * if it was already set.

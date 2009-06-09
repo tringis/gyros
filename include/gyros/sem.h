@@ -89,7 +89,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
-    /** Name of the semaphore set by gyros_sem_name(), else
+    /** Name of the semaphore set by gyros_debug_name(), else
       * @c NULL. */
     const char *name;
 #endif
@@ -106,16 +106,6 @@ typedef struct
   * \param start_value  Start value.
   */
 void gyros_sem_init(gyros_sem_t *s, int start_value);
-
-/** Name the semaphore @a s to @a name.  The name is only used when
-  * GYROS_CONFIG_DEBUG is true.
-  *
-  * \param s            Semaphore struct pointer.
-  * \param name         Semaphore name.  Note that only the pointer to
-  *                     the name is stored, so the pointer must remain
-  *                     valid for the lifetime of the semaphore.
-  */
-void gyros_sem_name(gyros_sem_t *s, const char *name);
 
 /** Initialize the semaphore @a s to be an unsignalled binary
   * semaphore.

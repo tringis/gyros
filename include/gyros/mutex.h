@@ -76,7 +76,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
-    /** Name of the mutex set by gyros_mutex_name(), else @c NULL. */
+    /** Name of the mutex set by gyros_debug_name(), else @c NULL. */
     const char *name;
 #endif
 
@@ -90,16 +90,6 @@ typedef struct
   * \param m            Mutex struct pointer.
   */
 void gyros_mutex_init(gyros_mutex_t *m);
-
-/** Name the mutex @a m to @a name.  The name is only used when
-  * GYROS_CONFIG_DEBUG is true.
-  *
-  * \param m            Mutex struct pointer.
-  * \param name         Mutex name.  Note that only the pointer to the
-  *                     name is stored, so the pointer must remain valid
-  *                     for the lifetime of the mutex.
-  */
-void gyros_mutex_name(gyros_mutex_t *m, const char *name);
 
 /** Try locking @a m.
   *

@@ -29,6 +29,8 @@
 #ifndef INCLUDED__gyros_debug_h__200812221657
 #define INCLUDED__gyros_debug_h__200812221657
 
+#include <gyros/target/config.h>
+
 /** \defgroup debug_group Debugging support
   *
   * Debugging is enabled when compiled with @c GYROS_CONFIG_DEBUG set
@@ -56,6 +58,19 @@
   */
 void gyros_set_error_handler(void (*handler)(const char *msg,
                                              void *object));
+
+/** Set the name of the @a object to @a object_name.
+  *
+  * \param object           Object to name.
+  * \param object_name      New name of object.  Note that only the pointer
+  *                         to the name is stored, so the pointer must remain
+  *                         valid for the lifetime of the object.
+  */
+#if GYROS_CONFIG_DEBUG
+#define gyros_debug_name(object, object_name) ((object)->name = (object_name))
+#else
+#define gyros_debug_name(object, object_name) do { } while (0)
+#endif
 
 /*@}*/
 

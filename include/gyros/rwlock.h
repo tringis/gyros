@@ -81,7 +81,7 @@ typedef struct
 {
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
-    /** Name of the read/write lock set by gyros_rwlock_name(), else
+    /** Name of the read/write lock set by gyros_debug_name(), else
       * @c NULL. */
     const char *name;
 #endif
@@ -98,16 +98,6 @@ typedef struct
   * \param rwlock       Read/write lock struct pointer.
   */
 void gyros_rwlock_init(gyros_rwlock_t *rwlock);
-
-/** Name the read/write lock @a rwlock to @a name.  The name is only
-  * used when GYROS_CONFIG_DEBUG is true.
-  *
-  * \param rwlock       Read/write lock struct pointer.
-  * \param name         Read/write lock name.  Note that only the pointer
-  *                     to the name is stored, so the pointer must remain
-  *                     valid for the lifetime of the read/write lock.
-  */
-void gyros_rwlock_name(gyros_rwlock_t *rwlock, const char *name);
 
 /** Aquire a reader lock on @a rwlock.
   *

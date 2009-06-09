@@ -50,14 +50,6 @@ gyros_rwlock_init(gyros_rwlock_t *rwlock)
 }
 
 void
-gyros_rwlock_name(gyros_rwlock_t *rwlock, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    rwlock->name = name;
-#endif
-}
-
-void
 gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
 {
     unsigned long flags = gyros_interrupt_disable();

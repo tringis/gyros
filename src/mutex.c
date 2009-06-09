@@ -46,14 +46,6 @@ gyros_mutex_init(gyros_mutex_t *m)
     GYROS__LIST_NODE_INIT(&m->task_list);
 }
 
-void
-gyros_mutex_name(gyros_mutex_t *m, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    m->name = name;
-#endif
-}
-
 int
 gyros_mutex_try_lock(gyros_mutex_t *m)
 {

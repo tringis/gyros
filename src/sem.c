@@ -48,14 +48,6 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 }
 
 void
-gyros_sem_name(gyros_sem_t *s, const char *name)
-{
-#if GYROS_CONFIG_DEBUG
-    s->name = name;
-#endif
-}
-
-void
 gyros_sem_init_binary(gyros_sem_t *s)
 {
 #if GYROS_CONFIG_DEBUG
