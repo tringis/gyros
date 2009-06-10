@@ -56,8 +56,12 @@
   *
   * \param handler          Error handler function pointer.
   */
+#if GYROS_CONFIG_DEBUG
 void gyros_set_error_handler(void (*handler)(const char *msg,
                                              void *object));
+#else
+#define gyros_set_error_handler(handler) do { } while (0)
+#endif
 
 /** Set the name of the @a object to @a object_name.
   *

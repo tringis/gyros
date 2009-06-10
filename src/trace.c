@@ -33,6 +33,8 @@
 
 #include "private.h"
 
+#if GYROS_CONFIG_TRACE
+
 int gyros__trace_enabled;
 
 static gyros_trace_t *s_log_begin;
@@ -145,3 +147,5 @@ gyros__trace_context(gyros_task_t *next)
 
     t->info.context_next = next;
 }
+
+#endif

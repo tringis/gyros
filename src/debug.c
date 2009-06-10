@@ -32,22 +32,19 @@
 #include <gyros/target/config.h>
 
 #if GYROS_CONFIG_DEBUG
+
 static void (*s_handler)(const char *msg, void *object);
-#endif
 
 void
 gyros_set_error_handler(void (*handler)(const char *msg,
                                         void *object))
 {
-#if GYROS_CONFIG_DEBUG
     unsigned long flags = gyros_interrupt_disable();
 
     s_handler = handler;
     gyros_interrupt_restore(flags);
-#endif
 }
 
-#if GYROS_CONFIG_DEBUG
 void
 gyros_error(const char *msg, void *object)
 {
@@ -58,4 +55,5 @@ gyros_error(const char *msg, void *object)
     for (;;)
         ;
 }
+
 #endif
