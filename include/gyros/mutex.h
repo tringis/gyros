@@ -69,7 +69,7 @@
 #define GYROS_MUTEX_INITVAL(name) \
     { GYROS_MUTEX_DEBUG_INITIALIZER                                     \
       (gyros_task_t*)0, 0,                                              \
-      GYROS__LIST_INITVAL(name.task_list) }
+      GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Mutual exclusion (mutex) object. */
 typedef struct

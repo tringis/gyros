@@ -69,7 +69,7 @@
 #define GYROS_SEM_INITVAL(name, start_value) \
     { GYROS_SEM_DEBUG_INITIALIZER                    \
       start_value, UINT_MAX,                         \
-      GYROS__LIST_INITVAL(name.task_list) }
+      GYROS__LIST_INITVAL((name).task_list) }
 
 /** Initialization value for a binary semaphore by the specified @a
   * name.  When a semaphore is initialized using this value,
@@ -81,7 +81,7 @@
   */
 #define GYROS_BINARY_SEM_INITVAL(name) \
     { GYROS_SEM_DEBUG_INITIALIZER                    \
-      0, 1, GYROS__LIST_INITVAL(name.task_list) }
+      0, 1, GYROS__LIST_INITVAL((name).task_list) }
 
 
 /** \brief Semaphore (sem) object. */

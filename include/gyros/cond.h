@@ -64,7 +64,7 @@
   */
 #define GYROS_COND_INITVAL(name) \
     { GYROS_COND_DEBUG_INITIALIZER                \
-      GYROS__LIST_INITVAL(name.task_list) }
+      GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Condition variable (cond) object. */
 typedef struct
