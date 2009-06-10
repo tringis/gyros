@@ -55,6 +55,22 @@
 #endif
 #endif
 
+/** Initialization value for a timer by the specified @a name,
+  * callback function and argument.  When a timer is initialized using
+  * this value, gyros_timer_init() does not need to be called.
+  * Example:
+  *
+  * \code
+  * void my_callback(struct gyros_timer *timer, gyros_abstime_t now, void *arg);
+  *
+  * gyros_timer_t my_timer = GYROS_TIMER_INITVAL(my_timer, my_callback, NULL);
+  * \endcode
+  */
+#define GYROS_TIMER_INITVAL(name, callback, callback_arg)               \
+    { GYROS_TIMER_DEBUG_INITIALIZER                                     \
+      GYROS__LIST_INITVAL((name).list_node),                            \
+      0, 0, (callback), (callback_arg) }
+
 /** \brief Timer object. */
 typedef struct gyros_timer
 {
