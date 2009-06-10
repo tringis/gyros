@@ -63,37 +63,43 @@ typedef unsigned GYROS_CONFIG_TIME_TYPE gyros_abstime_t;
 /** Relative time in target specific units. */
 typedef signed GYROS_CONFIG_TIME_TYPE gyros_reltime_t;
 
-/** Convert @a microseconds to gyros_reltime_t. */
+/** Convert @a microseconds to gyros_reltime_t.  May be called from
+  * interrupt context. */
 static inline gyros_reltime_t gyros_us(long microseconds)
 {
     return GYROS_CONFIG_US_TO_TICKS(microseconds);
 }
 
-/** Convert @a milliseconds to gyros_reltime_t. */
+/** Convert @a milliseconds to gyros_reltime_t.  May be called from
+  * interrupt context. */
 static inline gyros_reltime_t gyros_ms(long milliseconds)
 {
     return GYROS_CONFIG_MS_TO_TICKS(milliseconds);
 }
 
-/** Convert @a seconds to gyros_reltime_t. */
+/** Convert @a seconds to gyros_reltime_t.  May be called from
+  * interrupt context. */
 static inline gyros_reltime_t gyros_s(long seconds)
 {
     return GYROS_CONFIG_S_TO_TICKS(seconds);
 }
 
-/** Convert @a gyros_reltime_t to microseconds. */
+/** Convert @a gyros_reltime_t to microseconds.  May be called from
+  * interrupt context. */
 static inline long gyros_time_to_us(gyros_reltime_t time)
 {
     return GYROS_CONFIG_TICKS_TO_US(time);
 }
 
-/** Convert @a gyros_reltime_t to milliseconds. */
+/** Convert @a gyros_reltime_t to milliseconds.  May be called from
+  * interrupt context. */
 static inline long gyros_time_to_ms(gyros_reltime_t time)
 {
     return GYROS_CONFIG_TICKS_TO_MS(time);
 }
 
-/** Convert @a gyros_reltime_t to seconds. */
+/** Convert @a gyros_reltime_t to seconds.  May be called from
+  * interrupt context. */
 static inline long gyros_time_to_s(gyros_reltime_t time)
 {
     return GYROS_CONFIG_TICKS_TO_S(time);
@@ -102,13 +108,15 @@ static inline long gyros_time_to_s(gyros_reltime_t time)
 /** Return current absolute time.  The time is monotonically
   * increasing.  Use time_us(), time_ms(), time_s(),
   * gyros_time_to_us(), gyros_time_to_us() and gyros_time_to_s() to
-  * convert to and from real time.
+  * convert to and from real time.  May be called from interrupt
+  * context.
   *
   * \return             Current absolute time.
   */
 gyros_abstime_t gyros_time(void);
 
-/** Helper function to test if @a time has been reached.
+/** Helper function to test if @a time has been reached.  May be
+  * called from interrupt context.
   *
   * \param time         Absolute time to test.
   * \return             Non-zero if @a time has been reached.

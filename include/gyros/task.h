@@ -135,19 +135,23 @@ gyros_task_t *gyros_task_wait(void);
   */
 gyros_task_t *gyros_task_wait_until(gyros_abstime_t timeout);
 
-/** Return struct pointer to current task.
+/** Return struct pointer to current task.  May be called from
+  * interrupt context, in which case it returns pointer to the task
+  * that was running before the interrupt occured.
   *
   * \return             Struct pointer to current task.
   */
 gyros_task_t *gyros_current(void) __attribute__((__const__));
 
-/** Get the priority of @a task.
+/** Get the priority of @a task.  May be called from interrupt
+  * context.
   *
   * \return             Task priority.
   */
 unsigned short gyros_task_get_priority(gyros_task_t *task);
 
-/** Set the priority of @a task to @ priority.
+/** Set the priority of @a task to @ priority.  May be called from
+  * interrupt context.
   *
   * \param task         Task struct pointer.
   * \param priority     New priority.
@@ -155,13 +159,15 @@ unsigned short gyros_task_get_priority(gyros_task_t *task);
 void gyros_task_set_priority(gyros_task_t *task, unsigned short priority);
 
 /** Suspend a task.  The task will be suspended until gyros_task_resume()
-  * is called for the task.
+  * is called for the task.  May be called from interrupt context.
   *
   * \param task         Task struct pointer.
   */
 void gyros_task_suspend(gyros_task_t *task);
 
-/** Resume a suspended task.
+/** Resume a suspended task.  Can also be called for a task waiting
+  * for a timeout, in which case it will time out immediately.  May be
+  * called from interrupt context.
   *
   * \param task         Task struct pointer.
   */

@@ -41,7 +41,7 @@ must be ported are few and clearly defined.
 - Easy to \ref porting "port" to new architectures.
 - Preemtive \ref task_group "multitasking".
 - Small memory footprint (both code and RAM).
-- Low power consumption by use of dynamic timers.
+- Low power consumption by use of dynamic timer ticks.
 - \ref debug_group to catch common usage errors and see current task status.
 - \ref hook_group to add custom code to context switches and interrupt
   handlers.

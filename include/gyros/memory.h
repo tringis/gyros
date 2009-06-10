@@ -79,7 +79,8 @@ unsigned gyros_zpool_get_size(void *pool);
   */
 unsigned gyros_zpool_get_free(void *pool);
 
-/** Allocate a zone from the zone pool.
+/** Allocate a zone from the zone pool.  May be called from interrupt
+  * context.
   *
   * \param pool         Address of zone pool.
   * \return             Address to zone, or @c NULL if there were
@@ -87,7 +88,8 @@ unsigned gyros_zpool_get_free(void *pool);
   */
 void *gyros_zalloc(void *pool);
 
-/** Free memory at @a addr.  Does nothing if @a addr is @c NULL.
+/** Free memory at @a addr.  Does nothing if @a addr is @c NULL.  May
+  * be called from interrupt context.
   *
   * \param addr         Address of memory to be freed.
   */
