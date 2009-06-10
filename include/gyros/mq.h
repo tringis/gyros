@@ -106,7 +106,7 @@ typedef struct
 void gyros_mq_init(gyros_mq_t *mq);
 
 /** Send the message @a msg to the message queue @a mq.  May be called
- * from interrupt context.
+  * from interrupt context.
   *
   * \param mq           Message queue to which the message is sent.
   * \param msg          Message to send.

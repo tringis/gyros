@@ -92,6 +92,7 @@ typedef struct gyros_timer
 } gyros_timer_t;
 
 /** Initialize the timer to call a callback function upon activation.
+  * May be called from interrupt context.
   *
   * \param timer        Timer struct pointer.
   * \param callback     Address of callback.  Must not be @c NULL.
@@ -104,7 +105,7 @@ void gyros_timer_init(gyros_timer_t *timer,
                       void *callback_arg);
 
 /** Set @a timer to activate at @a time.  The timer is rescheduled
-  * if it was already set.
+  * if it was already set.  May be called from interrupt context.
   *
   * \param timer        Timer struct pointer.
   * \param time         Activation time.
@@ -112,14 +113,15 @@ void gyros_timer_init(gyros_timer_t *timer,
 void gyros_timer_set(gyros_timer_t *timer, gyros_abstime_t time);
 
 /** Set @a timer to activate at @a time.  The timer is rescheduled
-  * if it was already set.
+  * if it was already set.  May be called from interrupt context.
   *
   * \param timer        Timer struct pointer.
   * \param period       Activation period.
   */
 void gyros_timer_set_periodic(gyros_timer_t *timer, gyros_reltime_t period);
 
-/** Clear timer.  It is valid to call this function even if the 
+/** Clear timer.  It is valid to call this function even if the timer
+  * is not active.  May be called from interrupt context.
   *
   * \param timer        Timer struct pointer.
   */
