@@ -52,6 +52,7 @@ must be ported are few and clearly defined.
   - \ref mutex_group (mutex) with priority inheritance
   - \ref cond_group
   - \ref rwlock_group
+  - \ref mq_group
   - Task \ref gyros_task_suspend "suspend" and \ref gyros_task_resume
     "resume"
 - Periodic and one shot \ref timer_group "timers".
