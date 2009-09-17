@@ -71,9 +71,21 @@ void gyros_set_error_handler(void (*handler)(const char *msg,
   *                         valid for the lifetime of the object.
   */
 #if GYROS_CONFIG_DEBUG
-#define gyros_debug_name(object, object_name) ((object)->name = (object_name))
+#define gyros_debug_set_name(object, object_name)   \
+    ((object)->debug_info.name = (name))
 #else
-#define gyros_debug_name(object, object_name) do { } while (0)
+#define gyros_debug_set_name(object, object_name)   do { } while (0)
+#endif
+
+/** Get the name of the @a object to @a object_name, or @c NULL if the
+  * object is unnamed.
+  *
+  * \param object           Object.
+  */
+#if GYROS_CONFIG_DEBUG
+#define gyros_debug_get_name(object)   ((object)->debug_info.name)
+#else
+#define gyros_debug_get_name(object)   ((const char*)0)
 #endif
 
 /*@}*/

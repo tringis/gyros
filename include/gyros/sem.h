@@ -49,12 +49,7 @@
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_SEM_DEBUG_MAGIC                 ((unsigned)0xe111100a)
-#define GYROS_SEM_DEBUG_INITIALIZER(name)     GYROS_SEM_DEBUG_MAGIC, #name,
-#else
-#define GYROS_SEM_DEBUG_INITIALIZER(name)
-#endif
+#  define GYROS_SEM_DEBUG_MAGIC                 ((unsigned)0xe111100a)
 #endif
 
 /** Initialization value for a counting semaphore by the specified @a
@@ -66,9 +61,9 @@
   * gyros_sem_t my_sem = GYROS_SEM_INITVAL(my_sem, 0);
   * \endcode
   */
-#define GYROS_SEM_INITVAL(name, start_value)         \
-    { GYROS_SEM_DEBUG_INITIALIZER(name)              \
-      start_value, UINT_MAX,                         \
+#define GYROS_SEM_INITVAL(name, start_value)            \
+    { GYROS_DEBUG_INFO(GYROS_SEM_DEBUG_MAGIC, #name),   \
+      start_value, UINT_MAX,                            \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** Initialization value for a binary semaphore by the specified @a
@@ -80,19 +75,14 @@
   * \endcode
   */
 #define GYROS_BINARY_SEM_INITVAL(name) \
-    { GYROS_SEM_DEBUG_INITIALIZER(name)             \
+    { GYROS_DEBUG_INFO(GYROS_SEM_DEBUG_MAGIC, #name),   \
       0, 1, GYROS__LIST_INITVAL((name).task_list) }
 
 
 /** \brief Semaphore (sem) object. */
 typedef struct
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the semaphore set by gyros_debug_name(), else
-      * @c NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     unsigned value; /**< \internal */
     unsigned max_value; /**< \internal */

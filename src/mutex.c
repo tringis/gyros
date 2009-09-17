@@ -37,11 +37,7 @@
 void
 gyros_mutex_init(gyros_mutex_t *m)
 {
-#if GYROS_CONFIG_DEBUG
-    m->debug_magic = GYROS_MUTEX_DEBUG_MAGIC;
-    m->name = NULL;
-#endif
-
+    GYROS_DEBUG_INFO_INIT(m, GYROS_MUTEX_DEBUG_MAGIC);
     m->owner = NULL;
     GYROS__LIST_NODE_INIT(&m->task_list);
 }
@@ -52,7 +48,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+    if (m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC)
         gyros_error("uninitialized mutex in mutex_try_lock", m);
     if (gyros_in_interrupt())
         gyros_error("mutex_try_lock called from interrupt", m);
@@ -78,7 +74,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+    if (m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC)
         gyros_error("uninitialized mutex in mutex_lock", m);
     if (gyros_in_interrupt())
         gyros_error("mutex_lock called from interrupt", m);
@@ -98,10 +94,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
             m->owner->priority = gyros.current->priority;
             gyros__task_move(m->owner, m->owner->main_list);
         }
-#if GYROS_CONFIG_DEBUG
-        gyros.current->debug_state = "mutex_lock";
-        gyros.current->debug_object = m;
-#endif
+        GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -119,7 +112,7 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (m->debug_magic != GYROS_MUTEX_DEBUG_MAGIC)
+    if (m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC)
         gyros_error("uninitialized mutex in mutex__unlock", m);
     if (m->owner == NULL)
         gyros_error("mutex__unlock called for unlocked mutex", m);

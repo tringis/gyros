@@ -46,16 +46,11 @@
   * \copydoc mutex_group
   */
 
-#include <gyros/target/config.h>
+#include <gyros/private/debug.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_MUTEX_DEBUG_MAGIC               ((unsigned)0xe398123d)
-#define GYROS_MUTEX_DEBUG_INITIALIZER(name)   GYROS_MUTEX_DEBUG_MAGIC, #name,
-#else
-#define GYROS_MUTEX_DEBUG_INITIALIZER(name)
-#endif
+#  define GYROS_MUTEX_DEBUG_MAGIC               ((unsigned)0xe398123d)
 #endif
 
 /** Initialization value for a mutex by the specified @a name.  When a
@@ -67,18 +62,14 @@
   * \endcode
   */
 #define GYROS_MUTEX_INITVAL(name) \
-    { GYROS_MUTEX_DEBUG_INITIALIZER(name)                               \
+    { GYROS_DEBUG_INFO(GYROS_MUTEX_DEBUG_MAGIC, #name),                 \
       (gyros_task_t*)0, 0,                                              \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Mutual exclusion (mutex) object. */
 typedef struct
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the mutex set by gyros_debug_name(), else @c NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< \internal */
 
     gyros_task_t *owner; /**< \internal */
     unsigned short owner_priority; /**< \internal */

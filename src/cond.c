@@ -37,11 +37,7 @@
 void
 gyros_cond_init(gyros_cond_t *c)
 {
-#if GYROS_CONFIG_DEBUG
-    c->debug_magic = GYROS_COND_DEBUG_MAGIC;
-    c->name = NULL;
-#endif
-
+    GYROS_DEBUG_INFO_INIT(c, GYROS_COND_DEBUG_MAGIC);
     GYROS__LIST_NODE_INIT(&c->task_list);
 }
 
@@ -51,7 +47,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+    if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros_error("uninitialized cond in cond_wait", c);
     if (gyros_in_interrupt())
         gyros_error("cond_wait called from interrupt", c);
@@ -60,10 +56,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros.current, &c->task_list);
-#if GYROS_CONFIG_DEBUG
-    gyros.current->debug_state = "cond_wait";
-    gyros.current->debug_object = c;
-#endif
+    GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait", c);
     gyros_interrupt_restore(flags);
 
     gyros__cond_reschedule();
@@ -78,7 +71,7 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+    if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros_error("uninitialized cond in cond_wait_until", c);
     if (gyros_in_interrupt())
         gyros_error("cond_wait_until called from interrupt", c);
@@ -88,10 +81,7 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros.current, &c->task_list);
     gyros__task_set_timeout(timeout);
-#if GYROS_CONFIG_DEBUG
-    gyros.current->debug_state = "cond_wait_until";
-    gyros.current->debug_object = c;
-#endif
+    GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait_until", c);
     gyros_interrupt_restore(flags);
     gyros__cond_reschedule();
 
@@ -106,7 +96,7 @@ gyros_cond_signal_one(gyros_cond_t *c)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+    if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros_error("uninitialized cond in cond_signal_one", c);
 #endif
 
@@ -127,7 +117,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (c->debug_magic != GYROS_COND_DEBUG_MAGIC)
+    if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros_error("uninitialized cond in signal_all", c);
 #endif
 

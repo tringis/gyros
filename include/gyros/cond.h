@@ -42,16 +42,11 @@
   * \copydoc cond_group
   */
 
-#include <gyros/target/config.h>
 #include <gyros/mutex.h>
+#include <gyros/private/debug.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_COND_DEBUG_MAGIC                ((unsigned)0xe0899aa1)
-#define GYROS_COND_DEBUG_INITIALIZER(name)    GYROS_COND_DEBUG_MAGIC, #name,
-#else
-#define GYROS_COND_DEBUG_INITIALIZER(name)
-#endif
+#  define GYROS_COND_DEBUG_MAGIC                ((unsigned)0xe0899aa1)
 #endif
 
 /** Initialization value for a condition variable by the specified @a
@@ -63,18 +58,13 @@
   * \endcode
   */
 #define GYROS_COND_INITVAL(name) \
-    { GYROS_COND_DEBUG_INITIALIZER(name)        \
+    { GYROS_DEBUG_INFO(GYROS_COND_DEBUG_MAGIC, #name),  \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Condition variable (cond) object. */
 typedef struct
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the condition variable set by gyros_debug_name(), else
-      * @c NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     struct gyros__list_node task_list; /**< \internal */
 } gyros_cond_t;

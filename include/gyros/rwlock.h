@@ -54,12 +54,7 @@
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_RWLOCK_DEBUG_MAGIC               ((unsigned)0xe151110d)
-#define GYROS_RWLOCK_DEBUG_INITIALIZER(name)   GYROS_RWLOCK_DEBUG_MAGIC, #name,
-#else
-#define GYROS_RWLOCK_DEBUG_INITIALIZER(name)
-#endif
+#  define GYROS_RWLOCK_DEBUG_MAGIC               ((unsigned)0xe151110d)
 #endif
 
 /** Initialization value for a read/write lock by the specified @a
@@ -71,20 +66,15 @@
   * \endcode
   */
 #define GYROS_RWLOCK_INITVAL(name) \
-    { GYROS_RWLOCK_DEBUG_INITIALIZER(name)          \
-      (gyros_task_t*)0, 0,                          \
-      GYROS__LIST_INITVAL((name).rd_task_list),     \
+    { GYROS_DEBUG_INFO(GYROS_RWLOCK_DEBUG_MAGIC, #name),    \
+      (gyros_task_t*)0, 0,                                  \
+      GYROS__LIST_INITVAL((name).rd_task_list),             \
       GYROS__LIST_INITVAL((name).wr_task_list) }
 
 /** \brief Read/write lock (rwlock) object. */
 typedef struct
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the read/write lock set by gyros_debug_name(), else
-      * @c NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     gyros_task_t *writer; /**< \internal */
     int readers; /**< \internal */

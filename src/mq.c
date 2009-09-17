@@ -38,11 +38,7 @@
 void
 gyros_mq_init(gyros_mq_t *mq)
 {
-#if GYROS_CONFIG_DEBUG
-    mq->debug_magic = GYROS_MQ_DEBUG_MAGIC;
-    mq->name = NULL;
-#endif
-
+    GYROS_DEBUG_INFO_INIT(mq, GYROS_MQ_DEBUG_MAGIC);
     GYROS__LIST_NODE_INIT(&mq->msg_list);
     GYROS__LIST_NODE_INIT(&mq->task_list);
 }
@@ -54,7 +50,7 @@ gyros_mq_send(gyros_mq_t *mq, void *msg)
     gyros_mq_msghdr_t *msghdr = msg;
 
 #if GYROS_CONFIG_DEBUG
-    if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
+    if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
         gyros_error("uninitialized mq in mq_send", mq);
 #endif
 
@@ -78,7 +74,7 @@ gyros_mq_receive(gyros_mq_t *mq)
     gyros_mq_msghdr_t *msghdr;
 
 #if GYROS_CONFIG_DEBUG
-    if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
+    if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
         gyros_error("uninitialized mq in mq_send", mq);
 #endif
 
@@ -91,10 +87,7 @@ gyros_mq_receive(gyros_mq_t *mq)
         }
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros.current, &mq->task_list);
-#if GYROS_CONFIG_DEBUG
-        gyros.current->debug_state = "mq_receive";
-        gyros.current->debug_object = mq;
-#endif
+        GYROS_DEBUG_SET_STATE2(gyros.current, "mq_receive", mq);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -114,7 +107,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
     gyros_mq_msghdr_t *msghdr;
 
 #if GYROS_CONFIG_DEBUG
-    if (mq->debug_magic != GYROS_MQ_DEBUG_MAGIC)
+    if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
         gyros_error("uninitialized mq in mq_send", mq);
     if (gyros_in_interrupt())
         gyros_error("mq_receive_until called from interrupt", mq);
@@ -125,10 +118,7 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros.current, &mq->task_list);
         gyros__task_set_timeout(timeout);
-#if GYROS_CONFIG_DEBUG
-        gyros.current->debug_state = "mq_receive_until";
-        gyros.current->debug_object = mq;
-#endif
+        GYROS_DEBUG_SET_STATE2(gyros.current, "mq_receive_until", mq);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();

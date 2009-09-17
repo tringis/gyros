@@ -37,11 +37,7 @@
 void
 gyros_sem_init(gyros_sem_t *s, int start_value)
 {
-#if GYROS_CONFIG_DEBUG
-    s->debug_magic = GYROS_SEM_DEBUG_MAGIC;
-    s->name = NULL;
-#endif
-
+    GYROS_DEBUG_INFO_INIT(s, GYROS_SEM_DEBUG_MAGIC);
     s->value = start_value;
     s->max_value = UINT_MAX;
     GYROS__LIST_NODE_INIT(&s->task_list);
@@ -50,10 +46,7 @@ gyros_sem_init(gyros_sem_t *s, int start_value)
 void
 gyros_sem_init_binary(gyros_sem_t *s)
 {
-#if GYROS_CONFIG_DEBUG
-    s->debug_magic = GYROS_SEM_DEBUG_MAGIC;
-#endif
-
+    GYROS_DEBUG_INFO_INIT(s, GYROS_SEM_DEBUG_MAGIC);
     s->value = 0;
     s->max_value = 1;
     GYROS__LIST_NODE_INIT(&s->task_list);
@@ -65,7 +58,7 @@ gyros_sem_wait(gyros_sem_t *s)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+    if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
         gyros_error("uninitialized sem in sem_wait", s);
     if (gyros_in_interrupt())
         gyros_error("sem_wait called from interrupt", s);
@@ -75,10 +68,7 @@ gyros_sem_wait(gyros_sem_t *s)
     {
         GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros.current, &s->task_list);
-#if GYROS_CONFIG_DEBUG
-        gyros.current->debug_state = "sem_wait";
-        gyros.current->debug_object = s;
-#endif
+        GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait", s);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -94,7 +84,7 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+    if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
         gyros_error("uninitialized sem in sem_wait_until", s);
     if (gyros_in_interrupt())
         gyros_error("sem_wait_until called from interrupt", s);
@@ -105,10 +95,7 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros.current, &s->task_list);
         gyros__task_set_timeout(timeout);
-#if GYROS_CONFIG_DEBUG
-        gyros.current->debug_state = "sem_wait_until";
-        gyros.current->debug_object = s;
-#endif
+        GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait_until", s);
         gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
@@ -131,7 +118,7 @@ gyros_sem_signal(gyros_sem_t *s)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (s->debug_magic != GYROS_SEM_DEBUG_MAGIC)
+    if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
         gyros_error("uninitialized sem in sem_signal", s);
 #endif
 

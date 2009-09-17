@@ -45,10 +45,7 @@ gyros_task_suspend(gyros_task_t *task)
 
     gyros__list_remove(&task->main_list_node);
     gyros__list_remove(&task->timeout_list_node);
-#if GYROS_CONFIG_DEBUG
-    task->debug_state = "suspended";
-    task->debug_object = NULL;
-#endif
+    GYROS_DEBUG_SET_STATE(task, "suspended");
     gyros_interrupt_restore(flags);
     if (task == gyros.current)
         gyros__cond_reschedule();

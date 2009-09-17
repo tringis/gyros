@@ -46,6 +46,10 @@
 #include <gyros/private/list.h>
 #include <gyros/time.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#  define GYROS_TASK_DEBUG_MAGIC                ((unsigned)0xefcd6711)
+#endif
+
 /** \brief Task object.
   *
   * This is the structure representing a GyrOS task.  Most members of
@@ -76,10 +80,10 @@ typedef struct
 #if GYROS_CONFIG_DEBUG
     unsigned debug_magic; /**< \internal */
     const char *debug_state; /**< String representing the task state. */
-    /** Pointer to the object related to the currect task state,
-      * e.g. a pointer to the semaphore if debug_state is
+    /** Pointer to the object related to the current task state,
+      * e.g. a pointer to the semaphore debug info if debug_state is
       * "sem_wait". */
-    void *debug_object;
+    const struct gyros_debug_info *debug_object;
 #endif
 } gyros_task_t;
 

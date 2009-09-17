@@ -97,10 +97,7 @@ gyros__task_exit(void)
     /* Note that we do not need to call gyros_interrupt_restore()
      * because gyros__reschedule below never returns. */
     gyros_interrupt_disable();
-#if GYROS_CONFIG_DEBUG
-    gyros.current->debug_state = "zombie";
-    gyros.current->debug_object = NULL;
-#endif
+    GYROS_DEBUG_SET_STATE(gyros.current, "zombie");
     gyros__task_zombify(gyros.current);
 #if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock(&gyros.iterate_mutex, 0);
@@ -123,10 +120,7 @@ gyros__task_wake(gyros_task_t *task)
         gyros__trace(GYROS_TRACE_WAKE)->info.wake_task = task;
 #endif
 
-#if GYROS_CONFIG_DEBUG
-    task->debug_state = "running";
-    task->debug_object = NULL;
-#endif
+    GYROS_DEBUG_SET_STATE(task, "running");
     gyros__list_remove(&task->timeout_list_node);
     gyros__task_move(task, &gyros.running);
 }
@@ -152,9 +146,8 @@ gyros_start(void)
     /* Make the current "task" the idle task */
 #if GYROS_CONFIG_DEBUG
     s_idle_task.debug_magic = GYROS_TASK_DEBUG_MAGIC;
-    s_idle_task.debug_state = "running";
-    s_idle_task.debug_object = NULL;
 #endif
+    GYROS_DEBUG_SET_STATE(&s_idle_task, "running");
     s_idle_task.priority = 0;
     s_idle_task.name = "[idle]";
     s_idle_task.stack = 0;
@@ -185,9 +178,8 @@ gyros_task_create(gyros_task_t *task,
 
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
-    task->debug_state = "running";
-    task->debug_object = NULL;
 #endif
+    GYROS_DEBUG_SET_STATE(task, "running");
     task->priority = priority;
     task->name = name;
     task->stack = stack;

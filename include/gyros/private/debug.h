@@ -31,12 +31,44 @@
 
 #include <gyros/target/config.h>
 
+/** Structure containing debug information on an object. This struct
+  * is the first member of all synchronization objects. */
+struct gyros_debug_info
+{
 #if GYROS_CONFIG_DEBUG
+    unsigned magic; /**< \internal */
+    const char *name; /**< Pointer to name of object, or @c NULL. */
+#endif
+};
 
-#define GYROS_TASK_DEBUG_MAGIC         ((unsigned)0xefcd6711)
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#  if GYROS_CONFIG_DEBUG
+#    define GYROS_DEBUG_INFO(magic, name)     { (magic), (name) }
+#    define GYROS_DEBUG_INFO_INIT(obj, obj_magic)                          \
+            do {                                                           \
+                (obj)->debug_info.magic = (obj_magic);                     \
+                (obj)->debug_info.name = NULL;                             \
+            } while (0)
+#    define GYROS_DEBUG_SET_STATE(task, state)                             \
+            do {                                                           \
+                (task)->debug_state = (state);                             \
+                (task)->debug_object = (const struct gyros_debug_info*)0;  \
+            } while (0)
+#    define GYROS_DEBUG_SET_STATE2(task, state, object)                    \
+            do {                                                           \
+                (task)->debug_state = (state);                             \
+                (task)->debug_object = &(object)->debug_info;              \
+            } while (0)
+#  else
+#    define GYROS_DEBUG_INFO(magic, name)                { }
+#    define GYROS_DEBUG_INFO_INIT(obj, obj_magic)        do { } while (0)
+#    define GYROS_DEBUG_SET_STATE(task, state)           do { } while (0)
+#    define GYROS_DEBUG_SET_STATE2(task, state, object)  do { } while (0)
+#  endif
+#endif
 
+#if GYROS_CONFIG_DEBUG
 void gyros_error(const char *msg, void *object);
-
 #endif
 
 #endif

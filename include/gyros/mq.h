@@ -46,12 +46,7 @@
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_MQ_DEBUG_MAGIC                 ((unsigned)0x736a0997)
-#define GYROS_MQ_DEBUG_INITIALIZER(name)     GYROS_MQ_DEBUG_MAGIC, #name,
-#else
-#define GYROS_MQ_DEBUG_INITIALIZER(name)
-#endif
+#  define GYROS_MQ_DEBUG_MAGIC                 ((unsigned)0x736a0997)
 #endif
 
 /** \brief Message header struct.
@@ -81,19 +76,14 @@ typedef struct
   * \endcode
   */
 #define GYROS_MQ_INITVAL(name) \
-    { GYROS_MQ_DEBUG_INITIALIZER(name)                                  \
+    { GYROS_DEBUG_INFO(GYROS_MQ_DEBUG_MAGIC, #name),                    \
       GYROS__LIST_INITVAL((name).msg_list),                             \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Message queue (mq) object. */
 typedef struct
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the message queue set by gyros_debug_name(), else @c
-      * NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     struct gyros__list_node msg_list; /**< \internal */
     struct gyros__list_node task_list; /**< \internal */
