@@ -47,12 +47,7 @@
 #include <gyros/time.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#if GYROS_CONFIG_DEBUG
-#define GYROS_TIMER_DEBUG_MAGIC           ((unsigned)0xe111100a)
-#define GYROS_TIMER_DEBUG_INITIALIZER     GYROS_TIMER_DEBUG_MAGIC,(char*)0,
-#else
-#define GYROS_TIMER_DEBUG_INITIALIZER
-#endif
+#  define GYROS_TIMER_DEBUG_MAGIC           ((unsigned)0xe111100a)
 #endif
 
 /** Initialization value for a timer by the specified @a name,
@@ -67,18 +62,14 @@
   * \endcode
   */
 #define GYROS_TIMER_INITVAL(name, callback, callback_arg)               \
-    { GYROS_TIMER_DEBUG_INITIALIZER                                     \
+    { GYROS_DEBUG_INFO(GYROS_TIMER_DEBUG_MAGIC, #name),                 \
       GYROS__LIST_INITVAL((name).list_node),                            \
       0, 0, (callback), (callback_arg) }
 
 /** \brief Timer object. */
 typedef struct gyros_timer
 {
-#if GYROS_CONFIG_DEBUG
-    unsigned debug_magic; /**< \internal */
-    /** Name of the timer set by gyros_debug_name(), else @c NULL. */
-    const char *name;
-#endif
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     struct gyros__list_node list_node; /**< \internal */
 

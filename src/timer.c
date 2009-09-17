@@ -43,10 +43,7 @@ gyros_timer_init(gyros_timer_t *timer,
                                   void *arg),
                  void *callback_arg)
 {
-#if GYROS_CONFIG_DEBUG
-    timer->debug_magic = GYROS_TIMER_DEBUG_MAGIC;
-    timer->name = NULL;
-#endif
+    GYROS_DEBUG_INFO_INIT(timer, GYROS_TIMER_DEBUG_MAGIC);
 
     GYROS__LIST_NODE_INIT(&timer->list_node);
     timer->callback = callback;
@@ -72,7 +69,7 @@ gyros_timer_set(gyros_timer_t *timer, gyros_abstime_t time)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (timer->debug_magic != GYROS_TIMER_DEBUG_MAGIC)
+    if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
         gyros_error("uninitialized timer in gyros_timer_set", timer);
 #endif
 
@@ -91,7 +88,7 @@ gyros_timer_set_periodic(gyros_timer_t *timer, gyros_reltime_t period)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (timer->debug_magic != GYROS_TIMER_DEBUG_MAGIC)
+    if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
         gyros_error("uninitialized timer in gyros_timer_set_periodic", timer);
 #endif
 
@@ -110,7 +107,7 @@ gyros_timer_clear(gyros_timer_t *timer)
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
-    if (timer->debug_magic != GYROS_TIMER_DEBUG_MAGIC)
+    if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
         gyros_error("uninitialized timer in gyros_timer_clear", timer);
 #endif
 
