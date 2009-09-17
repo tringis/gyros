@@ -47,10 +47,10 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
-#define GYROS_MQ_DEBUG_MAGIC           ((unsigned)0x736a0997)
-#define GYROS_MQ_DEBUG_INITIALIZER     GYROS_MQ_DEBUG_MAGIC,(char*)0,
+#define GYROS_MQ_DEBUG_MAGIC                 ((unsigned)0x736a0997)
+#define GYROS_MQ_DEBUG_INITIALIZER(name)     GYROS_MQ_DEBUG_MAGIC, #name,
 #else
-#define GYROS_MQ_DEBUG_INITIALIZER
+#define GYROS_MQ_DEBUG_INITIALIZER(name)
 #endif
 #endif
 
@@ -81,7 +81,7 @@ typedef struct
   * \endcode
   */
 #define GYROS_MQ_INITVAL(name) \
-    { GYROS_MQ_DEBUG_INITIALIZER                                        \
+    { GYROS_MQ_DEBUG_INITIALIZER(name)                                  \
       GYROS__LIST_INITVAL((name).msg_list),                             \
       GYROS__LIST_INITVAL((name).task_list) }
 

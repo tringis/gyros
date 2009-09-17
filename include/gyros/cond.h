@@ -47,10 +47,10 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
-#define GYROS_COND_DEBUG_MAGIC          ((unsigned)0xe0899aa1)
-#define GYROS_COND_DEBUG_INITIALIZER    GYROS_COND_DEBUG_MAGIC,(char*)0,
+#define GYROS_COND_DEBUG_MAGIC                ((unsigned)0xe0899aa1)
+#define GYROS_COND_DEBUG_INITIALIZER(name)    GYROS_COND_DEBUG_MAGIC, #name,
 #else
-#define GYROS_COND_DEBUG_INITIALIZER
+#define GYROS_COND_DEBUG_INITIALIZER(name)
 #endif
 #endif
 
@@ -63,7 +63,7 @@
   * \endcode
   */
 #define GYROS_COND_INITVAL(name) \
-    { GYROS_COND_DEBUG_INITIALIZER                \
+    { GYROS_COND_DEBUG_INITIALIZER(name)        \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Condition variable (cond) object. */

@@ -50,10 +50,10 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
-#define GYROS_SEM_DEBUG_MAGIC           ((unsigned)0xe111100a)
-#define GYROS_SEM_DEBUG_INITIALIZER     GYROS_SEM_DEBUG_MAGIC,(char*)0,
+#define GYROS_SEM_DEBUG_MAGIC                 ((unsigned)0xe111100a)
+#define GYROS_SEM_DEBUG_INITIALIZER(name)     GYROS_SEM_DEBUG_MAGIC, #name,
 #else
-#define GYROS_SEM_DEBUG_INITIALIZER
+#define GYROS_SEM_DEBUG_INITIALIZER(name)
 #endif
 #endif
 
@@ -66,8 +66,8 @@
   * gyros_sem_t my_sem = GYROS_SEM_INITVAL(my_sem, 0);
   * \endcode
   */
-#define GYROS_SEM_INITVAL(name, start_value) \
-    { GYROS_SEM_DEBUG_INITIALIZER                    \
+#define GYROS_SEM_INITVAL(name, start_value)         \
+    { GYROS_SEM_DEBUG_INITIALIZER(name)              \
       start_value, UINT_MAX,                         \
       GYROS__LIST_INITVAL((name).task_list) }
 
@@ -80,7 +80,7 @@
   * \endcode
   */
 #define GYROS_BINARY_SEM_INITVAL(name) \
-    { GYROS_SEM_DEBUG_INITIALIZER                    \
+    { GYROS_SEM_DEBUG_INITIALIZER(name)             \
       0, 1, GYROS__LIST_INITVAL((name).task_list) }
 
 

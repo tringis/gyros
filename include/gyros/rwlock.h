@@ -55,10 +55,10 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
-#define GYROS_RWLOCK_DEBUG_MAGIC         ((unsigned)0xe151110d)
-#define GYROS_RWLOCK_DEBUG_INITIALIZER   GYROS_RWLOCK_DEBUG_MAGIC,(char*)0,
+#define GYROS_RWLOCK_DEBUG_MAGIC               ((unsigned)0xe151110d)
+#define GYROS_RWLOCK_DEBUG_INITIALIZER(name)   GYROS_RWLOCK_DEBUG_MAGIC, #name,
 #else
-#define GYROS_RWLOCK_DEBUG_INITIALIZER
+#define GYROS_RWLOCK_DEBUG_INITIALIZER(name)
 #endif
 #endif
 
@@ -71,7 +71,7 @@
   * \endcode
   */
 #define GYROS_RWLOCK_INITVAL(name) \
-    { GYROS_RWLOCK_DEBUG_INITIALIZER                \
+    { GYROS_RWLOCK_DEBUG_INITIALIZER(name)          \
       (gyros_task_t*)0, 0,                          \
       GYROS__LIST_INITVAL((name).rd_task_list),     \
       GYROS__LIST_INITVAL((name).wr_task_list) }

@@ -51,10 +51,10 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if GYROS_CONFIG_DEBUG
-#define GYROS_MUTEX_DEBUG_MAGIC         ((unsigned)0xe398123d)
-#define GYROS_MUTEX_DEBUG_INITIALIZER   GYROS_MUTEX_DEBUG_MAGIC,(char*)0,
+#define GYROS_MUTEX_DEBUG_MAGIC               ((unsigned)0xe398123d)
+#define GYROS_MUTEX_DEBUG_INITIALIZER(name)   GYROS_MUTEX_DEBUG_MAGIC, #name,
 #else
-#define GYROS_MUTEX_DEBUG_INITIALIZER
+#define GYROS_MUTEX_DEBUG_INITIALIZER(name)
 #endif
 #endif
 
@@ -67,7 +67,7 @@
   * \endcode
   */
 #define GYROS_MUTEX_INITVAL(name) \
-    { GYROS_MUTEX_DEBUG_INITIALIZER                                     \
+    { GYROS_MUTEX_DEBUG_INITIALIZER(name)                               \
       (gyros_task_t*)0, 0,                                              \
       GYROS__LIST_INITVAL((name).task_list) }
 
