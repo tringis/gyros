@@ -33,7 +33,7 @@
  * Application specific configuration  (see gyros/target/defconfig.h
  *                                      and gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_DEBUG                     0
+#define GYROS_CONFIG_DEBUG                     1
 #define GYROS_CONFIG_TRACE                     1
 
 #include <gyros/target/defconfig.h>
