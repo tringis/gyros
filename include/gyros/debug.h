@@ -72,7 +72,7 @@ void gyros_set_error_handler(void (*handler)(const char *msg,
   */
 #if GYROS_CONFIG_DEBUG
 #define gyros_debug_set_name(object, object_name)   \
-    ((object)->debug_info.name = (name))
+    ((object)->debug_info.name = (object_name))
 #else
 #define gyros_debug_set_name(object, object_name)   do { } while (0)
 #endif
