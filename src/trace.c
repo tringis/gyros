@@ -81,10 +81,13 @@ gyros_trace_off(int when)
 void
 gyros_trace_string(const char *str)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    if (gyros__trace_enabled)
+    {
+        unsigned long flags = gyros_interrupt_disable();
 
-    gyros__trace(GYROS_TRACE_STRING)->info.str = str;
-    gyros_interrupt_restore(flags);
+        gyros__trace(GYROS_TRACE_STRING)->info.str = str;
+        gyros_interrupt_restore(flags);
+    }
 }
 
 void
