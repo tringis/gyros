@@ -158,6 +158,7 @@ gyros_start(void)
 #endif
     add_task_to_list(&s_idle_task, &gyros.running);
     gyros.current = &s_idle_task;
+    GYROS__LIST_NODE_INIT(&s_idle_task.timeout_list_node);
 
     gyros__target_init();
 
