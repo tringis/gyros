@@ -35,12 +35,18 @@
 
 #if GYROS_CONFIG_DEBUG
 #define DUMP_OBJECT(event, obj)                                         \
-    if ((obj)->debug_info.name)                                         \
-        pf(arg, "%-15s %s", (event), (obj)->debug_info.name);            \
-    else                                                                \
-        pf(arg, "%-15s %p", (event), (obj));
+    do {                                                                \
+        if ((obj)->debug_info.name)                                     \
+        {                                                               \
+            printf_func(printf_arg, "%-15s %s", (event),                \
+                        (obj)->debug_info.name);                        \
+        }                                                               \
+        else                                                            \
+            printf_func(printf_arg, "%-15s %p", (event), (obj));        \
+    } while (0)
 #else
-#define DUMP_OBJECT(event, obj) pf(arg, "%-15s %p", (event), (obj));
+#define DUMP_OBJECT(event, obj) printf_func(printf_arg,                 \
+                                            "%-15s %p", (event), (obj))
 #endif
 
 static const char*
@@ -95,8 +101,18 @@ trace_kind_type(enum gyros_trace_kind kind)
     return "UNKNOWN";
 }
 
+static void
+print_abstime(void (*printf_func)(void *arg, char *fmt, ...), void *printf_arg,
+             gyros_abstime_t time)
+{
+    unsigned long time_us = gyros_time_to_us(time);
+
+    printf_func(printf_arg, "%lu.%06lu", time_us / 1000000, time_us % 1000000);
+}
+
 void
-gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg)
+gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
+                       void *printf_arg)
 {
     gyros_trace_t *t, *next_t;
     int i = 0;
@@ -113,9 +129,9 @@ gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg)
             continue;
         }
 
-        pf(arg, "%3u %6llu.%06llu [%-8s] %-8s%s",
-           i++, t->timestamp / 1000000,
-           t->timestamp - t->timestamp / 1000000 * 1000000,
+        printf_func(printf_arg, "%3d ", i++);
+        print_abstime(printf_func, printf_arg, t->timestamp);
+        printf_func(printf_arg, " [%-8s] %-8s%s",
            t->task ? t->task->name : "",
            trace_kind_type(t->kind),
            t->kind == GYROS_TRACE_IRQ ? "" : " ");
@@ -126,39 +142,35 @@ gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg)
             break;
         case GYROS_TRACE_TRACE:
             if (t->info.trace < 0)
-                pf(arg, "%d", t->info.trace);
+                printf_func(printf_arg, "%d", t->info.trace);
             else
-                pf(arg, t->info.trace ? "on" : "off");
+                printf_func(printf_arg, t->info.trace ? "on" : "off");
             break;
         case GYROS_TRACE_STRING:
-            pf(arg, "%s", t->info.str);
+            printf_func(printf_arg, "%s", t->info.str);
             break;
         case GYROS_TRACE_RUNNING:
-            pf(arg, "%s", t->info.running->name);
+            printf_func(printf_arg, "%s", t->info.running->name);
             break;
         case GYROS_TRACE_IRQ:
             break;
         case GYROS_TRACE_CONTEXT:
-            pf(arg, "%s => %s", t->task->name, t->info.context_next->name);
+            printf_func(printf_arg, "%s => %s", t->task->name, t->info.context_next->name);
             break;
         case GYROS_TRACE_WAKE:
-            pf(arg, "%s", t->info.wake_task->name);
+            printf_func(printf_arg, "%s", t->info.wake_task->name);
             break;
 
 #ifdef GYROS_CONFIG_TIMER
         case GYROS_TRACE_TIMER_SET:
             DUMP_OBJECT("SET", t->info.timer_set.timer);
-            pf(arg, ", timeout=%llu.%06llu",
-               t->info.timer_set.timeout / 1000000,
-               t->info.timer_set.timeout -
-               t->info.timer_set.timeout / 1000000 * 1000000);
+            printf_func(printf_arg, ", timeout=");
+            print_abstime(printf_func, printf_arg, t->info.timer_set.timeout);
             break;
         case GYROS_TRACE_TIMER_SET_PERIODIC:
             DUMP_OBJECT("SET_PERIODIC", t->info.timer_set_periodic.timer);
-            pf(arg, ", period=%llu.%06llu",
-               t->info.timer_set_periodic.period / 1000000,
-               t->info.timer_set_periodic.period -
-               t->info.timer_set_periodic.period / 1000000 * 1000000);
+            printf_func(printf_arg, ", period=");
+            print_abstime(printf_func, printf_arg, t->info.timer_set.timeout);
             break;
         case GYROS_TRACE_TIMER_CLEAR:
             DUMP_OBJECT("CLEAR", t->info.timer);
@@ -219,22 +231,25 @@ gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg)
 
         case GYROS_TRACE_SEM_BLOCKED:
             DUMP_OBJECT("BLOCKED", t->info.sem.sem);
-            pf(arg, " (%u)", t->info.sem.value);
+            printf_func(printf_arg, " (%u)", t->info.sem.value);
             break;
         case GYROS_TRACE_SEM_AQUIRED:
             DUMP_OBJECT("AQUIRED", t->info.sem.sem);
-            pf(arg, " (%u)", t->info.sem.value);
+            printf_func(printf_arg, " (%u)", t->info.sem.value);
             break;
         case GYROS_TRACE_SEM_SIGNAL:
             DUMP_OBJECT("SIGNAL", t->info.sem.sem);
-            pf(arg, " (%u)", t->info.sem.value);
+            printf_func(printf_arg, " (%u)", t->info.sem.value);
             break;
         }
         if (t->kind != GYROS_TRACE_EMPTY)
         {
             if (next_t)
-                pf(arg, " [%llu]", t->timestamp - next_t->timestamp);
-            pf(arg, "\n");
+            {
+                printf_func(printf_arg, " [%ld]",
+                            gyros_time_to_us(t->timestamp - next_t->timestamp));
+            }
+            printf_func(printf_arg, "\n");
         }
 
         t = next_t;
