@@ -88,9 +88,33 @@ void gyros_set_error_handler(void (*handler)(const char *msg,
 #define gyros_debug_get_name(object)   ((const char*)0)
 #endif
 
-void gyros_debug_task_list(void (*pf)(void *arg, char *fmt, ...), void *arg);
+/** Print all tasks and related debug information using the supplied
+  * printf function @a printf_func.  The printf function is called
+  * with @a printf_arg as first argument.
+  *
+  * This function requires GYROS_CONFIG_ITERATE to be enabled, and
+  * displays more details if GYROS_CONFIG_DEBUG is enabled, but does
+  * work without it.
+  *
+  * \param printf_func      Pointer to printf function.
+  * \param printf_arg       First argument to printf function.
+  */
+void gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
+                           void *printf_arg);
 
-void gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg);
+/** Print all recorded traces using the supplied printf function @a
+  * printf_func.  The printf function is called with @a printf_arg as
+  * first argument.
+  *
+  * This function requires GYROS_CONFIG_TRACE to be enabled, and
+  * displays more details if GYROS_CONFIG_DEBUG is enabled, but does
+  * work without it.
+  *
+  * \param printf_func      Pointer to printf function.
+  * \param printf_arg       First argument to printf function.
+  */
+void gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
+                            void *printf_arg);
 
 /*@}*/
 
