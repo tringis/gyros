@@ -3,6 +3,8 @@ Import("*")
 gyros_common_srcs = map(target_env.File, [ 'cond.c',
                                            'current.c',
                                            'debug.c',
+                                           'debug/tasklist.c',
+                                           'debug/tracedump.c',
                                            'delete.c',
                                            'free.c',
                                            'hooks.c',

@@ -88,6 +88,10 @@ void gyros_set_error_handler(void (*handler)(const char *msg,
 #define gyros_debug_get_name(object)   ((const char*)0)
 #endif
 
+void gyros_debug_task_list(void (*pf)(void *arg, char *fmt, ...), void *arg);
+
+void gyros_debug_trace_dump(void (*pf)(void *arg, char *fmt, ...), void *arg);
+
 /*@}*/
 
 #endif

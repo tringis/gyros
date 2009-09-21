@@ -26,48 +26,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-/** \file Example.dox
-  * \brief GyrOS application examples.
-  */
+#include <gyros/debug.h>
+#include <gyros/iterate.h>
 
-/** \page examples Application examples
+#if GYROS_CONFIG_ITERATE
 
-\section minimal_application_example Minimal application example
-\code
-#include <gyros/task.h>
-
-gyros_task_t task1;
-char task1_stack[256];
-
-static void
-task1_main(void *arg)
+/* Local implementation to avoid string.h dependency. */
+static int
+streq(const char *s1, const char *s2)
 {
-    ...
+    for (;;)
+    {
+        if (*s1 != *s2)
+            return 0;
+        if (*s1 == 0)
+            return 1;
+        ++s1;
+        ++s2;
+    }
 }
 
-int
-main()
-{
-    gyros_task_create(&task1, "task1", task1_main, NULL,
-                      task1_stack, sizeof(task1_stack), 10);
-    gyros_start();
-}
-\endcode
-
-
-\section task_iteration_example Task iteration example
-\code
 void
-tasklist(void)
+gyros_debug_task_list(void (*pf)(void *arg, char *fmt, ...), void *arg)
 {
     gyros_task_t *t;
+    int i;
 
-    puts("name              prio\n"
-         "----------------------\n");
+    pf(arg, "%s", "name              prio  stack  task       "
+#if GYROS_CONFIG_DEBUG
+       "state"
+#else
+       "pc"
+#endif
+       "\n");
+    for (i = 0; i < 79; ++i)
+        pf(arg, "-");
+    pf(arg, "\n");
 
     for (t = gyros_task_iterate(0); t; t = gyros_task_iterate(t))
-        printf("%-16s %3d\n", t->name, t->priority);
+    {
+        pf(arg, "%-16s %3d %4d/%4d %p ",
+           t->name, t->priority,
+           gyros_task_stack_used(t), t->stack_size, t);
+#if GYROS_CONFIG_DEBUG
+        pf(arg, "%s", t->debug_state);
+        if (streq(t->debug_state, "running"))
+            pf(arg, " @ 0x%08x", t->context.pc);
+        else if (t->debug_object)
+        {
+            if (t->debug_object->name)
+                pf(arg, " @ %s", t->debug_object->name);
+            else
+                pf(arg, " @ %p", t->debug_object);
+        }
+#else
+        pf(arg, "0x%08x", t->context.pc);
+#endif
+        pf(arg, "\n");
+    }
 }
-\endcode
 
-*/
+#endif
