@@ -47,42 +47,48 @@ streq(const char *s1, const char *s2)
 }
 
 void
-gyros_debug_task_list(void (*pf)(void *arg, char *fmt, ...), void *arg)
+gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
+                      void *printf_arg)
 {
     gyros_task_t *t;
     int i;
 
-    pf(arg, "%s", "name              prio  stack  task       "
+    printf_func(printf_arg, "%s", "name              prio  stack  task       "
 #if GYROS_CONFIG_DEBUG
-       "state"
+                "state"
 #else
-       "pc"
+                "pc"
 #endif
-       "\n");
+                "\n");
     for (i = 0; i < 79; ++i)
-        pf(arg, "-");
-    pf(arg, "\n");
-
+        printf_func(printf_arg, "-");
+    printf_func(printf_arg, "\n");
+    
     for (t = gyros_task_iterate(0); t; t = gyros_task_iterate(t))
     {
-        pf(arg, "%-16s %3d %4d/%4d %p ",
-           t->name, t->priority,
-           gyros_task_stack_used(t), t->stack_size, t);
+        printf_func(printf_arg, "%-16s %3d %4d/%4d %p ",
+                    t->name, t->priority,
+                    gyros_task_stack_used(t), t->stack_size, t);
 #if GYROS_CONFIG_DEBUG
-        pf(arg, "%s", t->debug_state);
+        printf_func(printf_arg, "%s", t->debug_state);
         if (streq(t->debug_state, "running"))
-            pf(arg, " @ 0x%08x", t->context.pc);
+            printf_func(printf_arg, " @ 0x%08x", t->context.pc);
         else if (t->debug_object)
         {
             if (t->debug_object->name)
-                pf(arg, " @ %s", t->debug_object->name);
+                printf_func(printf_arg, " @ %s", t->debug_object->name);
             else
-                pf(arg, " @ %p", t->debug_object);
+                printf_func(printf_arg, " @ %p", t->debug_object);
         }
 #else
-        pf(arg, "0x%08x", t->context.pc);
+        printf_func(printf_arg, "0x%08x", t->context.pc);
 #endif
-        pf(arg, "\n");
+        if (!gyros__list_empty(&t->timeout_list_node))
+        {
+            printf_func(printf_arg, " (%ld ms)",
+                        gyros_time_to_ms(t->timeout - gyros_time()));
+        }
+        printf_func(printf_arg, "\n");
     }
 }
 
