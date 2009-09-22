@@ -62,7 +62,6 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
 
     m->owner = gyros.current;
     m->owner_priority = gyros.current->priority;
-    GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 
     return 1;
@@ -82,27 +81,30 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros_error("mutex_lock deadlock", m);
 #endif
 
-    while (unlikely(m->owner != NULL))
+    if (unlikely(m->owner != NULL))
     {
         GYROS__TRACE_MUTEX(BLOCKED, m);
-        gyros__task_move(gyros.current, &m->task_list);
-        /* Implement priority inheritance to prevent priority
-         * inversion. */
-        if (m->owner->priority < gyros.current->priority)
+        do
         {
-            m->owner->raised_priority = 1;
-            m->owner->priority = gyros.current->priority;
-            gyros__task_move(m->owner, m->owner->main_list);
-        }
-        GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
-        gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
-        flags = gyros_interrupt_disable();
+            gyros__task_move(gyros.current, &m->task_list);
+            /* Implement priority inheritance to prevent priority
+             * inversion. */
+            if (m->owner->priority < gyros.current->priority)
+            {
+                m->owner->raised_priority = 1;
+                m->owner->priority = gyros.current->priority;
+                gyros__task_move(m->owner, m->owner->main_list);
+            }
+            GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
+            gyros_interrupt_restore(flags);
+            gyros__cond_reschedule();
+            flags = gyros_interrupt_disable();
+        } while (unlikely(m->owner != NULL));
+        GYROS__TRACE_MUTEX(AQUIRED, m);
     }
 
     m->owner = gyros.current;
     m->owner_priority = gyros.current->priority;
-    GYROS__TRACE_MUTEX(AQUIRED, m);
     gyros_interrupt_restore(flags);
 }
 
@@ -127,11 +129,11 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
         gyros.current->priority = m->owner_priority;
         gyros__task_move(gyros.current, gyros.current->main_list);
     }
-    GYROS__TRACE_MUTEX(UNLOCK, m);
     if (likely(gyros__list_empty(&m->task_list)))
         gyros_interrupt_restore(flags);
     else
     {
+        GYROS__TRACE_MUTEX(UNLOCK, m);
         gyros__task_wake(TASK(m->task_list.next));
         gyros_interrupt_restore(flags);
         if (reschedule)
