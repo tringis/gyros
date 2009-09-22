@@ -155,7 +155,8 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
         case GYROS_TRACE_IRQ:
             break;
         case GYROS_TRACE_CONTEXT:
-            printf_func(printf_arg, "%s => %s", t->task->name, t->info.context_next->name);
+            printf_func(printf_arg, "%s => %s",
+                        t->task->name, t->info.context_next->name);
             break;
         case GYROS_TRACE_WAKE:
             printf_func(printf_arg, "%s", t->info.wake_task->name);
