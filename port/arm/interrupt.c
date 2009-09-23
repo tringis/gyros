@@ -39,7 +39,7 @@ gyros_interrupt_disable(void)
         "mrs    %1, cpsr\n\t"
         "orr    %0, %1, #0xc0\n\t"
         "msr    cpsr_c, %0\n\t"
-        : "=r" (temp), "=&r" (flags) :: "memory");
+        : "=l" (temp), "=&l" (flags) :: "memory");
 
     return flags;
 }
@@ -77,5 +77,5 @@ gyros__interrupt_enable(void)
         "mrs    %0, cpsr\n\t"
         "bic    %0, %0, #0xc0\n\t"
         "msr    cpsr_c, %0"
-        : "=r" (temp) :: "memory");
+        : "=l" (temp) :: "memory");
 }
