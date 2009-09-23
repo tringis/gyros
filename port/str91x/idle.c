@@ -1,5 +1,9 @@
 #include <gyros/private/port.h>
 
+#ifdef __thumb__
+#error This file must be compiled in ARM mode
+#endif
+
 void
 gyros__idle(void)
 {

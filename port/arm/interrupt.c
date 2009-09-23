@@ -28,6 +28,10 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 
+#ifdef __thumb__
+#error This file must be compiled in ARM mode
+#endif
+
 #if GYROS_CONFIG_THUMB
 unsigned long
 gyros_interrupt_disable(void)
