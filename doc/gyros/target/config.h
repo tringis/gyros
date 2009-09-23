@@ -53,7 +53,7 @@
   * function returns instead of performing the idle loop internally.
   *
   * \warning
-  * Note that the custom idle loop must not call functions that may
+  * Note that the custom idle loop must not call functions that might
   * block. */
 #define GYROS_CONFIG_CUSTOM_IDLE_LOOP 0
 
