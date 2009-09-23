@@ -37,6 +37,10 @@
 #error GYROS_CONFIG_DYNTICK not defined by target defconfig.h
 #endif
 
+#ifndef GYROS_CONFIG_CUSTOM_IDLE_LOOP
+#define GYROS_CONFIG_CUSTOM_IDLE_LOOP 0
+#endif
+
 #ifndef GYROS_CONFIG_ITERATE
 #define GYROS_CONFIG_ITERATE 1
 #endif

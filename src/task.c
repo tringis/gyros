@@ -162,8 +162,10 @@ gyros_start(void)
 
     gyros__target_init();
 
+#if !GYROS_CONFIG_CUSTOM_IDLE_LOOP
     for (;;)
         gyros__idle();
+#endif
 }
 
 void

@@ -48,6 +48,15 @@
   * the \ref gyros_set_context_hook "context switch hook". */
 #define GYROS_CONFIG_CONTEXT_HOOK 0
 
+/** If defined to a non-zero value, this variable enables support for
+  * implementing a custom idle loop.  When enabled, the gyros_start()
+  * function returns instead of performing the idle loop internally.
+  *
+  * \warning
+  * Note that the custom idle loop must not call functions that may
+  * block. */
+#define GYROS_CONFIG_CUSTOM_IDLE_LOOP 0
+
 /** If defined to a non-zero value, this variable enables \ref
   * debug_group "debugging support".  The cost of enabling debugging
   * support is higher memory usage and a small performance penalty. */

@@ -87,11 +87,17 @@ typedef struct
 #endif
 } gyros_task_t;
 
-/** Start GyrOS.  This call creates the idle task, enables interrupts
-  * and loops forever as the idle task.  This idle task has priority
-  * zero and is always running.
+/** Start GyrOS.  This call creates the idle task and enables
+  * interrupts.  This idle task has priority zero and is always
+  * running.  If @c GYROS_CONFIG_CUSTOM_IDLE_LOOP is disabled, this
+  * function will also loop forever as the idle task and never return.
+  *
+  * If @c GYROS_CONFIG_CUSTOM_IDLE_LOOP is enabled, this function will
+  * return, and the caller is responsible for implementing the idle
+  * loop.  Since the idle task must always be running, the custom idle
+  * loop must not call functions that may block.
   */
-void gyros_start(void) __attribute__((__noreturn__));
+void gyros_start(void);
 
 /** Create a new task.
   *
