@@ -115,6 +115,22 @@ static inline long gyros_time_to_s(gyros_reltime_t time)
   */
 gyros_abstime_t gyros_time(void);
 
+/** Compare @a time1 and @a time2.  May be called from interrupt
+  * context.
+  *
+  * \param time1        First time to compare.
+  * \param time2        Second time to compare.
+  * \return             A negative value if @a time1 is less than
+  *                     @a time2, zero if @a time1 is equal to
+  *                     @a time2, or a positive value if @a time1
+  *                     is greater than @a time2.
+  */
+static inline gyros_reltime_t gyros_time_compare(gyros_abstime_t time1,
+                                                 gyros_abstime_t time2)
+{
+    return (gyros_reltime_t)(time1 - time2);
+}
+
 /** Helper function to test if @a time has been reached.  May be
   * called from interrupt context.
   *
@@ -123,7 +139,7 @@ gyros_abstime_t gyros_time(void);
   */
 static inline int gyros_time_reached(gyros_abstime_t time)
 {
-    return (gyros_reltime_t)(time - gyros_time()) <= 0;
+    return gyros_time_compare(time, gyros_time()) <= 0;
 }
 
 /*@}*/
