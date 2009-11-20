@@ -51,7 +51,7 @@
 __real_exception_vectors:
 	ldr	pc, [pc, #0x18]		// __reset_handler		       
 	ldr	pc, [pc, #0x18]		// __undefined_instruction_handler
-	ldr	pc, [pc, #0x18]		// __swi_handler		       
+	ldr	pc, [pc, #0x18]		// __svc_handler		       
 	ldr	pc, [pc, #0x18]		// __abort_prefetch_handler	  
 	ldr	pc, [pc, #0x18]		// __abort_data_handler
 	b	.			// RESERVED
@@ -63,7 +63,7 @@ __real_exception_vectors:
 __exception_vectors:
 	.word	__reset_handler
 	.word	__undefined_instruction_handler
-	.word	gyros__swi_handler
+	.word	gyros__svc_handler
 	.word	__abort_prefetch_handler
 	.word	__abort_data_handler
 	.word	0

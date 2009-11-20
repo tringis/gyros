@@ -43,12 +43,12 @@
 	.balign		4
 
 /*------------------------------------------------------------------------*
- | gyros__swi_handler - handles software interrupts as a means of forced  |
+ | gyros__svc_handler - handles software interrupts as a means of forced  |
  |                      context switches (unless the scheduler is locked) |
  *------------------------------------------------------------------------*/
-	.type	gyros__swi_handler, %function
-	.global	gyros__swi_handler
-gyros__swi_handler:
+	.type	gyros__svc_handler, %function
+	.global	gyros__svc_handler
+gyros__svc_handler:
 	add	lr, lr, #4
 	save_context
 	restore_context

@@ -76,7 +76,7 @@ gyros_in_interrupt(void)
 static inline void
 gyros__reschedule(void)
 {
-    __asm__ __volatile__("swi" ::: "memory");
+    __asm__ __volatile__("svc    #0" ::: "memory");
 }
 
 /* Enable interrupts in the ARM core. */
