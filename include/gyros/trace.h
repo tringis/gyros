@@ -71,9 +71,8 @@ enum gyros_trace_kind
     GYROS_TRACE_IRQ,                /**< Interrupt */
     GYROS_TRACE_CONTEXT,            /**< Context switch */
     GYROS_TRACE_WAKE,               /**< Task wakeup */
-    GYROS_TRACE_TIMER_SET,          /**< gyros_timer_set() */
-    GYROS_TRACE_TIMER_SET_PERIODIC, /**< gyros_timer_set() */
-    GYROS_TRACE_TIMER_CLEAR,        /**< gyros_timer_clear() */
+    GYROS_TRACE_TIMER_START,        /**< gyros_timer_start() */
+    GYROS_TRACE_TIMER_STOP,         /**< gyros_timer_stop() */
     GYROS_TRACE_TIMER_CALLBACK,     /**< Timer callback. */
     GYROS_TRACE_COND_WAIT,          /**< gyros_cond_wait() blocking */
     GYROS_TRACE_COND_SIGNAL_ONE,    /**< gyros_cond_signal_one() */
@@ -125,23 +124,17 @@ typedef struct
         /** For @c GYROS_TRACE_WAKEUP: Next task to run. */
         gyros_task_t *wake_task;
 #ifdef GYROS_CONFIG_TIMER
-        /** For @c GYROS_TRACE_TIMER_SET: Timer information. */
-        struct gyros_trace_timer_set_info
+        /** For @c GYROS_TRACE_TIMER_START: Timer information. */
+        struct gyros_trace_timer_start_info
         {
             /** The timer. */
             gyros_timer_t *timer;
             /** Timer timeout. */
             gyros_abstime_t timeout;
-        } timer_set;
-        /** For @c GYROS_TRACE_TIMER_SET_PERIODIC: Timer information. */
-        struct gyros_trace_timer_set_periodic_info
-        {
-            /** The timer. */
-            gyros_timer_t *timer;
             /** Timer period. */
             gyros_reltime_t period;
-        } timer_set_periodic;
-        /** For @c GYROS_TRACE_TIMER_CLEAR and @c
+        } timer_start;
+        /** For @c GYROS_TRACE_TIMER_STOP and @c
          * GYROS_TRACE_TIMER_CALLBACK: The timer. */
         gyros_timer_t *timer;
 #endif

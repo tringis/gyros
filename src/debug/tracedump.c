@@ -72,9 +72,8 @@ trace_kind_type(enum gyros_trace_kind kind)
     case GYROS_TRACE_COND_SIGNAL_ONE:
     case GYROS_TRACE_COND_SIGNAL_ALL:
         return "COND";
-    case GYROS_TRACE_TIMER_SET:
-    case GYROS_TRACE_TIMER_SET_PERIODIC:
-    case GYROS_TRACE_TIMER_CLEAR:
+    case GYROS_TRACE_TIMER_START:
+    case GYROS_TRACE_TIMER_STOP:
     case GYROS_TRACE_TIMER_CALLBACK:
         return "TIMER";
     case GYROS_TRACE_MQ_SEND:
@@ -163,17 +162,14 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
             break;
 
 #ifdef GYROS_CONFIG_TIMER
-        case GYROS_TRACE_TIMER_SET:
-            DUMP_OBJECT("SET", t->info.timer_set.timer);
+        case GYROS_TRACE_TIMER_START:
+            DUMP_OBJECT("SET", t->info.timer_start.timer);
             printf_func(printf_arg, ", timeout=");
-            print_abstime(printf_func, printf_arg, t->info.timer_set.timeout);
-            break;
-        case GYROS_TRACE_TIMER_SET_PERIODIC:
-            DUMP_OBJECT("SET_PERIODIC", t->info.timer_set_periodic.timer);
+            print_abstime(printf_func, printf_arg, t->info.timer_start.timeout);
             printf_func(printf_arg, ", period=");
-            print_abstime(printf_func, printf_arg, t->info.timer_set.timeout);
+            print_abstime(printf_func, printf_arg, t->info.timer_start.period);
             break;
-        case GYROS_TRACE_TIMER_CLEAR:
+        case GYROS_TRACE_TIMER_STOP:
             DUMP_OBJECT("CLEAR", t->info.timer);
             break;
         case GYROS_TRACE_TIMER_CALLBACK:

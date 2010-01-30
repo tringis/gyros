@@ -64,55 +64,38 @@ gyros__timer_schedule(gyros_timer_t *timer)
 }
 
 void
-gyros_timer_set(gyros_timer_t *timer, gyros_abstime_t time)
+gyros_timer_start(gyros_timer_t *timer,
+                  gyros_abstime_t time,
+                  gyros_reltime_t period)
 {
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
     if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
-        gyros_error("uninitialized timer in gyros_timer_set", timer);
+        gyros_error("uninitialized timer in gyros_timer_start", timer);
 #endif
 
     gyros__list_remove(&timer->list_node);
     timer->timeout = time;
-    timer->period = 0;
-    GYROS__TRACE_TIMER_SET(timer);
-    gyros__timer_schedule(timer);
-    gyros__dyntick_update(gyros_time());
-    gyros_interrupt_restore(flags);
-}
-
-void
-gyros_timer_set_periodic(gyros_timer_t *timer, gyros_reltime_t period)
-{
-    unsigned long flags = gyros_interrupt_disable();
-
-#if GYROS_CONFIG_DEBUG
-    if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
-        gyros_error("uninitialized timer in gyros_timer_set_periodic", timer);
-#endif
-
-    gyros__list_remove(&timer->list_node);
-    timer->timeout = gyros_time() + period;
     timer->period = period;
-    GYROS__TRACE_TIMER_SET_PERIODIC(timer);
+    GYROS__TRACE_TIMER_START(timer);
     gyros__timer_schedule(timer);
     gyros__dyntick_update(gyros_time());
     gyros_interrupt_restore(flags);
 }
 
 void
-gyros_timer_clear(gyros_timer_t *timer)
+gyros_timer_stop(gyros_timer_t *timer)
 {
     unsigned long flags = gyros_interrupt_disable();
 
 #if GYROS_CONFIG_DEBUG
     if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
-        gyros_error("uninitialized timer in gyros_timer_clear", timer);
+        gyros_error("uninitialized timer in gyros_timer_stop", timer);
 #endif
 
     gyros__list_remove(&timer->list_node);
-    GYROS__TRACE_TIMER(CLEAR, timer);
+    GYROS__TRACE_TIMER(STOP, timer);
     gyros_interrupt_restore(flags);
 }
 
