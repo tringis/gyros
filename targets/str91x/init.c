@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
-#include <gyros/private/port.h>
+#include <gyros/private/target.h>
 #include <gyros/target/config.h>
 #include <gyros/time.h>
 

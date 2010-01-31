@@ -31,12 +31,12 @@
 
 /*---------------------------------------------------------------------*
  * This file is completely internal to GyrOS and contains stuff that
- * are not used by neither the application nor the port.
+ * are not used by neither the application nor the target port.
  *---------------------------------------------------------------------*/
 
 #include <gyros/task.h>
 #include <gyros/mutex.h>
-#include <gyros/private/port.h>
+#include <gyros/private/target.h>
 #include <gyros/timer.h>
 
 #ifdef __GNUC__

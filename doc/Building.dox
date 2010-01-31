@@ -50,7 +50,7 @@ Here's an example of the command line when building using a GCC
 cross-compiler:
 
 \verbatim
-arm-elf-gcc -I gyros-1.0/include -I gyros-1.0/port/at91sam7s/include \
+arm-elf-gcc -I gyros-1.0/include -I gyros-1.0/targets/at91sam7s/include \
     gyros-1.0/src/sem.c -o gyros-1.0/src/sem.o
 \endverbatim
 

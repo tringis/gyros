@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/arm/arm_defs.h>
-#include <gyros/private/port.h>
+#include <gyros/private/target.h>
 
 void
 gyros__target_task_init(gyros_task_t *task,

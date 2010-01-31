@@ -1,4 +1,4 @@
-#include <gyros/private/port.h>
+#include <gyros/private/target.h>
 
 #ifdef __thumb__
 #error This file must be compiled in ARM mode

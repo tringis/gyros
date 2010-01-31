@@ -31,10 +31,10 @@
 
 /** \defgroup config_group GyrOS configuration
   *
-  * A few aspects of GyrOS can be configured as build time using the
-  * include file \c gyros/target/config.h.  This file is port specific
-  * and should be copied from the port's examples directory,
-  * e.g. @c port/at91sam7s/examples/include/gyros/target/config.h.
+  * A few aspects of GyrOS can be configured at build time using the
+  * include file \c gyros/target/config.h.  This file is target specific
+  * and should be copied from the target's @c examples directory,
+  * e.g. @c targets/at91sam7s/examples/include/gyros/target/config.h.
   */
 
 /*@{*/

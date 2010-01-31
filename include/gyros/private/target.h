@@ -26,23 +26,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_port_h__200901072001
-#define INCLUDED__gyros_private_port_h__200901072001
+#ifndef INCLUDED__gyros_private_target_h__200901072001
+#define INCLUDED__gyros_private_target_h__200901072001
 
 #include <gyros/target/config.h>
 #include <gyros/task.h>
 #include <gyros/time.h>
 
 /*---------------------------------------------------------------------*'
- * The following function are called by the port, but never from the
- * application.
+ * The following function are called by the target port, but never
+ * from the application.
  *---------------------------------------------------------------------*/
 
-/* Called by the port's timer interrupt handler to wake up any
+/* Called by the target port's timer interrupt handler to wake up any
  * sleeping tasks and handle any timeouts. */
 void gyros__tick(gyros_abstime_t now);
 
-/* Called by the port when a task exists its main function. */
+/* Called by the target port when a task exists its main function. */
 void gyros__task_exit(void);
 
 /*---------------------------------------------------------------------*
