@@ -58,15 +58,6 @@ SECTIONS
 	} >rom
 	PROVIDE(__text_size = SIZEOF(.text));
 
-	.text.ram :
-	{
-		PROVIDE(__text_ram_start = .);
-		*(.text.ram);
-		. = ALIGN(32);
-	} >ram AT>rom
-	PROVIDE(__text_ram_size = SIZEOF(.text.ram));
-	PROVIDE(__text_ram_load = LOADADDR(.text.ram));
-
 	.data :
 	{
 		PROVIDE(__data_start = .);

@@ -120,12 +120,6 @@ __reset_handler:
 	msr	cpsr_c, #IRQ_BIT | FIQ_BIT | MODE_SYS
 	mov	sp, r0
 
-	// Copy .text.ram section
-	ldr	r0, =__text_ram_start
-	ldr	r1, =__text_ram_load
-	ldr	r2, =__text_ram_size
-	bl	__crt_memcpy
-
 	// Copy .data section
 	ldr	r0, =__data_start
 	ldr	r1, =__data_load
