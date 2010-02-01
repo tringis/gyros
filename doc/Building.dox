@@ -33,29 +33,123 @@
 /** \page building Building GyrOS
 
 GyrOS is easy to build, and can be built using most build systems,
-such as make, SCons or even an integrated development environment like
-Eclipse.  It can be build like a library to be used by multiple
-applications, or it can be copied into the application build
+such as make, SCons or an integrated development environment like
+Eclipse.  It can be built as a library to be used by multiple
+applications, or it can be copied directly into the application build
 structure, depending on what suits the application best.
 
-The only requirement on the build system is that it needs to configure
-the search path for include files so that both generic include files
-(like \c gyros/task.h) and target specific include files (like \c
-gyros/target/interrupt.h) are found.  Note that application code
-should never include target specific include files, but the include
-path does need to be set up so that the target specific files can be
-found by GyrOS internal files.
+In order to build and application using GyrOS, you will need a
+development platform for your target microcontroller, including a
+standard C library, and startup code to initialize your
+microcontroller.
+
+While the GyrOS core is 100% standard C, the target ports all contain
+some assembly files and/or compiler specific C code.  All current
+target ports are for the GNU toolchain, which is Open Source and is
+available for a vast number of CPU:s, and runs on all major host
+platforms.  The target specific code is on the other hand very little
+code, so it's not too hard to port to another development platform if
+needed.
+
+Each port has one or more examples that can be very useful when
+starting to use GyrOS.  There's also example startup code available
+for each target, but it's likely going to require changes to properly
+initialize the hardware on the real target.  Initialization of clocks,
+memories and so on will likely vary from board to board.
+
+\section building_example Building an example application
+
+As first example, we will build the supplied examples for the STR91x
+microcontroller family.  The name of this port is str91x, and it
+written for the GNU toolchain, and uses SCons as the build system.
+
+The example contains the following files:
+- \c SConstruct - SCons build file ("Makefile").  Edit this file
+  to find your GNU toolchain commands, and to generate ARM THUMB
+  code or not.
+- \c str91x.ld - Link script.
+- \c include/gyros/target/config.h - GyrOS configuration file.  Edit
+  this file to support time conversion functions, and to enable and
+  disable optional features.
+- \c hwinit.c - Hardware initialization code.  Edit this file to
+  make the example run on your board.
+- \c startup.S - Startup code.
+- \c test.c - The actual test application.
+
+This simple example just creates two tasks of different priorities,
+one in a tight loop, and the other in a loop around a sleep call.  The
+example is build from the command line like this:
+
+\verbatim
+> cd targets/str91x/examples
+> scons
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+...
+scons: done building targets.
+> arm-elf-size test.elf
+   text	   data	    bss	    dec	    hex	filename
+   6160	     96	    688	   6944	   1b20	test.elf
+> 
+\endverbatim
+
+The size of the binary includes the C runtime, and this example has
+both debugging and tracing enabled which increases the size of the
+binary.
+
+\section building_app Building a real application using SCons
+
+Building a real application using SCons is very easy.  Let's say that
+we want to build an application called blinky.  A convenient directory
+structure for an application is to put gyros in a top level directory,
+and the application code in another top level directory, which we will
+call \c src in this example.  We can initialize the src directory by
+copying the example directory, and then edit the SConstruct file to
+fix the CPPPATH and the path to the SConscript file.
+
+\section building_other Building using another build system
+
+For the rest of this section, let's assume that the GyrOS top level
+directory is \c $GYROS.  This is the directory containing the
+directories \c doc, \c include, \c src, \c targets and the file \c
+LICENSE.  Let's also assume that we're building for an STR912 CPU.
+The port for this CPU is called \c str91x.  If you're building for
+another port, just replace \c str91x with the name of your port.
+
+\subsection building_other_includepath Include paths
+
+The build system must configure the search path to find both the core
+include files and the port specific include files.  Since all GyrOS
+include files (external and internal) are prefixed by \c gyros/, the
+build system must add the directory containing the \c gyros directory,
+and not the \c gyros directory itself.  For our example, it means that
+the following directories should be added:
+
+- \c $GYROS/include
+- \c $GYROS/targets/<em>str91x</em>/include
 
 Here's an example of the command line when building using a GCC
 cross-compiler:
 
 \verbatim
-arm-elf-gcc -I gyros-1.0/include -I gyros-1.0/targets/at91sam7s/include \
-    gyros-1.0/src/sem.c -o gyros-1.0/src/sem.o
+arm-elf-gcc -I $GYROS/include -I $GYROS/targets/str91x/include -c file.c
 \endverbatim
 
-\section build_app Integrating GyrOS and the application
+\subsection building_other_config Configuration file
 
-\section build_using_scons Building using SCons
+GyrOS exects to find a configuration include file, included by GyrOS
+internally using the name \c gyros/target/config.h.  A template for
+this configuration file is available in the examples for your target
+port.
+
+\subsection building_other_srcs Source files
+
+The build system must build all files in the \c src directory and
+below, and also the target specific files, which in the case of the
+str91x target means all source files in the \c targets/str91x
+directory.  The port may also require common architecture code.  The
+str91x target is an ARM target, so all source files in the \c
+targets/arm must be built as well.
 
 */
