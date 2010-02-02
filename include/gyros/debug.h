@@ -33,15 +33,15 @@
 
 /** \defgroup debug_group Debugging support
   *
-  * Debugging is enabled when compiled with @c GYROS_CONFIG_DEBUG set
-  * to a non-zero value.  When debugging is enabled, many common
-  * invalid uses of the GyrOS API is detected, and more information
-  * about the status of each task tracked, e.g. if a task is blocking
-  * on a mutex, and if so, which mutex.
-  */
-/*@{*/
-
-/** \file
+  * Debugging is enabled by setting \ref GYROS_CONFIG_DEBUG to a
+  * non-zero value in gyros/target/config.h.  When debugging is
+  * enabled, many common invalid uses of the GyrOS API is detected,
+  * and more information about the status of each task tracked,
+  * e.g. if a task is blocking on a mutex, and if so, which mutex.
+  *
+  * @{
+  *
+  * \file
   * \brief Debugging support.
   * \details Header file for \ref debug_group.
   */

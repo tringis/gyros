@@ -42,10 +42,10 @@
   * Read/write locks are not recursive, so calling a lock function
   * twice (without calling gyros_rwlock_unlock() inbetween) from the
   * same task will result in a deadlock.
-  */
-/*@{*/
-
-/** \file
+  *
+  * @{
+  *
+  * \file
   * \brief Read/write lock (rwlock).
   * \details Header file for \ref rwlock_group.
   */
@@ -64,6 +64,8 @@
   * \code
   * gyros_rwlock_t my_rwlock = GYROS_RWLOCK_INITVAL(my_rwlock);
   * \endcode
+  *
+  * \param name         Name of the read/write lock variable.
   */
 #define GYROS_RWLOCK_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_RWLOCK_DEBUG_MAGIC, #name),    \

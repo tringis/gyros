@@ -31,11 +31,12 @@
 
 /** \defgroup interrupt_group Interrupt management
   *
-  * TBD
-  */
-/*@{*/
-
-/** \file interrupt.h
+  * Interrupts can be disabled and restored to provide the most basic
+  * synchronization between a task and an interrupt handler.
+  *
+  * @{
+  *
+  * \file
   * \details Header file for \ref interrupt_group.
   */
 

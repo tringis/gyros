@@ -31,11 +31,12 @@
 
 /** \defgroup iteration_group Task iteration
   *
-  * TBD
-  */
-/*@{*/
-
-/** \file iterate.h
+  * Task iteration is used to iterate through all tasks.  This is
+  * mostly useful for debug and error handling purposes.
+  *
+  * @{
+  *
+  * \file
   * \brief Task iteration.
   * \details Header file for \ref iteration_group.
   */

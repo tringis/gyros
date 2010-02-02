@@ -34,10 +34,10 @@
   * A semaphore must be initialized before use, either using
   * GYROS_SEM_INITVAL() or GYROS_BINARY_SEM_INITVAL() when defining
   * the semaphore, or using gyros_sem_init().
-  */
-/*@{*/
-
-/** \file
+  *
+  * @{
+  *
+  * \file
   * \brief Semaphores.
   * \details Header file for \ref sem_group.
   */
@@ -60,6 +60,9 @@
   * \code
   * gyros_sem_t my_sem = GYROS_SEM_INITVAL(my_sem, 0);
   * \endcode
+  *
+  * \param name         Name of the message queue variable.
+  * \param start_value  Start value.
   */
 #define GYROS_SEM_INITVAL(name, start_value)            \
     { GYROS_DEBUG_INFO(GYROS_SEM_DEBUG_MAGIC, #name),   \
@@ -73,6 +76,8 @@
   * \code
   * gyros_sem_t my_sem = GYROS_BINARY_SEM_INITVAL(my_sem);
   * \endcode
+  *
+  * \param name         Name of the semaphore variable.
   */
 #define GYROS_BINARY_SEM_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_SEM_DEBUG_MAGIC, #name),   \

@@ -31,17 +31,30 @@
 
 /** \defgroup mutex_group Mutual exclusion
   *
+  * A mutex is a synchronization object which is used to grant
+  * exclusive access to a shared resource.  If one task has locked the
+  * mutex, any other task that tries to lock the mutex will block
+  * until the mutex is unlocked.
+  *
+  * To combat priority inversion, the mutex implementation in GyrOS
+  * supports priority inheritence, which means that if a high priority
+  * task blocks on a mutex owned by a lower priority task, the lower
+  * priority task inherits the high priority until it unlocks the
+  * mutes.  This prevents the high priority task from getting starved
+  * by medium priority tasks which starve the low priority task.
+  *
   * A mutex must be initialized before use, either using
   * GYROS_MUTEX_INITVAL() when defining the mutex, or using
   * gyros_mutex_init().
   *
   * Mutexes are not recursive, so calling gyros_mutex_lock() twice
   * from the same task (without calling gyros_mutex_unlock()
-  * inbetween) will result in a deadlock.
-  */
-/*@{*/
-
-/** \file
+  * inbetween) will result in a deadlock.  This error condition is
+  * detected if \ref GYROS_CONFIG_DEBUG is enabled.
+  *
+  * @{
+  *
+  * \file
   * \brief Mutual exclusion (mutex).
   * \details Header file for \ref mutex_group.
   */
@@ -60,6 +73,8 @@
   * \code
   * gyros_mutex_t my_mutex = GYROS_MUTEX_INITVAL(my_mutex);
   * \endcode
+  *
+  * \param name         Name of the mutex variable.
   */
 #define GYROS_MUTEX_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_MUTEX_DEBUG_MAGIC, #name),                 \

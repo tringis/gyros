@@ -31,11 +31,46 @@
 
 /** \defgroup task_group Task management
   *
-  * TBD
-  */
-/*@{*/
+  * Tasks are described by a task struct called gyros_task_t which is
+  * initialized by gyros_task_create().  The task struct is used to
+  * store the state of the task when it is not running.  Tasks can be
+  * created, suspended, resumed, deleted, and waited for.  Every task
+  * has a main function, and if the task returns from this function it
+  * will be deleted automatically.  That is the normal way for a task
+  * to be deleted.
+  *
+  * Each task can be either running or suspended, optionally with a
+  * timeout that will cause it to become running again after a certain
+  * time has been reached.  Each task also has a priority assigned to
+  * it, and only the running task with the higher priority is allowed
+  * to execute.  If there are more than one task having the highest
+  * priority, the one executing will be allowed to execute until it
+  * either calls gyros_yield(), or becomes suspended (by blocking on a
+  * synchronization object or calls a sleeping function).
+  *
+  * Also associated with each task is a name used for debugging
+  * purposes, and a stack.
+  *
+  * Here's an example of task creation:
+  * \code
+  * gyros_task_t task1;
+  * char task1_stack[128];
 
-/** \file
+  * static void task1_main(void *arg)
+  * {
+  *     ...
+  * }
+  * 
+  * void create_task(void)
+  * {
+  *     gyros_task_create(&task1, "task1", task1_main, 0,
+  *                       task1_stack, sizeof(task1_stack), 1);
+  * }
+  * \endcode
+  *
+  * @{
+  *
+  * \file
   * \brief Task management.
   * \details Header file for \ref task_group.
   */
@@ -89,13 +124,13 @@ typedef struct
 
 /** Start GyrOS.  This call creates the idle task and enables
   * interrupts.  This idle task has priority zero and is always
-  * running.  If @c GYROS_CONFIG_CUSTOM_IDLE_LOOP is disabled, this
+  * running.  If \ref GYROS_CONFIG_CUSTOM_IDLE_LOOP is disabled, this
   * function will also loop forever as the idle task and never return.
   *
-  * If @c GYROS_CONFIG_CUSTOM_IDLE_LOOP is enabled, this function will
-  * return, and the caller is responsible for implementing the idle
-  * loop.  Since the idle task must always be running, the custom idle
-  * loop must not call functions that may block.
+  * If \ref GYROS_CONFIG_CUSTOM_IDLE_LOOP is enabled, this function
+  * will return, and the caller is responsible for implementing the
+  * idle loop.  Since the idle task must always be running, the custom
+  * idle loop must not call functions that may block.
   */
 void gyros_start(void);
 
@@ -160,7 +195,7 @@ gyros_task_t *gyros_current(void) __attribute__((__const__));
   */
 unsigned short gyros_task_get_priority(gyros_task_t *task);
 
-/** Set the priority of @a task to @ priority.  May be called from
+/** Set the priority of @a task to @a priority.  May be called from
   * interrupt context.
   *
   * \param task         Task struct pointer.
@@ -184,11 +219,14 @@ void gyros_task_suspend(gyros_task_t *task);
 void gyros_task_resume(gyros_task_t *task);
 
 /** Yield the current task.  The current task will be moved last in
-  * the list of running tasks of the same priority.
+  * the list of running tasks of the same priority, essentially giving
+  * other tasks of the same priority a chance to execute.
   */
 void gyros_yield(void);
 
-/** Return the amount of stack used by @a task.
+/** Return the amount of stack used by @a task.  Note that \ref
+ * GYROS_CONFIG_STACK_USED must be enabled (the default) in order to
+ * use this function.
   *
   * \param task         Task struct pointer.
   * \return             Number of bytes stack used.

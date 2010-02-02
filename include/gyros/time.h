@@ -47,10 +47,10 @@
   * gyros_sem_wait_until(), takes an absolute time as argument, which
   * means that the timeout is normally calculated by adding a relative
   * time to the return value of gyros_time().
-  */
-/*@{*/
-
-/** \file
+  *
+  * @{
+  *
+  * \file
   * \brief Time management.
   * \details Header file for \ref time_group.
   */

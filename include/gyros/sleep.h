@@ -33,10 +33,10 @@
   *
   * Sleeping is used to put a task on hold for a specified mimimum
   * amount of time, giving tasks of lower priority a chance to run.
-  */
-/*@{*/
-
-/** \file sleep.h
+  *
+  * @{
+  *
+  * \file
   * \brief Sleep functions.
   * \details Header file for \ref sleep_group.
   */

@@ -42,10 +42,10 @@
   * non-zero value to enable support for the context switch hook, and
   * @c GYROS_CONFIG_IRQ_HOOK must be set to a non-zero value to enable
   * the IRQ hook.
-  */
-/*@{*/
-
-/** \file hooks.h
+  *
+  * @{
+  *
+  * \file
   * \brief Hook support.
   * \details Header file for \ref hook_group.
   */

@@ -31,62 +31,14 @@
 
 /** \defgroup memory_group Memory management
   *
-  * TBD
-  */
-/*@{*/
-
-/** \file
+  * Common memory management functions.
+  *
+  * @{
+  *
+  * \file
   * \brief Memory management.
   * \details Header file for \ref memory_group.
   */
-
-/** Calculate the pool size in bytes required to store an exact number
-  * of zones.
-  *
-  * \param num_zones    Number of zones.
-  * \param zone_size    Size of the zones.
-  * \return             Required pool size in bytes.
-  */
-#define GYROS_ZPOOL_SIZE(num_zones, zone_size)                          \
-    (sizeof(void*) +                                                    \
-     (4 + ((num_zones) + 8 * sizeof(unsigned) - 1) /                    \
-          (8 * sizeof(unsigned)) * sizeof(unsigned)) +                  \
-     (num_zones) * (sizeof(unsigned) + sizeof(void*) +                  \
-                    ((zone_size) + sizeof(unsigned) - 1) /              \
-                    sizeof(unsigned) * sizeof(unsigned)))
-
-/** Create a zone pool, which is a memory pool where all blocks (or
-  * zones) have the same size.  Zone pools are interrupt safe, meaning
-  * that zones can be allocated and freed from interrupts.
-  *
-  * \param pool         Address of memory area to be used for the
-  *                     pool.
-  * \param pool_size    Size in bytes of memory area to be used for
-  *                     the pool.
-  * \param zone_size    Size of each zone.
-  */
-void gyros_zpool_init(void *pool, unsigned pool_size, unsigned zone_size);
-
-/** Get the total number zones in the zone pool.
-  *
-  * \return             Total number of zones.
-  */
-unsigned gyros_zpool_get_size(void *pool);
-
-/** Get the number of unallocated zones in the zone pool.
-  *
-  * \return             Total number of unallocated (free) zones.
-  */
-unsigned gyros_zpool_get_free(void *pool);
-
-/** Allocate a zone from the zone pool.  May be called from interrupt
-  * context.
-  *
-  * \param pool         Address of zone pool.
-  * \return             Address to zone, or @c NULL if there were
-  *                     no free zones.
-  */
-void *gyros_zalloc(void *pool);
 
 /** Free memory at @a addr.  Does nothing if @a addr is @c NULL.  May
   * be called from interrupt context.

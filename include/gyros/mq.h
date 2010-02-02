@@ -31,10 +31,26 @@
 
 /** \defgroup mq_group Message queues
   *
-  */
-/*@{*/
-
-/** \file
+  * A message queue is used to send messages between tasks.  The
+  * contents of the messages is application defined.  Messages are
+  * sent to the queue using gyros_mq_send() and received from the
+  * queue using gyros_mq_receive() or gyros_mq_receive_until().
+  *
+  * Message data types are structs whose first member is an instance
+  * of gyros_mq_msghdr_t.  See the documentation of \ref
+  * gyros_mq_msghdr_t for an example of a message data type.
+  *
+  * It is convenient to use a \ref zpool_group "zone pool" to allocate
+  * the messages before sending them and for freeing them after
+  * reception.
+  *
+  * The message queue must be initialized before use, either using
+  * GYROS_MQ_INITVAL() when defining the message queue, or using
+  * gyros_mq_init().
+  *
+  * @{
+  *
+  * \file
   * \brief Message queues.
   * \details Header file for \ref mq_group.
   */
@@ -74,6 +90,8 @@ typedef struct
   * \code
   * gyros_mq_t my_mq = GYROS_MQ_INITVAL(my_mq);
   * \endcode
+  *
+  * \param name         Name of the message queue variable.
   */
 #define GYROS_MQ_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_MQ_DEBUG_MAGIC, #name),                    \

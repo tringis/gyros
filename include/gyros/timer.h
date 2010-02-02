@@ -34,10 +34,10 @@
   * Timers are objects that generate callbacks at specified times, and
   * may be either periodic or one shot.  Timers are called from
   * interrupt context.
-  */
-/*@{*/
-
-/** \file
+  *
+  * @{
+  *
+  * \file
   * \brief Timer management.
   * \details Header file for \ref timer_group.
   */
@@ -60,6 +60,10 @@
   *
   * gyros_timer_t my_timer = GYROS_TIMER_INITVAL(my_timer, my_callback, NULL);
   * \endcode
+  *
+  * \param name         Name of the timer variable.
+  * \param callback     Callback function.
+  * \param callback_arg Argument to callback function.
   */
 #define GYROS_TIMER_INITVAL(name, callback, callback_arg)               \
     { GYROS_DEBUG_INFO(GYROS_TIMER_DEBUG_MAGIC, #name),                 \

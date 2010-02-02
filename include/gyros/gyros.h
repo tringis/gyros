@@ -50,5 +50,6 @@
 #include <gyros/time.h>
 #include <gyros/timer.h>
 #include <gyros/trace.h>
+#include <gyros/zpool.h>
 
 #endif

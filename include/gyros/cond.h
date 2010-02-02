@@ -34,10 +34,10 @@
   * A condition variable must be initialized before use, either using
   * GYROS_COND_INITVAL() when defining the condition variable, or
   * using gyros_cond_init().
-  */
-/*@{*/
-
-/** \file
+  *
+  * @{
+  *
+  * \file
   * \brief Condition variable.
   * \details Header file for \ref cond_group.
   */
@@ -56,6 +56,8 @@
   * \code
   * gyros_cond_t my_cond = GYROS_COND_INITVAL(my_cond);
   * \endcode
+  *
+  * \param name         Name of the condition variable.
   */
 #define GYROS_COND_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_COND_DEBUG_MAGIC, #name),  \

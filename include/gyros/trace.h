@@ -39,12 +39,12 @@
 
 /** \defgroup trace_group Tracing support
   *
-  * Tracing is enabled when compiled with @c GYROS_CONFIG_TRACE set to
-  * a non-zero value.  When tracing is enabled, task activities,
-  * e.g. context switches, and synchronization object interactions,
-  * e.g. locking and unlocking of mutexes are logged with time stamps.
-  * These log entries can be recalled to study the real time behavior
-  * of a program.
+  * Tracing is enabled by setting \ref GYROS_CONFIG_TRACE to a
+  * non-zero value in gyros/target/config.h.  When tracing is enabled,
+  * task activities such as context switches and synchronization
+  * object interactions, e.g. locking and unlocking of mutexes, are
+  * logged with time stamps.  These log entries can be recalled to
+  * study the real time behavior of a program.
   *
   * Before tracing can be enabled, a memory area must be reserved to
   * store the trace log.  The address and size of the memory area is
@@ -53,10 +53,10 @@
   * is an option to perform a number of additional traces before
   * really stopping, which can be useful to study events up to and
   * just after a certain condition occurs.
-  */
-/*@{*/
-
-/** \file trace.h
+  *
+  * @{
+  *
+  * \file
   * \brief Trace support.
   * \details Header file for \ref trace_group.
   */
