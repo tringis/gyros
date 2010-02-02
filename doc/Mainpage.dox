@@ -33,11 +33,14 @@
 /** \mainpage GyrOS Documentation
 
 GyrOS is an open source portable real time operating system (RTOS)
-with an easy to use C API.  It is easy to port to new platforms,
-partly because it is written in C, but mostly because the bits that
-must be ported are few and clearly defined.
+with an easy to use C API.  It is easy to port to new architectures
+and microcontrollers, partly because it is written in C, but mostly
+because the bits that must be ported are few and clearly separated
+from the core.
 
 \section features Features
+- Permissive BSD-style \subpage license "license" allowing for both
+  commercial and non-commercial use.
 - Easy to \ref porting "port" to new architectures.
 - Preemtive \ref task_group "multitasking".
 - Small memory footprint (both code and RAM).
@@ -53,11 +56,12 @@ must be ported are few and clearly defined.
   - \ref cond_group
   - \ref rwlock_group
   - \ref mq_group
-  - Task \ref gyros_task_suspend "suspend" and \ref gyros_task_resume
-    "resume"
+  - Task \ref gyros_yield "yield", \ref gyros_task_suspend "suspend" and
+    \ref gyros_task_resume "resume".
+- \ref time_group "Time management" and both relative and absolute time
+  \ref sleep_group "sleeping".
 - Periodic and one shot \ref timer_group "timers".
-- Permissive BSD-style \subpage license "license" allowing for both commercial and
-  non-commercial use.
+- Basic dynamic \ref memory_group "memory management".
 
 \section supported_hw Supported hardware
 

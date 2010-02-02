@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_private_defconfig_h__200901021029
 #define INCLUDED__gyros_private_defconfig_h__200901021029
 
-/** \defgroup config_group GyrOS configuration
+/** \defgroup config_group Configuration
   *
   * A few aspects of GyrOS can be configured at build time using the
   * include file \c gyros/target/config.h.  This file is target specific
