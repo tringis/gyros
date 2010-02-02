@@ -41,10 +41,16 @@ from the core.
 \section features Features
 - Permissive BSD-style \subpage license "license" allowing for both
   commercial and non-commercial use.
-- Easy to \ref porting "port" to new architectures.
-- Preemtive \ref task_group "multitasking".
-- Small memory footprint (both code and RAM).
-- Low power consumption by use of dynamic timer interrupts.
+- Easy to \ref porting "port" to new architectures and microcontrollers.
+- Preemtive \ref task_group "multitasking" with arbitrary number of
+  priority values.  Round-robin scheduling within tasks of the same
+  priority.
+- Small memory footprint (both code and data).  Individual features can
+  be disabled to minimize size.  Using an ARM target, a complete
+  application uses from 2236 bytes ROM and 148 bytes RAM.  A task uses
+  108 bytes RAM (plus stack), and a mutex uses only 16 bytes RAM.
+- Low power consumption using dynamic timer interrupts that prevents
+  unneccessary wakeups from low power modes.
 - \ref debug_group to catch common usage errors and see current task status.
 - \ref hook_group to add custom code to context switches and interrupt
   handlers.
