@@ -36,9 +36,9 @@
 /*@{*/
 
 /** \file
- * \brief memory management.
-  * \copydoc task_group
- */
+  * \brief Memory management.
+  * \details Header file for \ref memory_group.
+  */
 
 /** Calculate the pool size in bytes required to store an exact number
   * of zones.

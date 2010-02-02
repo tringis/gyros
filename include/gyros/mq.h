@@ -36,8 +36,8 @@
 
 /** \file
   * \brief Message queues.
-  * \copydoc mq_group
- */
+  * \details Header file for \ref mq_group.
+  */
 
 #include <limits.h>
 

@@ -47,7 +47,7 @@
 
 /** \file hooks.h
   * \brief Hook support.
-  * \copydoc hook_group
+  * \details Header file for \ref hook_group.
   */
 
 /** Set the context switch hook function to @a context_hook, which can

@@ -29,7 +29,7 @@
 #ifndef INCLUDE__gyros_time_h__200808291459
 #define INCLUDE__gyros_time_h__200808291459
 
-/** \defgroup time Time management
+/** \defgroup time_group Time management
   *
   * There are two distinct data types for expressing time in GyrOS:
   *
@@ -52,6 +52,7 @@
 
 /** \file
   * \brief Time management.
+  * \details Header file for \ref time_group.
   */
 
 #include <gyros/target/config.h>

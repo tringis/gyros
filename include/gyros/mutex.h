@@ -43,7 +43,7 @@
 
 /** \file
   * \brief Mutual exclusion (mutex).
-  * \copydoc mutex_group
+  * \details Header file for \ref mutex_group.
   */
 
 #include <gyros/private/debug.h>
@@ -69,7 +69,7 @@
 /** \brief Mutual exclusion (mutex) object. */
 typedef struct
 {
-    struct gyros_debug_info debug_info; /**< \internal */
+    struct gyros_debug_info debug_info; /**< Debug info. */
 
     gyros_task_t *owner; /**< \internal */
     unsigned short owner_priority; /**< \internal */

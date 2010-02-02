@@ -39,7 +39,7 @@
 
 /** \file
   * \brief Timer management.
-  * \copydoc timer_group
+  * \details Header file for \ref timer_group.
   */
 
 #include <gyros/private/debug.h>

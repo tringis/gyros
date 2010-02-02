@@ -36,9 +36,9 @@
 /*@{*/
 
 /** \file
- * \brief Task management.
-  * \copydoc task_group
- */
+  * \brief Task management.
+  * \details Header file for \ref task_group.
+  */
 
 #include <gyros/target/config.h>
 #include <gyros/target/context.h>

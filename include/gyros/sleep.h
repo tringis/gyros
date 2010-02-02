@@ -29,9 +29,17 @@
 #ifndef INCLUDED__gyros_sleep_h__200812301241
 #define INCLUDED__gyros_sleep_h__200812301241
 
+/** \defgroup sleep_group Sleeping
+  *
+  * Sleeping is used to put a task on hold for a specified mimimum
+  * amount of time, giving tasks of lower priority a chance to run.
+  */
+/*@{*/
+
 /** \file sleep.h
- * \brief Sleep functions.
- */
+  * \brief Sleep functions.
+  * \details Header file for \ref sleep_group.
+  */
 
 #include <gyros/time.h>
 
@@ -75,5 +83,7 @@ static inline int gyros_sleep_s(int seconds)
 {
     return gyros_sleep_until(gyros_time() + gyros_s(seconds) + 1);
 }
+
+/*@}*/
 
 #endif

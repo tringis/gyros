@@ -39,7 +39,7 @@
 
 /** \file
   * \brief Condition variable.
-  * \copydoc cond_group
+  * \details Header file for \ref cond_group.
   */
 
 #include <gyros/mutex.h>

@@ -47,7 +47,7 @@
 
 /** \file
   * \brief Read/write lock (rwlock).
-  * \copydoc rwlock_group
+  * \details Header file for \ref rwlock_group.
   */
 
 #include <gyros/target/config.h>

@@ -43,7 +43,7 @@
 
 /** \file
   * \brief Debugging support.
-  * \copydoc debug_group
+  * \details Header file for \ref debug_group.
   */
 
 /** Set the error handler to @a msg. The default error handler just

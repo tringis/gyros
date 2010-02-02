@@ -29,9 +29,16 @@
 #ifndef INCLUDED__gyros_iterate_h__200812301809
 #define INCLUDED__gyros_iterate_h__200812301809
 
+/** \defgroup iteration_group Task iteration
+  *
+  * TBD
+  */
+/*@{*/
+
 /** \file iterate.h
- * \brief Task iteration.
- */
+  * \brief Task iteration.
+  * \details Header file for \ref iteration_group.
+  */
 
 #include <gyros/task.h>
 
@@ -48,5 +55,7 @@
   *                     when iteration is complete.
   */
 gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
+
+/*@}*/
 
 #endif

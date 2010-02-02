@@ -39,8 +39,8 @@
 
 /** \file
   * \brief Semaphores.
-  * \copydoc sem_group
- */
+  * \details Header file for \ref sem_group.
+  */
 
 #include <limits.h>
 

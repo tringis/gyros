@@ -58,7 +58,7 @@
 
 /** \file trace.h
   * \brief Trace support.
-  * \copydoc trace_group
+  * \details Header file for \ref trace_group.
   */
 
 /** Type a single trace log entry. */

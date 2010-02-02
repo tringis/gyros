@@ -31,6 +31,8 @@
 
 /** @file gyros.h
   * \brief Includes all GyrOS include files.
+  * 
+  * Convenience include file that includes all GyrOS include files.
   */
 
 #include <gyros/cond.h>

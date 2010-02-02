@@ -29,8 +29,14 @@
 #ifndef INCLUDE__gyros_interrupt_h__200812291812
 #define INCLUDE__gyros_interrupt_h__200812291812
 
+/** \defgroup interrupt_group Interrupt management
+  *
+  * TBD
+  */
+/*@{*/
+
 /** \file interrupt.h
-  * \brief Interrupt handling.
+  * \details Header file for \ref interrupt_group.
   */
 
 #include <gyros/target/interrupt.h>
@@ -50,5 +56,7 @@ void gyros_interrupt_restore(unsigned long flags);
   * \return             Non-zero value if called from interrupt context.
   */
 int gyros_in_interrupt(void);
+
+/*@}*/
 
 #endif
