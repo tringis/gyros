@@ -29,7 +29,11 @@
 #ifndef INCLUDED__gyros_mutex_h__200808272211
 #define INCLUDED__gyros_mutex_h__200808272211
 
-/** \defgroup mutex_group Mutual exclusion
+/** \file
+  * \brief Mutual exclusion (mutex).
+  * \details Header file for \ref mutex_group.
+  *
+  * \defgroup mutex_group Mutual exclusion
   *
   * A mutex is a synchronization object which is used to grant
   * exclusive access to a shared resource.  If one task has locked the
@@ -53,10 +57,6 @@
   * detected if \ref GYROS_CONFIG_DEBUG is enabled.
   *
   * @{
-  *
-  * \file
-  * \brief Mutual exclusion (mutex).
-  * \details Header file for \ref mutex_group.
   */
 
 #include <gyros/private/debug.h>

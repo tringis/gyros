@@ -31,7 +31,11 @@
 
 #include <gyros/task.h>
 
-/** \defgroup hook_group Hook support
+/** \file
+  * \brief Hook support.
+  * \details Header file for \ref hook_group.
+  *
+  * \defgroup hook_group Hook support
   *
   * Hooks are used to call custom code for certain internal gyros
   * events such as interrupts and context switches.  While the hooks
@@ -44,10 +48,6 @@
   * the IRQ hook.
   *
   * @{
-  *
-  * \file
-  * \brief Hook support.
-  * \details Header file for \ref hook_group.
   */
 
 /** Set the context switch hook function to @a context_hook, which can

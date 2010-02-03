@@ -29,7 +29,11 @@
 #ifndef INCLUDED__gyros_task_h__200206071335
 #define INCLUDED__gyros_task_h__200206071335
 
-/** \defgroup task_group Task management
+/** \file
+  * \brief Task management.
+  * \details Header file for \ref task_group.
+  *
+  * \defgroup task_group Task management
   *
   * Tasks are described by a task struct called gyros_task_t which is
   * initialized by gyros_task_create().  The task struct is used to
@@ -69,10 +73,6 @@
   * \endcode
   *
   * @{
-  *
-  * \file
-  * \brief Task management.
-  * \details Header file for \ref task_group.
   */
 
 #include <gyros/target/config.h>

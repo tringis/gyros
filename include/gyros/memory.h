@@ -29,15 +29,15 @@
 #ifndef INCLUDED__gyros_memory_h__200902072124
 #define INCLUDED__gyros_memory_h__200902072124
 
-/** \defgroup memory_group Memory management
+/** \file
+  * \brief Memory management.
+  * \details Header file for \ref memory_group.
+  *
+  * \defgroup memory_group Memory management
   *
   * Common memory management functions.
   *
   * @{
-  *
-  * \file
-  * \brief Memory management.
-  * \details Header file for \ref memory_group.
   */
 
 /** Free memory at @a addr.  Does nothing if @a addr is @c NULL.  May

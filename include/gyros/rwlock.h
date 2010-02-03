@@ -29,7 +29,11 @@
 #ifndef INCLUDED__gyros_rwlock_h__200812121950
 #define INCLUDED__gyros_rwlock_h__200812121950
 
-/** \defgroup rwlock_group Read/write locks
+/** \file
+  * \brief Read/write lock (rwlock).
+  * \details Header file for \ref rwlock_group.
+  *
+  * \defgroup rwlock_group Read/write locks
   *
   * A read/write lock (rwlock) allows multiple read locks
   * simultaneously, but write locks are exclusive, locking out all
@@ -44,10 +48,6 @@
   * same task will result in a deadlock.
   *
   * @{
-  *
-  * \file
-  * \brief Read/write lock (rwlock).
-  * \details Header file for \ref rwlock_group.
   */
 
 #include <gyros/target/config.h>

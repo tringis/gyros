@@ -29,16 +29,16 @@
 #ifndef INCLUDED__gyros_iterate_h__200812301809
 #define INCLUDED__gyros_iterate_h__200812301809
 
-/** \defgroup iteration_group Task iteration
+/** \file
+  * \brief Task iteration.
+  * \details Header file for \ref iteration_group.
+  *
+  * \defgroup iteration_group Task iteration
   *
   * Task iteration is used to iterate through all tasks.  This is
   * mostly useful for debug and error handling purposes.
   *
   * @{
-  *
-  * \file
-  * \brief Task iteration.
-  * \details Header file for \ref iteration_group.
   */
 
 #include <gyros/task.h>

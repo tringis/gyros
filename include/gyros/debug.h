@@ -31,7 +31,11 @@
 
 #include <gyros/target/config.h>
 
-/** \defgroup debug_group Debugging support
+/** \file
+  * \brief Debugging support.
+  * \details Header file for \ref debug_group.
+  *
+  * \defgroup debug_group Debugging support
   *
   * Debugging is enabled by setting \ref GYROS_CONFIG_DEBUG to a
   * non-zero value in gyros/target/config.h.  When debugging is
@@ -40,10 +44,6 @@
   * e.g. if a task is blocking on a mutex, and if so, which mutex.
   *
   * @{
-  *
-  * \file
-  * \brief Debugging support.
-  * \details Header file for \ref debug_group.
   */
 
 /** Set the error handler to @a msg. The default error handler just

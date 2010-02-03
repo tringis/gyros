@@ -37,7 +37,11 @@
 #include <gyros/task.h>
 #include <gyros/timer.h>
 
-/** \defgroup trace_group Tracing support
+/** \file
+  * \brief Trace support.
+  * \details Header file for \ref trace_group.
+  *
+  * \defgroup trace_group Tracing support
   *
   * Tracing is enabled by setting \ref GYROS_CONFIG_TRACE to a
   * non-zero value in gyros/target/config.h.  When tracing is enabled,
@@ -55,10 +59,6 @@
   * just after a certain condition occurs.
   *
   * @{
-  *
-  * \file
-  * \brief Trace support.
-  * \details Header file for \ref trace_group.
   */
 
 /** Type a single trace log entry. */

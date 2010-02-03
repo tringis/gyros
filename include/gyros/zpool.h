@@ -29,7 +29,11 @@
 #ifndef INCLUDED__gyros_zpool_h__200902072124
 #define INCLUDED__gyros_zpool_h__200902072124
 
-/** \defgroup zpool_group Zone pool allocator
+/** \file
+  * \brief Zone pool allocator.
+  * \details Header file for \ref zpool_group.
+  *
+  * \defgroup zpool_group Zone pool allocator
   * \ingroup memory_group
   *
   * The zone pool allocator is an efficient allocator for fixed size
@@ -38,10 +42,6 @@
   * \ref GYROS_CONFIG_DEBUG is enabled.
   *
   * @{
-  *
-  * \file
-  * \brief Zone pool allocator.
-  * \details Header file for \ref zpool_group.
   */
 
 /** Calculate the pool size in bytes required to store an exact number

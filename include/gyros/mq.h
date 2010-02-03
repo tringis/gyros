@@ -29,7 +29,12 @@
 #ifndef INCLUDED__gyros_mq_h__200902071051
 #define INCLUDED__gyros_mq_h__200902071051
 
-/** \defgroup mq_group Message queues
+/**
+  * \file
+  * \brief Message queues.
+  * \details Header file for \ref mq_group.
+  *
+  * \defgroup mq_group Message queues
   *
   * A message queue is used to send messages between tasks.  The
   * contents of the messages is application defined.  Messages are
@@ -48,10 +53,6 @@
   * gyros_mq_init().
   *
   * @{
-  *
-  * \file
-  * \brief Message queues.
-  * \details Header file for \ref mq_group.
   */
 
 #include <limits.h>

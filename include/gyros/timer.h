@@ -29,17 +29,17 @@
 #ifndef INCLUDE__gyros_timer_h__200905041911
 #define INCLUDE__gyros_timer_h__200905041911
 
-/** \defgroup timer_group Timer management
+/** \file
+  * \brief Timer management.
+  * \details Header file for \ref timer_group.
+  *
+  * \defgroup timer_group Timer management
   *
   * Timers are objects that generate callbacks at specified times, and
   * may be either periodic or one shot.  Timers are called from
   * interrupt context.
   *
   * @{
-  *
-  * \file
-  * \brief Timer management.
-  * \details Header file for \ref timer_group.
   */
 
 #include <gyros/private/debug.h>

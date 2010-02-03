@@ -29,17 +29,17 @@
 #ifndef INCLUDED__gyros_sem_h__200808281430
 #define INCLUDED__gyros_sem_h__200808281430
 
-/** \defgroup sem_group Semaphores
+/** \file
+  * \brief Semaphores.
+  * \details Header file for \ref sem_group.
+  *
+  * \defgroup sem_group Semaphores
   *
   * A semaphore must be initialized before use, either using
   * GYROS_SEM_INITVAL() or GYROS_BINARY_SEM_INITVAL() when defining
   * the semaphore, or using gyros_sem_init().
   *
   * @{
-  *
-  * \file
-  * \brief Semaphores.
-  * \details Header file for \ref sem_group.
   */
 
 #include <limits.h>

@@ -29,15 +29,16 @@
 #ifndef INCLUDE__gyros_interrupt_h__200812291812
 #define INCLUDE__gyros_interrupt_h__200812291812
 
-/** \defgroup interrupt_group Interrupt management
+/** \file
+  * \brief Interrupt management.
+  * \details Header file for \ref interrupt_group.
+  *
+  * \defgroup interrupt_group Interrupt management
   *
   * Interrupts can be disabled and restored to provide the most basic
   * synchronization between a task and an interrupt handler.
   *
   * @{
-  *
-  * \file
-  * \details Header file for \ref interrupt_group.
   */
 
 #include <gyros/target/interrupt.h>
