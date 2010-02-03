@@ -40,9 +40,8 @@
   * of gyros_mq_msghdr_t.  See the documentation of \ref
   * gyros_mq_msghdr_t for an example of a message data type.
   *
-  * It is convenient to use a \ref zpool_group "zone pool" to allocate
-  * the messages before sending them and for freeing them after
-  * reception.
+  * It is convenient to use a \ref zpool_group "zone pool" for message
+  * allocation.
   *
   * The message queue must be initialized before use, either using
   * GYROS_MQ_INITVAL() when defining the message queue, or using
