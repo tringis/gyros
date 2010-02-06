@@ -27,13 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 
-#include <gyros/arm/context.S>
+#include <gyros/arch/arm/context.S>
 
 /**************************************************************************
  * Constants                                                              *
- **************************************************************************/	
-	.equ	VIC0_VAR,	0xFFFFF030
-	.equ	VIC1_VAR,	0xFC000030
+ **************************************************************************/
+	.equ	AIC_IVR,	0xFFFFF100
+	.equ	AIC_EIOCR,	0xFFFFF130
 
 /**************************************************************************
  * Functions                                                              *
@@ -65,15 +65,11 @@ gyros__irq_handler:
 	mov	lr, pc
 	bx	r0
 #endif
-	ldr	r0, =VIC0_VAR
+	ldr	r0, =AIC_IVR
 	ldr	r0, [r0]
-	ldr	r1, =VIC1_VAR
-	ldr	r1, [r1]
 	mov	lr, pc
 	bx	r0
-	/* Write to VIC0_VAR and VIC1_VAR to signal end of ISR */
-	ldr	r0, =VIC0_VAR
+	/* Write to AIC_EIOCR to signal end of ISR */
+	ldr	r0, =AIC_EIOCR
 	str	r0, [r0]
-	ldr	r1, =VIC1_VAR
-	str	r1, [r1]
 	restore_context

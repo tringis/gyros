@@ -29,4 +29,6 @@ main()
                       task2_stack, sizeof(task2_stack), 2);
 
     gyros_start();
+
+    return 0;
 }

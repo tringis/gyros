@@ -33,7 +33,7 @@
 #define GYROS_CONFIG_DYNTICK                   1
 #endif
 
-#include <gyros/arm/defconfig.h>
+#include <gyros/arch/arm/defconfig.h>
 #include <gyros/private/defconfig.h>
 
 #endif

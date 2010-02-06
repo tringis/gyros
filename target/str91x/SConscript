@@ -13,15 +13,15 @@ common_srcs = SConscript('../../src/SConscript')
 # Target specific source files
 ######################################################################
 srcs = common_srcs + [ 'exceptions.S',
-                       '../arm/stack_used.c',
-                       '../arm/task_init.c',
-                       'idle.c',
+                       '../../arch/arm/stack_used.c',
+                       '../../arch/arm/task_init.c',
                        'init.c',
-                       'interrupt.c' ]
+                       'interrupt.c']
 
-arm_objs = target_arm_env.StaticObject('../arm/interrupt.c')
+arm_objs = map(target_arm_env.StaticObject, ['../../arch/arm/interrupt.c',
+                                             'idle.c'])
 
 ######################################################################
 # Library target
 ######################################################################
-Default(target_env.StaticLibrary('gyros-at91sam7s', srcs + arm_objs))
+Default(target_env.StaticLibrary('gyros-str91x', srcs + arm_objs))

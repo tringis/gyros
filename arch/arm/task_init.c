@@ -26,9 +26,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_at91sam7s_context_h__200812301810
-#define INCLUDE__gyros_at91sam7s_context_h__200812301810
+#include <gyros/arch/arm/arm_defs.h>
+#include <gyros/private/target.h>
 
-#include <gyros/arm/context.h>
-
+void
+gyros__target_task_init(gyros_task_t *task,
+                        void (*entry)(void *arg),
+                        void *arg,
+                        void *stack,
+                        int stack_size)
+{
+    task->context.r[0] = (unsigned)arg;
+    task->context.sp = (unsigned)stack + stack_size;
+    task->context.lr = (unsigned)gyros__task_exit;
+    task->context.pc = (unsigned)entry + 4;
+    task->context.psr = ARM_MODE_SYS;
+#if GYROS_CONFIG_THUMB
+    task->context.psr |= ARM_THUMB_BIT;
 #endif
+
+#if GYROS_CONFIG_STACK_USED
+    {
+        unsigned *p = task->stack;
+        unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+
+        do
+            *p++ = 0xeeeeeeee;
+        while (p != e);
+    }
+#endif
+}

@@ -26,33 +26,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/arm/arm_defs.h>
-#include <gyros/private/target.h>
+#ifndef INCLUDED__gyros_str91x_defconfig_h__200901101016
+#define INCLUDED__gyros_str91x_defconfig_h__200901101016
 
-void
-gyros__target_task_init(gyros_task_t *task,
-                        void (*entry)(void *arg),
-                        void *arg,
-                        void *stack,
-                        int stack_size)
-{
-    task->context.r[0] = (unsigned)arg;
-    task->context.sp = (unsigned)stack + stack_size;
-    task->context.lr = (unsigned)gyros__task_exit;
-    task->context.pc = (unsigned)entry + 4;
-    task->context.psr = ARM_MODE_SYS;
-#if GYROS_CONFIG_THUMB
-    task->context.psr |= ARM_THUMB_BIT;
+#ifndef GYROS_CONFIG_DYNTICK
+#define GYROS_CONFIG_DYNTICK                   1
 #endif
 
-#if GYROS_CONFIG_STACK_USED
-    {
-        unsigned *p = task->stack;
-        unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
-
-        do
-            *p++ = 0xeeeeeeee;
-        while (p != e);
-    }
+#ifndef GYROS_CONFIG_STR91X_TIMER
+#define GYROS_CONFIG_STR91X_TIMER              3
 #endif
-}
+
+#include <gyros/arch/arm/defconfig.h>
+#include <gyros/private/defconfig.h>
+
+#endif

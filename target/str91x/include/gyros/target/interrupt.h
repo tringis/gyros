@@ -29,7 +29,7 @@
 #ifndef INCLUDE__gyros_str91x_interrupt_h__200808291459
 #define INCLUDE__gyros_str91x_interrupt_h__200808291459
 
-#include <gyros/arm/interrupt.h>
+#include <gyros/arch/arm/interrupt.h>
 
 #define GYROS_IRQ_WDG          0
 #define GYROS_IRQ_SW           1

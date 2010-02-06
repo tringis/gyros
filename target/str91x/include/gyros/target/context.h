@@ -26,50 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#ifndef INCLUDE__gyros_str91x_context_h__200812301810
+#define INCLUDE__gyros_str91x_context_h__200812301810
 
-#include <gyros/arm/context.S>
+#include <gyros/arch/arm/context.h>
 
-/**************************************************************************
- * Constants                                                              *
- **************************************************************************/
-	.equ	AIC_IVR,	0xFFFFF100
-	.equ	AIC_EIOCR,	0xFFFFF130
-
-/**************************************************************************
- * Functions                                                              *
- **************************************************************************/	
-	.arm
-	.text
-	.balign		4
-
-/*------------------------------------------------------------------------*
- | gyros__svc_handler - handles software interrupts as a means of forced  |
- |                      context switches (unless the scheduler is locked) |
- *------------------------------------------------------------------------*/
-	.type	gyros__svc_handler, %function
-	.global	gyros__svc_handler
-gyros__svc_handler:
-	add	lr, lr, #4
-	save_context
-	restore_context
-
-/*------------------------------------------------------------------------*
- | gyros__irq_handler - handles interrupts                                |
- *------------------------------------------------------------------------*/
-	.type	gyros__irq_handler, %function
-	.global	gyros__irq_handler
-gyros__irq_handler:
-	save_context
-#if GYROS_CONFIG_IRQ_HOOK || GYROS_CONFIG_TRACE
-	ldr	r0, =gyros__irq_hook
-	mov	lr, pc
-	bx	r0
 #endif
-	ldr	r0, =AIC_IVR
-	ldr	r0, [r0]
-	mov	lr, pc
-	bx	r0
-	/* Write to AIC_EIOCR to signal end of ISR */
-	ldr	r0, =AIC_EIOCR
-	str	r0, [r0]
-	restore_context

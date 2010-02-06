@@ -81,7 +81,7 @@ one in a tight loop, and the other in a loop around a sleep call.  The
 example is build from the command line like this:
 
 \verbatim
-> cd targets/str91x/examples
+> cd target/str91x/examples
 > scons
 scons: Reading SConscript files ...
 scons: done reading SConscript files.
@@ -127,13 +127,13 @@ and not the \c gyros directory itself.  For our example, it means that
 the following directories should be added:
 
 - \c $GYROS/include
-- \c $GYROS/targets/<em>str91x</em>/include
+- \c $GYROS/target/<em>str91x</em>/include
 
 Here's an example of the command line when building using a GCC
 cross-compiler:
 
 \verbatim
-arm-elf-gcc -I $GYROS/include -I $GYROS/targets/str91x/include -c file.c
+arm-elf-gcc -I $GYROS/include -I $GYROS/target/str91x/include -c file.c
 \endverbatim
 
 \subsection building_other_config Configuration file
@@ -147,9 +147,9 @@ port.
 
 The build system must build all files in the \c src directory and
 below, and also the target specific files, which in the case of the
-str91x target means all source files in the \c targets/str91x
+str91x target means all source files in the \c target/str91x
 directory.  The port may also require common architecture code.  The
 str91x target is an ARM target, so all source files in the \c
-targets/arm must be built as well.
+arch/arm must be built as well.
 
 */

@@ -26,9 +26,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_str91x_context_h__200812301810
-#define INCLUDE__gyros_str91x_context_h__200812301810
+#ifndef INCLUDE__gyros_arm_interrupt_h__200212292232
+#define INCLUDE__gyros_arm_interrupt_h__200212292232
 
-#include <gyros/arm/context.h>
+#include <gyros/target/config.h>
+#include <gyros/arch/arm/arm_defs.h>
+
+#if !GYROS_CONFIG_THUMB
+static inline unsigned long
+gyros_interrupt_disable(void)
+{
+    unsigned long temp, flags;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %1, cpsr\n\t"
+        "orr    %0, %1, #0xc0\n\t"
+        "msr    cpsr_c, %0\n\t"
+        : "=r" (temp), "=&r" (flags) :: "memory");
+
+    return flags;
+}
+
+/* Restore interrupts (IRQ and FIQ) in the ARM core. */
+static inline void
+gyros_interrupt_restore(unsigned long flags)
+{
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "msr    cpsr_c, %0\n\t"
+        :: "r" (flags) : "memory");
+}
+
+static inline int
+gyros_in_interrupt(void)
+{
+    unsigned long cpsr;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %0, cpsr\n\t"
+        : "=r" (cpsr) :: "memory");
+
+    return (cpsr & 0x1f) != ARM_MODE_SYS;
+}
+#endif
+
+/* Reschedule, i.e. make sure the right task is running. */
+static inline void
+gyros__reschedule(void)
+{
+    __asm__ __volatile__("svc    #0" ::: "memory");
+}
+
+/* Enable interrupts in the ARM core. */
+void gyros__interrupt_enable(void);
 
 #endif
