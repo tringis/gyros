@@ -8,19 +8,17 @@ except:
 # Common source files
 ######################################################################
 common_srcs = SConscript('../../src/SConscript')
+arch_srcs, arch_arm_srcs = SConscript('../../arch/arm/SConscript')
 
 ######################################################################
 # Target specific source files
 ######################################################################
-srcs = common_srcs + [ 'exceptions.S',
-                       '../../arch/arm/debug.c',
-                       '../../arch/arm/stack_used.c',
-                       '../../arch/arm/task_init.c',
-                       'idle.c',
-                       'init.c',
-                       'interrupt.c' ]
+srcs = common_srcs + arch_srcs + [ 'exceptions.S',
+                                   'idle.c',
+                                   'init.c',
+                                   'interrupt.c' ]
 
-arm_objs = target_arm_env.StaticObject('../../arch/arm/interrupt.c')
+arm_objs = map(target_arm_env.StaticObject, arch_arm_srcs)
 
 ######################################################################
 # Library target
