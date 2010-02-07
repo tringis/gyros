@@ -13,6 +13,7 @@ common_srcs = SConscript('../../src/SConscript')
 # Target specific source files
 ######################################################################
 srcs = common_srcs + [ 'exceptions.S',
+                       '../../arch/arm/debug.c',
                        '../../arch/arm/stack_used.c',
                        '../../arch/arm/task_init.c',
                        'init.c',

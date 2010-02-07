@@ -72,7 +72,7 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
 #if GYROS_CONFIG_DEBUG
         printf_func(printf_arg, "%s", t->debug_state);
         if (streq(t->debug_state, "running"))
-            printf_func(printf_arg, " @ 0x%08x", t->context.pc);
+            printf_func(printf_arg, " @ 0x%08x", gyros_debug_task_pc(t));
         else if (t->debug_object)
         {
             if (t->debug_object->name)
@@ -81,7 +81,7 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
                 printf_func(printf_arg, " @ %p", t->debug_object);
         }
 #else
-        printf_func(printf_arg, "0x%08x", t->context.pc);
+        printf_func(printf_arg, "0x%08x", gyros_debug_task_pc(t));
 #endif
         if (!gyros__list_empty(&t->timeout_list_node))
         {

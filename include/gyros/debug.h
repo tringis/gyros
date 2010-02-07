@@ -30,6 +30,7 @@
 #define INCLUDED__gyros_debug_h__200812221657
 
 #include <gyros/target/config.h>
+#include <gyros/task.h>
 
 /** \file
   * \brief Debugging support.
@@ -115,6 +116,13 @@ void gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
   */
 void gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
                             void *printf_arg);
+
+/** Get the current program counter (PC) for @a task.
+  *
+  * \param task             Task struct pointer.
+  * \return                 Task program counter (PC).
+  */
+unsigned long gyros_debug_task_pc(gyros_task_t *task);
 
 /*@}*/
 
