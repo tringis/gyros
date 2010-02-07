@@ -32,12 +32,13 @@
 int
 gyros_task_stack_used(gyros_task_t *task)
 {
-    unsigned *p = task->stack;
-    unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+    unsigned long *p = task->stack;
+    unsigned long *e = (unsigned long*)((unsigned long)task->stack +
+                                        task->stack_size);
 
     while (p != e && *p == 0xeeeeeeee)
         p++;
 
-    return (unsigned)e - (unsigned)p;
+    return (unsigned long)e - (unsigned long)p;
 }
 #endif

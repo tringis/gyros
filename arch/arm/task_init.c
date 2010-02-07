@@ -36,10 +36,10 @@ gyros__target_task_init(gyros_task_t *task,
                         void *stack,
                         int stack_size)
 {
-    task->context.r[0] = (unsigned)arg;
-    task->context.sp = (unsigned)stack + stack_size;
-    task->context.lr = (unsigned)gyros__task_exit;
-    task->context.pc = (unsigned)entry + 4;
+    task->context.r[0] = (unsigned long)arg;
+    task->context.sp = (unsigned long)stack + stack_size;
+    task->context.lr = (unsigned long)gyros__task_exit;
+    task->context.pc = (unsigned long)entry + 4;
     task->context.psr = ARM_MODE_SYS;
 #if GYROS_CONFIG_THUMB
     task->context.psr |= ARM_THUMB_BIT;
@@ -47,8 +47,9 @@ gyros__target_task_init(gyros_task_t *task,
 
 #if GYROS_CONFIG_STACK_USED
     {
-        unsigned *p = task->stack;
-        unsigned *e = (unsigned*)((unsigned)task->stack + task->stack_size);
+        unsigned long *p = task->stack;
+        unsigned long *e = (unsigned long*)((unsigned long)task->stack +
+                                            task->stack_size);
 
         do
             *p++ = 0xeeeeeeee;

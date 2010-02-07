@@ -59,7 +59,7 @@ gyros_target_aic_init(void)
 
     for (i = 0; i < 32; ++i)
         AT91C_AIC_SVR[i] = 0;
-    *AT91C_AIC_SPU = (unsigned)aic_spurious_isr;
+    *AT91C_AIC_SPU = (unsigned long)aic_spurious_isr;
 
     *AT91C_AIC_IDCR = -1; /* Disable all AIC interrupts */
     *AT91C_AIC_EOICR = 0; /* End any pending interrupts */
@@ -82,7 +82,7 @@ int
 gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr)
 {
     AT91C_AIC_SMR[irq] = (AT91C_AIC_SMR[irq] & AT91C_AIC_PRIOR) | mode;
-    AT91C_AIC_SVR[irq] = (unsigned)isr;
+    AT91C_AIC_SVR[irq] = (unsigned long)isr;
 
     *AT91C_AIC_IECR = 1 << irq;
 
