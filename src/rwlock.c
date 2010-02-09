@@ -66,8 +66,8 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_rdlock", rwlock);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
     rwlock->readers++;
@@ -122,8 +122,8 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
         gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_rdlock_until", rwlock);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
         if (gyros.current->timed_out)
         {
@@ -160,8 +160,8 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->wr_task_list);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_wrlock", rwlock);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
     rwlock->writer = gyros.current;
@@ -220,8 +220,8 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__task_move(gyros.current, &rwlock->wr_task_list);
         gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_wrlock_until", rwlock);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
         if (gyros.current->timed_out)
         {
@@ -289,6 +289,6 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
         while (!gyros__list_empty(&rwlock->rd_task_list))
             gyros__task_wake(TASK(rwlock->rd_task_list.prev));
     }
-    gyros_interrupt_restore(flags);
     gyros__cond_reschedule();
+    gyros_interrupt_restore(flags);
 }

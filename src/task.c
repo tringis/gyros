@@ -128,16 +128,8 @@ gyros__task_wake(gyros_task_t *task)
 void
 gyros__cond_reschedule(void)
 {
-    unsigned long flags = gyros_interrupt_disable();
-
-#if GYROS_CONFIG_DEBUG
-    if (gyros_in_interrupt())
-        gyros_error("cond_reschedule called from interrupt", NULL);
-#endif
-
     if (unlikely(TASK(gyros.running.next) != gyros.current))
         gyros__reschedule();
-    gyros_interrupt_restore(flags);
 }
 
 void

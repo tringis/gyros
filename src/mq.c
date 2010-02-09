@@ -61,9 +61,8 @@ gyros_mq_send(gyros_mq_t *mq, void *msg)
     else
     {
         gyros__task_wake(TASK(mq->task_list.next));
+        gyros__cond_reschedule();
         gyros_interrupt_restore(flags);
-        if (!gyros_in_interrupt())
-            gyros__cond_reschedule();
     }
 }
 
@@ -88,8 +87,8 @@ gyros_mq_receive(gyros_mq_t *mq)
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros.current, &mq->task_list);
         GYROS_DEBUG_SET_STATE2(gyros.current, "mq_receive", mq);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
     msghdr = GYROS__LIST_CONTAINER(mq->msg_list.next, gyros_mq_msghdr_t, list);
@@ -119,8 +118,8 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
         gyros__task_move(gyros.current, &mq->task_list);
         gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "mq_receive_until", mq);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
         if (gyros__list_empty(&mq->msg_list))
         {

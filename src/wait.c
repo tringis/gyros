@@ -49,8 +49,8 @@ gyros_task_wait(void)
     {
         gyros__task_move(gyros.current, &gyros.reapers);
         GYROS_DEBUG_SET_STATE(gyros.current, "task_wait");
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
     task = TASK(gyros.zombies.next);
@@ -79,7 +79,9 @@ gyros_task_wait_until(gyros_abstime_t timeout)
         gyros__task_move(gyros.current, &gyros.reapers);
         gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE(gyros.current, "task_wait_until");
-        gyros__cond_reschedule();
+        gyros__reschedule();
+        gyros_interrupt_restore(flags);
+        flags = gyros_interrupt_disable();
         if (gyros__list_empty(&gyros.zombies))
         {
             gyros_interrupt_restore(flags);

@@ -45,8 +45,8 @@ gyros_sleep_until(gyros_abstime_t timeout)
     gyros__list_remove(&gyros.current->main_list_node);
     gyros__task_set_timeout(timeout);
     GYROS_DEBUG_SET_STATE(gyros.current, "sleep_until");
+    gyros__reschedule();
     gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
 
     return gyros.current->timed_out;
 }

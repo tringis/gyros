@@ -57,9 +57,8 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
     gyros__mutex_unlock(m, 0);
     gyros__task_move(gyros.current, &c->task_list);
     GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait", c);
+    gyros__reschedule();
     gyros_interrupt_restore(flags);
-
-    gyros__cond_reschedule();
 
     gyros_mutex_lock(m);
 }
@@ -82,8 +81,8 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
     gyros__task_move(gyros.current, &c->task_list);
     gyros__task_set_timeout(timeout);
     GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait_until", c);
+    gyros__reschedule();
     gyros_interrupt_restore(flags);
-    gyros__cond_reschedule();
 
     gyros_mutex_lock(m);
 
@@ -106,8 +105,8 @@ gyros_cond_signal_one(gyros_cond_t *c)
     else
     {
         gyros__task_wake(TASK(c->task_list.next));
-        gyros_interrupt_restore(flags);
         gyros__cond_reschedule();
+        gyros_interrupt_restore(flags);
     }
 }
 
@@ -130,8 +129,7 @@ gyros_cond_signal_all(gyros_cond_t *c)
          * the tasks (of equal priority) in the list. */
         while (!gyros__list_empty(&c->task_list))
             gyros__task_wake(TASK(c->task_list.prev));
+        gyros__cond_reschedule();
         gyros_interrupt_restore(flags);
-        if (!gyros_in_interrupt())
-            gyros__cond_reschedule();
     }
 }

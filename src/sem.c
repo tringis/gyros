@@ -69,8 +69,8 @@ gyros_sem_wait(gyros_sem_t *s)
         GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros.current, &s->task_list);
         GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait", s);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
     }
     s->value--;
@@ -96,8 +96,8 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         gyros__task_move(gyros.current, &s->task_list);
         gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait_until", s);
+        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        gyros__cond_reschedule();
         flags = gyros_interrupt_disable();
         if (s->value == 0)
         {
@@ -133,9 +133,8 @@ gyros_sem_signal(gyros_sem_t *s)
         else
         {
             gyros__task_wake(TASK(s->task_list.next));
+            gyros__cond_reschedule();
             gyros_interrupt_restore(flags);
-            if (!gyros_in_interrupt())
-                gyros__cond_reschedule();
         }
     }
 }

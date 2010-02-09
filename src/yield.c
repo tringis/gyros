@@ -37,6 +37,6 @@ gyros_yield(void)
     unsigned long flags = gyros_interrupt_disable();
 
     gyros__task_move(gyros.current, &gyros.running);
-    gyros_interrupt_restore(flags);
     gyros__cond_reschedule();
+    gyros_interrupt_restore(flags);
 }

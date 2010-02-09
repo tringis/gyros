@@ -96,8 +96,8 @@ gyros_mutex_lock(gyros_mutex_t *m)
                 gyros__task_move(m->owner, m->owner->main_list);
             }
             GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
+            gyros__reschedule();
             gyros_interrupt_restore(flags);
-            gyros__cond_reschedule();
             flags = gyros_interrupt_disable();
         } while (unlikely(m->owner != NULL));
         GYROS__TRACE_MUTEX(AQUIRED, m);
@@ -135,9 +135,9 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
     {
         GYROS__TRACE_MUTEX(UNLOCK, m);
         gyros__task_wake(TASK(m->task_list.next));
-        gyros_interrupt_restore(flags);
         if (reschedule)
             gyros__cond_reschedule();
+        gyros_interrupt_restore(flags);
     }
 }
 

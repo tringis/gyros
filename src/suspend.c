@@ -46,9 +46,9 @@ gyros_task_suspend(gyros_task_t *task)
     gyros__list_remove(&task->main_list_node);
     gyros__list_remove(&task->timeout_list_node);
     GYROS_DEBUG_SET_STATE(task, "suspended");
-    gyros_interrupt_restore(flags);
     if (task == gyros.current)
-        gyros__cond_reschedule();
+        gyros__reschedule();
+    gyros_interrupt_restore(flags);
 }
 
 void
@@ -62,7 +62,6 @@ gyros_task_resume(gyros_task_t *task)
 #endif
 
     gyros__task_move(task, &gyros.running);
+    gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
-    if (!gyros_in_interrupt())
-        gyros__cond_reschedule();
 }
