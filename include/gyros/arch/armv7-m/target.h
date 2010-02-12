@@ -26,45 +26,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/private/target.h>
+#ifndef INCLUDED__gyros_arch_armv7_m_target_h__201002122108
+#define INCLUDED__gyros_arch_armv7_m_target_h__201002122108
 
-void
-gyros__target_task_init(gyros_task_t *task,
-                        void (*entry)(void *arg),
-                        void *arg,
-                        void *stack,
-                        int stack_size)
-{
-    unsigned long *stack_top = (unsigned long *)((unsigned long)stack +
-                                                 stack_size);
-    unsigned long *sp = stack_top;
+void gyros__arch_init(void);
 
-#if GYROS_CONFIG_STACK_USED
-    {
-        unsigned long *p = task->stack;
+void gyros__arch_pendsv_handler(void);
 
-        do
-            *p++ = 0xeeeeeeee;
-        while (p != stack_top);
-    }
+void gyros__arch_setup_stack(void *exception_stack, int exception_stack_size);
+
 #endif
-
-    *--sp = 1U << 24;                        /* xPSR (thumb mode) */
-    *--sp = (unsigned long)entry;            /* PC */
-    *--sp = (unsigned long)gyros__task_exit; /* LR */
-    *--sp = 0;                               /* R12 */
-    *--sp = 0;                               /* R3 */
-    *--sp = 0;                               /* R2 */
-    *--sp = 0;                               /* R1 */
-    *--sp = (unsigned long)arg;              /* R0 */
-
-    task->context.sp = (unsigned long)sp;
-
-#if GYROS_CONFIG_STACK_USED
-    {
-        int i;
-        for (i = 0; i < 9; ++i)
-            *--sp = 0;
-    }
-#endif
-}

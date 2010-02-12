@@ -43,7 +43,7 @@
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_STR91X_PCLK               48000000
 
-#define GYROS_CONFIG_TIMER_RESOLUTION          1000000
+#define GYROS_CONFIG_TIMER_RESOLUTION          1000
 
 #if GYROS_CONFIG_DYNTICK
 

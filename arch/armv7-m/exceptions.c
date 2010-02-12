@@ -27,24 +27,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 void
-gyros__svc_handler(void) __attribute__((__naked__));
+gyros__arch_pendsv_handler(void) __attribute__((__naked__));
 
 void
-gyros__svc_handler(void)
+gyros__arch_pendsv_handler(void)
 {
     __asm__ __volatile__(
         "mrs     r3, psp\n"
-        "stmdb   r3!, {r4-r11, lr}\n"
+        "stmdb   r3, {r4-r11}\n"         /* Write registers to task stack. */
         "ldr     r0, =gyros\n"           /* r0 = &gyros.current */
         "ldr     r1, [r0]\n"             /* r1 = gyros.current */
         "str     r3, [r1]\n"             /* gyros.current->context.sp = PSP */
 
         "ldr     r2, [r0, #4]\n"         /* r2 = gyros.running.next */
         "sub     r2, r2, #4\n"           /* r2 = TASK(gyros.running.next) */
-        "str     r2, [r1]\n"             /* gyros.current = r2 */
+        "str     r2, [r0]\n"             /* gyros.current = r2 */
 
         "ldr     r3, [r2]\n"             /* r3 = SP of new task */
-        "ldmia   r3!, {r4-r11, lr}\n"    /* Load regs for new task */
+        "ldmdb   r3, {r4-r11}\n"         /* Load regs for new task */
         "msr     psp, r3\n"              /* Set PSP to SP of new task */
         "bx      lr\n"
         ::: "memory");

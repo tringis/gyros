@@ -32,6 +32,7 @@
 #include <gyros/time.h>
 
 #include <gyros/arch/armv7-m/nvic.h>
+#include <gyros/arch/armv7-m/target.h>
 
 #if !GYROS_CONFIG_DYNTICK
 static gyros_abstime_t s_time;
@@ -39,6 +40,7 @@ static gyros_abstime_t s_time;
 static void
 systick_handler(void)
 {
+    NVIC_SYSTICK_CTLST;
     gyros__tick(++s_time);
 }
 
@@ -55,15 +57,40 @@ gyros_time(void)
 #endif
 
 void
+gyros__arch_setup_stack(void *exception_stack, int exception_stack_size)
+{
+    unsigned long temp;
+#if GYROS_CONFIG_STACK_USED
+    unsigned long *p = exception_stack;
+    int i;
+
+    for (i = 0; i < exception_stack_size / sizeof(unsigned long); ++i)
+        *p++ = 0xeeeeeeee;
+#endif
+
+    __asm__ __volatile__(
+        "mov     %0, sp\n"
+        "msr     psp, %0\n"              /* PSP = SP */
+        "msr     msp, %1\n"              /* MSP = exception_stack top */
+        "mov     %0, #2\n"
+        "msr     control, %0\n"          /* CONTROL = 2 */
+        : "=&l" (temp)
+        : "l" ((unsigned long)exception_stack + exception_stack_size)
+        : "memory");
+}
+
+void
 gyros__arch_init(void)
 {
-#if !GYROS_CONFIG_DYNTICK
     unsigned long *vtab = (unsigned long*)NVIC_VTABOFFSET;
 
+    vtab[14] = (unsigned long)gyros__arch_pendsv_handler;
+
+#if !GYROS_CONFIG_DYNTICK
     vtab[15] = (unsigned long)systick_handler;
 
     NVIC_SYSTICK_RELOAD = GYROS_CONFIG_CORE_HZ /
-                          GYROS_CONFIG_TIMER_RESOLUTION - 1;
+                          GYROS_CONFIG_TIMER_PERIOD - 1;
     NVIC_SYSTICK_CURRENT = 0; /* reset on write register */
     NVIC_SYSTICK_CTLST = (NVIC_SYSTICK_CTLST & ~0x00010007) | 7;
 #endif

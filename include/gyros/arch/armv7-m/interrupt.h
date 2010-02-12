@@ -72,9 +72,14 @@ gyros_in_interrupt(void)
 static inline void
 gyros__reschedule(void)
 {
-    __asm__ __volatile__(
-        "svc    #0"
-        ::: "memory");
+    *(unsigned long*)0xe000ed04 = 1U << 28;
+}
+
+/* Reschedule, i.e. make sure the right task is running. */
+static inline void
+gyros__tick_reschedule(void)
+{
+    gyros__reschedule();
 }
 
 /* Enable interrupts in the ARM core. */
@@ -90,8 +95,5 @@ gyros__interrupt_enable(void)
 }
 
 void gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void));
-
-#warning MOVE ME
-void gyros__arch_init(void);
 
 #endif
