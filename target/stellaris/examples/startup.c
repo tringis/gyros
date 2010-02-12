@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <stddef.h>
+#include <gyros/arch/armv7-m/nvic.h>
 
 void __reset_handler(void) __attribute__((naked));
 
@@ -42,7 +43,7 @@ extern unsigned long __data_load;
 extern unsigned long __bss_start;
 extern unsigned long __bss_end;
 
-const void *vectors[71] __attribute__((section(".romvectors"))) = {
+void *const __rom_vectors[16] __attribute__((section(".romvectors"))) = {
     &__stack_top,
     __reset_handler,
     __trap,
@@ -61,6 +62,8 @@ const void *vectors[71] __attribute__((section(".romvectors"))) = {
     __trap,
 };
 
+void *__ram_vectors[71] __attribute__((section(".ramvectors")));
+
 void
 __trap(void)
 {
@@ -73,6 +76,7 @@ __reset_handler(void)
 {
     unsigned long *dst;
     const unsigned long *src;
+    int i;
 
     __hwinit();
 
@@ -81,6 +85,12 @@ __reset_handler(void)
 
     for (dst = &__bss_start; dst != &__bss_end; ++dst)
         *dst = 0;
+
+    for (i = 0; i < 16; ++i)
+        __ram_vectors[i] = __rom_vectors[i];
+    for (i = 16; i < sizeof(__ram_vectors) / sizeof(__ram_vectors[0]); ++i)
+        __ram_vectors[i] = __trap;
+    NVIC_VTABOFFSET = __ram_vectors;
 
     main(0, NULL);
 

@@ -57,6 +57,13 @@ SECTIONS
 	} >rom
 	PROVIDE(__text_end = .);
 
+	.ramvectors :
+	{
+		. = ALIGN(512);
+		*(.ramvectors);
+		. = ALIGN(4);
+	} >ram
+
 	.data :
 	{
 		PROVIDE(__data_start = .);
