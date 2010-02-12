@@ -70,6 +70,8 @@ gyros_in_interrupt(void)
 
     return (cpsr & 0x1f) != ARM_MODE_SYS;
 }
+#else
+int gyros_in_interrupt(void);
 #endif
 
 /* Reschedule, i.e. make sure the right task is running. */
