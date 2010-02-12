@@ -83,6 +83,8 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 void
 gyros__tick(gyros_abstime_t now)
 {
+    int reschedule = 0;
+
     while (!gyros__list_empty(&gyros.timeouts))
     {
         gyros_task_t *task = TIMEOUT(gyros.timeouts.next);
@@ -92,7 +94,11 @@ gyros__tick(gyros_abstime_t now)
 
         task->timed_out = 1;
         gyros__task_wake(task);
+        reschedule = 1;
     }
+
+    if (reschedule)
+        gyros__tick_reschedule();
 
 #if GYROS_CONFIG_TIMER
     while (!gyros__list_empty(&gyros.timers))

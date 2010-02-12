@@ -83,6 +83,13 @@ gyros__reschedule(void)
         __asm__ __volatile__("svc    #0" ::: "memory");
 }
 
+/* Reschedule, i.e. make sure the right task is running. */
+static inline void
+gyros__tick_reschedule(void)
+{
+    /* The interrupt exit code always reschedules for ARM */
+}
+
 /* Enable interrupts in the ARM core. */
 void gyros__interrupt_enable(void);
 
