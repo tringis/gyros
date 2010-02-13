@@ -74,8 +74,8 @@ gyros__arch_setup_stack(void *exception_stack, int exception_stack_size)
         "msr     msp, %1\n"              /* MSP = exception_stack top */
         "mov     %0, #2\n"
         "msr     control, %0\n"          /* CONTROL = 2 */
-        : "=&l" (temp)
-        : "l" ((unsigned long)exception_stack + exception_stack_size)
+        : "=&r" (temp)
+        : "r" ((unsigned long)exception_stack + exception_stack_size)
         : "memory");
 }
 
