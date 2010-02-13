@@ -31,8 +31,11 @@
 #include <gyros/target/config.h>
 #include <gyros/time.h>
 
-#include <gyros/arch/armv7-m/nvic.h>
 #include <gyros/arch/armv7-m/target.h>
+
+#include "nvic.h"
+
+static void pendsv_handler(void) __attribute__((__naked__));
 
 #if !GYROS_CONFIG_DYNTICK
 static gyros_abstime_t s_time;
@@ -55,6 +58,27 @@ gyros_time(void)
     return time;
 }
 #endif
+
+static void
+pendsv_handler(void)
+{
+    __asm__ __volatile__(
+        "mrs     r3, psp\n"
+        "stmdb   r3, {r4-r11}\n"         /* Write registers to task stack. */
+        "ldr     r0, =gyros\n"           /* r0 = &gyros.current */
+        "ldr     r1, [r0]\n"             /* r1 = gyros.current */
+        "str     r3, [r1]\n"             /* gyros.current->context.sp = PSP */
+
+        "ldr     r2, [r0, #4]\n"         /* r2 = gyros.running.next */
+        "sub     r2, r2, #4\n"           /* r2 = TASK(gyros.running.next) */
+        "str     r2, [r0]\n"             /* gyros.current = r2 */
+
+        "ldr     r3, [r2]\n"             /* r3 = SP of new task */
+        "ldmdb   r3, {r4-r11}\n"         /* Load regs for new task */
+        "msr     psp, r3\n"              /* Set PSP to SP of new task */
+        "bx      lr\n"
+        ::: "memory");
+}
 
 void
 gyros__arch_setup_stack(void *exception_stack, int exception_stack_size)
@@ -84,7 +108,7 @@ gyros__arch_init(void)
 {
     unsigned long *vtab = (unsigned long*)NVIC_VTABOFFSET;
 
-    vtab[14] = (unsigned long)gyros__arch_pendsv_handler;
+    vtab[14] = (unsigned long)pendsv_handler;
 
 #if !GYROS_CONFIG_DYNTICK
     vtab[15] = (unsigned long)systick_handler;

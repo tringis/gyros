@@ -27,7 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
-#include <gyros/arch/armv7-m/nvic.h>
+
+#include "nvic.h"
 
 void
 gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void))

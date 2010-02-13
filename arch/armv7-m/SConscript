@@ -1,6 +1,5 @@
 gyros_arch_srcs = map(File, [ 'debug.c',
                               'init.c',
-                              'exceptions.c',
                               'interrupt.c',
                               'stack_used.c',
                               'task_init.c' ])

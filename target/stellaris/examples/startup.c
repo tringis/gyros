@@ -27,7 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <stddef.h>
-#include <gyros/arch/armv7-m/nvic.h>
+
+#define REG32(addr)                (*(volatile unsigned long*)(addr))
+
+#define NVIC_VTABOFFSET            REG32(0xe000ed08)
 
 void __reset_handler(void) __attribute__((naked));
 
@@ -92,7 +95,7 @@ __reset_handler(void)
         __ram_vectors[i] = __rom_vectors[i];
     for (i = 16; i < sizeof(__ram_vectors) / sizeof(__ram_vectors[0]); ++i)
         __ram_vectors[i] = __trap;
-    NVIC_VTABOFFSET = __ram_vectors;
+    NVIC_VTABOFFSET = (unsigned long)__ram_vectors;
 
     gyros__arch_setup_stack(exception_stack, sizeof(exception_stack));
 
