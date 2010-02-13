@@ -130,12 +130,12 @@ gyros__target_task_init(gyros_task_t *task,
                         void *stack,
                         int stack_size)
 {
-    unsigned long *stack_top = (unsigned long *)((unsigned long)stack +
-                                                 stack_size);
-    unsigned long *sp = stack_top;
+    unsigned long *sp = (unsigned long *)((unsigned long)stack +
+                                          stack_size);
 
 #if GYROS_CONFIG_STACK_USED
     {
+        unsigned long *stack_top = sp;
         unsigned long *p = task->stack;
 
         do
