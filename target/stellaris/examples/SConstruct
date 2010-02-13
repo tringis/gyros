@@ -12,7 +12,6 @@ host_env = env.Clone()
 target_env = env.Clone(CC = 'arm-elf-gcc',
                        AR = 'arm-elf-ar',
                        RANLIB = 'arm-elf-ranlib',
-                       ASFLAGS = ['-g', '-mcpu=arm966e-s'],
                        CCFLAGS = ['-Wall', '-g', '-O0', '-mcpu=cortex-m3'],
                        CPPDEFINES = ['TARGET_IS_TEMPEST_RB1'],
                        CPPPATH = ['#/include',
