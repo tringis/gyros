@@ -29,19 +29,8 @@
 
 #include "hw_memmap.h"
 #include "hw_types.h"
-#include "gpio.h"
 #include "rom.h"
 #include "sysctl.h"
-
-#define REG8(addr)          (*(volatile unsigned char*)(addr))
-#define REG16(addr)         (*(volatile unsigned short*)(addr))
-#define REG32(addr)         (*(volatile unsigned long*)(addr))
-
-#define GPIO_D_BASE         0x40007000
-
-#define GPIO_D_DATA(mask)   REG32(GPIO_D_BASE + ((mask) << 2))
-#define GPIO_D_DIR          REG32(GPIO_D_BASE + 0x400)
-#define GPIO_D_DEN          REG32(GPIO_D_BASE + 0x51c)
 
 /* WARNING: This function is run before the data and bss sections are
  * set up, so it cannot access global or static variables. */
@@ -50,17 +39,4 @@ __hwinit(void)
 {
     ROM_SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
-
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_0);
-    ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_0, 0);
-
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    ROM_GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_4);
-    ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_4, GPIO_STRENGTH_2MA,
-                         GPIO_PIN_TYPE_STD_WPU);
-
-    while (ROM_GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_4))
-        ;
-    ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_PIN_0);
 }
