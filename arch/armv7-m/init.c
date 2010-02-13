@@ -124,6 +124,47 @@ gyros__arch_init(void)
 }
 
 void
+gyros__target_task_init(gyros_task_t *task,
+                        void (*entry)(void *arg),
+                        void *arg,
+                        void *stack,
+                        int stack_size)
+{
+    unsigned long *stack_top = (unsigned long *)((unsigned long)stack +
+                                                 stack_size);
+    unsigned long *sp = stack_top;
+
+#if GYROS_CONFIG_STACK_USED
+    {
+        unsigned long *p = task->stack;
+
+        do
+            *p++ = 0xeeeeeeee;
+        while (p != stack_top);
+    }
+#endif
+
+    *--sp = 1U << 24;                        /* xPSR (thumb mode) */
+    *--sp = (unsigned long)entry;            /* PC */
+    *--sp = (unsigned long)gyros__task_exit; /* LR */
+    *--sp = 0;                               /* R12 */
+    *--sp = 0;                               /* R3 */
+    *--sp = 0;                               /* R2 */
+    *--sp = 0;                               /* R1 */
+    *--sp = (unsigned long)arg;              /* R0 */
+
+    task->context.sp = (unsigned long)sp;
+
+#if GYROS_CONFIG_STACK_USED
+    {
+        int i;
+        for (i = 0; i < 9; ++i)
+            *--sp = 0;
+    }
+#endif
+}
+
+void
 gyros__idle(void)
 {
 }
