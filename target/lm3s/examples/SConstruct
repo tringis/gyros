@@ -18,10 +18,9 @@ target_env = env.Clone(CC = 'arm-elf-gcc',
                                   '#/../include',
                                   '#/../../../include'],
                        LIBPATH = ['..'],
-                       LIBS = ['gyros-stellaris', 'gcc'],
-                       LINKFLAGS = ['-nostdlib', '-Wl,--nmagic',
-                                    '-Tstellaris.ld'],
-                       OBJPREFIX = '.stellaris-',
+                       LIBS = ['gyros-lm3s', 'gcc'],
+                       LINKFLAGS = ['-nostdlib', '-Tlm3s.ld'],
+                       OBJPREFIX = '.lm3s-',
                        PROGSUFFIX = '.elf')
 target_env.PrependENVPath('PATH', '/opt/arm-elf/gcc-m3/bin')
 
