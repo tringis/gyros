@@ -26,14 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/interrupt.h>
 #include <gyros/private/target.h>
-#include <gyros/target/config.h>
-#include <gyros/time.h>
+#include <gyros/arch/armv7-m/target.h>
 
 void
 gyros__target_init(void)
 {
     gyros__arch_init();
-    gyros__interrupt_enable();
 }

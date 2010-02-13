@@ -34,13 +34,12 @@
 static inline unsigned long
 gyros_interrupt_disable(void)
 {
-    unsigned long temp, flags;
+    unsigned long flags;
 
     __asm__ __volatile__(
-        "mrs    %1, basepri\n\t"
-        "movs   %0, #255\n\t"
-        "msr    basepri, %0\n\t"
-        : "=r" (temp), "=&r" (flags) :: "memory");
+        "mrs    %0, primask\n\t"
+        "cpsid  i\n\t"
+        : "=&r" (flags) :: "memory");
 
     return flags;
 }
@@ -51,7 +50,7 @@ gyros_interrupt_restore(unsigned long flags)
 {
     /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
-        "msr    basepri, %0\n\t"
+        "msr    primask, %0\n\t"
         :: "r" (flags) : "memory");
 }
 
@@ -80,18 +79,6 @@ static inline void
 gyros__tick_reschedule(void)
 {
     gyros__reschedule();
-}
-
-/* Enable interrupts in the ARM core. */
-static inline void
-gyros__interrupt_enable(void)
-{
-    unsigned long temp;
-
-    __asm__ __volatile__(
-        "mov    %0, #0\n\t"
-        "msr    basepri, %0\n\t"
-        : "=r" (temp) :: "memory");
 }
 
 void gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void));

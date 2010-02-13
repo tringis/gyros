@@ -31,6 +31,4 @@
 
 void gyros__arch_init(void);
 
-void gyros__arch_setup_stack(void *exception_stack, int exception_stack_size);
-
 #endif

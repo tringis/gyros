@@ -46,8 +46,6 @@ extern unsigned long __data_load;
 extern unsigned long __bss_start;
 extern unsigned long __bss_end;
 
-static unsigned exception_stack[128];
-
 void *const __rom_vectors[16] __attribute__((section(".romvectors"))) = {
     &__stack_top,
     __reset_handler,
@@ -96,8 +94,6 @@ __reset_handler(void)
     for (i = 16; i < sizeof(__ram_vectors) / sizeof(__ram_vectors[0]); ++i)
         __ram_vectors[i] = __trap;
     NVIC_VTABOFFSET = (unsigned long)__ram_vectors;
-
-    gyros__arch_setup_stack(exception_stack, sizeof(exception_stack));
 
     main(0, NULL);
 

@@ -37,6 +37,9 @@
 
 static void pendsv_handler(void) __attribute__((__naked__));
 
+static unsigned long s_exception_stack[GYROS_CONFIG_EXCEPTION_STACK_SIZE /
+                                       sizeof(unsigned long)];
+
 #if !GYROS_CONFIG_DYNTICK
 static gyros_abstime_t s_time;
 
@@ -81,32 +84,21 @@ pendsv_handler(void)
 }
 
 void
-gyros__arch_setup_stack(void *exception_stack, int exception_stack_size)
-{
-    unsigned long temp;
-#if GYROS_CONFIG_STACK_USED
-    unsigned long *p = exception_stack;
-    int i;
-
-    for (i = 0; i < exception_stack_size / sizeof(unsigned long); ++i)
-        *p++ = 0xeeeeeeee;
-#endif
-
-    __asm__ __volatile__(
-        "mov     %0, sp\n"
-        "msr     psp, %0\n"              /* PSP = SP */
-        "msr     msp, %1\n"              /* MSP = exception_stack top */
-        "mov     %0, #2\n"
-        "msr     control, %0\n"          /* CONTROL = 2 */
-        : "=&r" (temp)
-        : "r" ((unsigned long)exception_stack + exception_stack_size)
-        : "memory");
-}
-
-void
 gyros__arch_init(void)
 {
     unsigned long *vtab = (unsigned long*)NVIC_VTABOFFSET;
+    unsigned long temp;
+#if GYROS_CONFIG_STACK_USED
+    unsigned long *p = s_exception_stack;
+    int i;
+
+    for (i = 0;
+         i < GYROS_CONFIG_EXCEPTION_STACK_SIZE / sizeof(unsigned long);
+         ++i)
+    {
+        *p++ = 0xeeeeeeee;
+    }
+#endif
 
     vtab[14] = (unsigned long)pendsv_handler;
 
@@ -118,6 +110,17 @@ gyros__arch_init(void)
     NVIC_SYSTICK_CURRENT = 0; /* reset on write register */
     NVIC_SYSTICK_CTLST = (NVIC_SYSTICK_CTLST & ~0x00010007) | 7;
 #endif
+
+    __asm__ __volatile__(
+        "mov     %0, sp\n"
+        "msr     psp, %0\n"              /* PSP = SP */
+        "msr     msp, %1\n"              /* MSP = exception_stack top */
+        "mov     %0, #2\n"
+        "msr     control, %0\n"          /* CONTROL = 2 */
+        : "=&r" (temp)
+        : "r" ((unsigned long)s_exception_stack +
+               GYROS_CONFIG_EXCEPTION_STACK_SIZE)
+        : "memory");
 }
 
 void
