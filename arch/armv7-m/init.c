@@ -167,4 +167,5 @@ gyros__target_task_init(gyros_task_t *task,
 void
 gyros__idle(void)
 {
+    __asm__ __volatile__("wfi" ::: "memory"); 
 }
