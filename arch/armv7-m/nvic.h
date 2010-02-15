@@ -37,11 +37,15 @@
 #define NVIC_SYSTICK_CURRENT       NVIC_REG32(0x018)
 #define NVIC_SYSTICK_CALIB         NVIC_REG32(0x01c)
 
-#define NVIC_IRQ_SET_ENABLE(n)     NVIC_REG32(0x100 + (n))
-#define NVIC_IRQ_CLEAR_ENABLE(n)   NVIC_REG32(0x180 + (n))
-#define NVIC_IRQ_SET_PENDING(n)    NVIC_REG32(0x200 + (n))
-#define NVIC_IRQ_CLEAR_PENDING(n)  NVIC_REG32(0x280 + (n))
-#define NVIC_IRQ_ACTIVE(n)         NVIC_REG32(0x300 + (n))
+#define NVIC__IRQ_BITCMD(offset, n)  \
+    do { NVIC_REG32(offset + ((n) >> 5)) = 1U << ((n) & 31); } while (0)
+
+#define NVIC_IRQ_SET_ENABLE(n)     NVIC__IRQ_BITCMD(0x100, (n))
+#define NVIC_IRQ_CLEAR_ENABLE(n)   NVIC__IRQ_BITCMD(0x180, (n))
+#define NVIC_IRQ_SET_PENDING(n)    NVIC__IRQ_BITCMD(0x200, (n))
+#define NVIC_IRQ_CLEAR_PENDING(n)  NVIC__IRQ_BITCMD(0x280, (n))
+#define NVIC_IRQ_ACTIVE(n)         NVIC__IRQ_BITCMD(0x300, (n))
+
 #define NVIC_IRQ_PRIORITY(n)       NVIC_REG32(0x400 + (n))
 
 #define NVIC_IRQ_CSR               NVIC_REG32(0xd04)

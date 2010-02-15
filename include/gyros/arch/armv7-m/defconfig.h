@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_armv7_m_defconfig_h__201002062209
 #define INCLUDED__gyros_armv7_m_defconfig_h__201002062209
 
+#ifndef GYROS_CONFIG_DYNTICK
+#define GYROS_CONFIG_DYNTICK                   0
+#endif
+
 #ifndef GYROS_CONFIG_EXCEPTION_STACK_SIZE
 #define GYROS_CONFIG_EXCEPTION_STACK_SIZE      128
 #endif

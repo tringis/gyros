@@ -36,7 +36,7 @@ gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void))
     unsigned long *vtab = (unsigned long*)NVIC_VTABOFFSET;
 
     if (!isr)
-        NVIC_IRQ_CLEAR_ENABLE(irq >> 5) |= 1U << (irq & 31);
+        NVIC_IRQ_CLEAR_ENABLE(irq);
 
     vtab[16 + irq] = (unsigned long)isr;
 
@@ -49,6 +49,7 @@ gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void))
             ((prio & 0xff) << ((irq & 3) << 3));
         gyros_interrupt_restore(flags);
 
-        NVIC_IRQ_SET_ENABLE(irq >> 5) |= 1U << (irq & 31);
+        NVIC_IRQ_CLEAR_PENDING(irq);
+        NVIC_IRQ_SET_ENABLE(irq);
     }
 }

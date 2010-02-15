@@ -30,7 +30,11 @@
 #define INCLUDED__gyros_str91x_defconfig_h__200901101016
 
 #ifndef GYROS_CONFIG_DYNTICK
-#define GYROS_CONFIG_DYNTICK                   0
+#define GYROS_CONFIG_DYNTICK                   1
+#endif
+
+#ifndef GYROS_CONFIG_LM3S_TIMER
+#define GYROS_CONFIG_LM3S_TIMER                0
 #endif
 
 #ifndef GYROS_CONFIG_CORE_HZ
