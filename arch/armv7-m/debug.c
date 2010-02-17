@@ -29,10 +29,10 @@
 #include <gyros/debug.h>
 
 unsigned long
-gyros__task_pc(gyros_task_t *task)
+gyros_debug_task_pc(gyros_task_t *task)
 {
     if (task == gyros_current())
-        return (unsigned long)&gyros__task_pc;
+        return (unsigned long)&gyros_debug_task_pc;
 
     const unsigned long *sp = (const unsigned long*)task->context.sp;
 
