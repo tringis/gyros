@@ -80,7 +80,7 @@ pendsv_handler(void)
         "str     r3, [r1]\n"             /* gyros.current->context.sp = PSP */
 
         "ldr     r2, [r0, #4]\n"         /* r2 = gyros.running.next */
-        "sub     r2, r2, #4\n"           /* r2 = TASK(gyros.running.next) */
+        "subs    r2, r2, #4\n"           /* r2 = TASK(gyros.running.next) */
         "str     r2, [r0]\n"             /* gyros.current = r2 */
 
         "ldr     r3, [r2]\n"             /* r3 = SP of new task */
