@@ -66,6 +66,13 @@ static void
 pendsv_handler(void)
 {
     __asm__ __volatile__(
+#if GYROS_CONFIG_CONTEXT_HOOK || GYROS_CONFIG_TRACE
+        "push    {lr}\n"
+        "ldr	 r0, =gyros__context_hook\n"
+        "blx     r0\n"
+        "pop     {lr}\n"
+#endif
+
         "mrs     r3, psp\n"
         "stmdb   r3, {r4-r11}\n"         /* Write registers to task stack. */
         "ldr     r0, =gyros\n"           /* r0 = &gyros.current */
