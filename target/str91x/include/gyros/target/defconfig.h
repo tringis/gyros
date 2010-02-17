@@ -37,6 +37,18 @@
 #define GYROS_CONFIG_STR91X_TIMER              3
 #endif
 
+#ifndef GYROS_CONFIG_STR91X_TIMER_HZ
+#define GYROS_CONFIG_STR91X_TIMER_HZ           1000000
+#endif
+
+#ifndef GYROS_CONFIG_HZ
+#if GYROS_CONFIG_DYNTICK
+#  define GYROS_CONFIG_HZ                      GYROS_CONFIG_STR91X_TIMER_HZ
+#else
+#  define GYROS_CONFIG_HZ                      1000
+#endif
+#endif
+
 #include <gyros/arch/arm/defconfig.h>
 #include <gyros/private/defconfig.h>
 

@@ -37,4 +37,8 @@
 #define GYROS_CONFIG_EXCEPTION_STACK_SIZE      128
 #endif
 
+#if !GYROS_CONFIG_DYNTICK && !defined(GYROS_CONFIG_HZ)
+#define GYROS_CONFIG_HZ                        1000
+#endif
+
 #endif

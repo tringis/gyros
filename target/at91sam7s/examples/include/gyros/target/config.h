@@ -30,44 +30,16 @@
 #define INCLUDED__gyros_at91sam7s_config_h__200901021029
 
 /*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_AT91SAM7S_MCLK            47923200
+
+/*---------------------------------------------------------------------*
  * Application specific configuration  (see gyros/target/defconfig.h
  *                                      and gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
 #define GYROS_CONFIG_DEBUG                     1
 
 #include <gyros/target/defconfig.h>
-
-/*---------------------------------------------------------------------*
- * GyrOS target specific configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_AT91SAM7S_MCLK            47923200
-
-#if GYROS_CONFIG_DYNTICK
-
-#define GYROS_CONFIG_TIMER_NUM             2
-#define GYROS_CONFIG_TIMER_CLK             AT91C_TC_CLKS_TIMER_DIV3_CLOCK
-#define GYROS_CONFIG_TIMER_RESOLUTION      (GYROS_CONFIG_AT91SAM7S_MCLK / 32)
-
-#define GYROS_CONFIG_US_TO_TICKS(us)       ((long long)(us) * GYROS_CONFIG_TIMER_RESOLUTION / 1000000)
-#define GYROS_CONFIG_MS_TO_TICKS(ms)       ((long long)(ms) * GYROS_CONFIG_TIMER_RESOLUTION / 1000)
-#define GYROS_CONFIG_S_TO_TICKS(s)         ((long long)(s) * GYROS_CONFIG_TIMER_RESOLUTION)
-
-#define GYROS_CONFIG_TICKS_TO_US(us)       ((long long)(us) * 1000000 / GYROS_CONFIG_TIMER_RESOLUTION)
-#define GYROS_CONFIG_TICKS_TO_MS(ms)       ((long long)(ms) * 1000 / GYROS_CONFIG_TIMER_RESOLUTION)
-#define GYROS_CONFIG_TICKS_TO_S(s)         ((long long)(s) / GYROS_CONFIG_TIMER_RESOLUTION)
-
-#else /* GYROS_CONFIG_DYNTICK */
-
-#define GYROS_CONFIG_TIMER_RESOLUTION      1000
-
-#define GYROS_CONFIG_US_TO_TICKS(us)       ((us) / 1000)
-#define GYROS_CONFIG_MS_TO_TICKS(ms)       (ms)
-#define GYROS_CONFIG_S_TO_TICKS(s)         ((s) * 1000)
-
-#define GYROS_CONFIG_TICKS_TO_US(us)       ((us) * 1000)
-#define GYROS_CONFIG_TICKS_TO_MS(ms)       (ms)
-#define GYROS_CONFIG_TICKS_TO_S(s)         ((s) / 1000)
-
-#endif /* GYROS_CONFIG_DYNTICK */
 
 #endif

@@ -34,7 +34,7 @@
 #define DIV_AND_CEIL(a,b)      (((a) + (b) - 1) / (b))
 
 #define PIT_FREQ       (GYROS_CONFIG_AT91SAM7S_MCLK / 16)
-#define PIT_PERIOD     DIV_AND_CEIL(PIT_FREQ, GYROS_CONFIG_TIMER_RESOLUTION)
+#define PIT_PERIOD     DIV_AND_CEIL(PIT_FREQ, GYROS_CONFIG_HZ)
 
 #if PIT_PERIOD > 65535
 #error PIT period out of range.

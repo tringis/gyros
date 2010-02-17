@@ -68,42 +68,85 @@ typedef signed GYROS_CONFIG_TIME_TYPE gyros_reltime_t;
   * interrupt context. */
 static inline gyros_reltime_t gyros_us(long microseconds)
 {
+#if defined(GYROS_CONFIG_US_TO_TICKS)
     return GYROS_CONFIG_US_TO_TICKS(microseconds);
+#elif GYROS_CONFIG_HZ / 1000000 * 1000000 == GYROS_CONFIG_HZ
+    return microseconds * (gyros_reltime_t)(GYROS_CONFIG_HZ / 1000000);
+#elif GYROS_CONFIG_HZ / 100000 * 100000 == GYROS_CONFIG_HZ
+    return microseconds *
+        ((gyros_reltime_t)(GYROS_CONFIG_HZ / 100000) + 9) / 10;
+#elif GYROS_CONFIG_HZ / 10000 * 10000 == GYROS_CONFIG_HZ
+    return microseconds *
+        ((gyros_reltime_t)(GYROS_CONFIG_HZ / 10000) + 99) / 100;
+#else
+    return microseconds *
+        ((gyros_reltime_t)((GYROS_CONFIG_HZ + 999) / 1000) + 999) / 1000;
+#endif
 }
 
 /** Convert @a milliseconds to gyros_reltime_t.  May be called from
   * interrupt context. */
 static inline gyros_reltime_t gyros_ms(long milliseconds)
 {
+#if defined(GYROS_CONFIG_MS_TO_TICKS)
     return GYROS_CONFIG_MS_TO_TICKS(milliseconds);
+#else
+    return milliseconds * (gyros_abstime_t)((GYROS_CONFIG_HZ + 999) / 1000);
+#endif
 }
 
 /** Convert @a seconds to gyros_reltime_t.  May be called from
   * interrupt context. */
 static inline gyros_reltime_t gyros_s(long seconds)
 {
-    return GYROS_CONFIG_S_TO_TICKS(seconds);
+    return seconds * (gyros_abstime_t)GYROS_CONFIG_HZ;
 }
 
 /** Convert @a gyros_reltime_t to microseconds.  May be called from
   * interrupt context. */
 static inline long gyros_time_to_us(gyros_reltime_t time)
 {
+#if defined(GYROS_CONFIG_TICKS_TO_US)
     return GYROS_CONFIG_TICKS_TO_US(time);
+#elif GYROS_CONFIG_HZ / 1000000 * 1000000 == GYROS_CONFIG_HZ
+    return time / (gyros_reltime_t)(GYROS_CONFIG_HZ / 1000000);
+#elif GYROS_CONFIG_HZ / 100000 * 100000 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)10 / (GYROS_CONFIG_HZ / 100000);
+#elif GYROS_CONFIG_HZ / 10000 * 10000 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)100 / (GYROS_CONFIG_HZ / 10000);
+#elif GYROS_CONFIG_HZ / 1000 * 1000 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)1000 / (GYROS_CONFIG_HZ / 1000);
+#elif GYROS_CONFIG_HZ / 100 * 100 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)10000 / (GYROS_CONFIG_HZ / 100);
+#elif GYROS_CONFIG_HZ / 100 * 100 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)100000 / (GYROS_CONFIG_HZ / 10);
+#else
+    return time * (gyros_reltime_t)1000000 / GYROS_CONFIG_HZ;
+#endif
 }
 
 /** Convert @a gyros_reltime_t to milliseconds.  May be called from
   * interrupt context. */
 static inline long gyros_time_to_ms(gyros_reltime_t time)
 {
+#if defined(GYROS_CONFIG_TICKS_TO_MS)
     return GYROS_CONFIG_TICKS_TO_MS(time);
+#elif GYROS_CONFIG_HZ / 1000 * 1000 == GYROS_CONFIG_HZ
+    return time / (GYROS_CONFIG_HZ / 1000);
+#elif GYROS_CONFIG_HZ / 100 * 100 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)10 / (GYROS_CONFIG_HZ / 100);
+#elif GYROS_CONFIG_HZ / 100 * 100 == GYROS_CONFIG_HZ
+    return time * (gyros_reltime_t)100 / (GYROS_CONFIG_HZ / 10);
+#else
+    return time * (gyros_reltime_t)1000 / GYROS_CONFIG_HZ;
+#endif
 }
 
 /** Convert @a gyros_reltime_t to seconds.  May be called from
   * interrupt context. */
 static inline long gyros_time_to_s(gyros_reltime_t time)
 {
-    return GYROS_CONFIG_TICKS_TO_S(time);
+    return time / GYROS_CONFIG_HZ;
 }
 
 /** Return current absolute time.  The time is monotonically

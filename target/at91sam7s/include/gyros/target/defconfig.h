@@ -30,8 +30,29 @@
 #define INCLUDED__gyros_at91sam7s_defconfig_h__200901101016
 
 #ifndef GYROS_CONFIG_DYNTICK
-#define GYROS_CONFIG_DYNTICK                   1
+#define GYROS_CONFIG_DYNTICK               0
 #endif
+
+#if GYROS_CONFIG_DYNTICK
+
+#ifndef GYROS_CONFIG_TIMER_NUM
+#define GYROS_CONFIG_TIMER_NUM             2
+#endif
+
+#ifndef GYROS_CONFIG_TIMER_DIV
+#define GYROS_CONFIG_TIMER_DIV             32
+#endif
+
+#define GYROS_CONFIG_HZ                    ((GYROS_CONFIG_AT91SAM7S_MCLK) / \
+                                            (GYROS_CONFIG_TIMER_DIV))
+
+#else /* GYROS_CONFIG_DYNTICK */
+
+#ifndef GYROS_CONFIG_HZ
+#define GYROS_CONFIG_HZ                    1000
+#endif
+
+#endif /* GYROS_CONFIG_DYNTICK */
 
 #include <gyros/arch/arm/defconfig.h>
 #include <gyros/private/defconfig.h>

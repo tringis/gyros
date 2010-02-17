@@ -33,13 +33,15 @@
 #define GYROS_CONFIG_DYNTICK                   1
 #endif
 
+#if GYROS_CONFIG_DYNTICK
+
 #ifndef GYROS_CONFIG_LM3S_TIMER
 #define GYROS_CONFIG_LM3S_TIMER                0
 #endif
 
-#ifndef GYROS_CONFIG_CORE_HZ
-#define GYROS_CONFIG_CORE_HZ            80000000
-#endif
+#define GYROS_CONFIG_HZ                        GYROS_CONFIG_CORE_HZ
+
+#endif /* GYROS_CONFIG_DYNTICK */
 
 #include <gyros/arch/armv7-m/defconfig.h>
 #include <gyros/private/defconfig.h>

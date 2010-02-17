@@ -43,6 +43,20 @@
 #  error Unsupported value for GYROS_CONFIG_TIMER_NUM
 #endif
 
+#if GYROS_CONFIG_TIMER_DIV == 2
+#define TIMER_CLOCK      AT91C_TC_CLKS_TIMER_DIV1_CLOCK
+#elif GYROS_CONFIG_TIMER_DIV == 8
+#define TIMER_CLOCK      AT91C_TC_CLKS_TIMER_DIV2_CLOCK
+#elif GYROS_CONFIG_TIMER_DIV == 32
+#define TIMER_CLOCK      AT91C_TC_CLKS_TIMER_DIV3_CLOCK
+#elif GYROS_CONFIG_TIMER_DIV == 128
+#define TIMER_CLOCK      AT91C_TC_CLKS_TIMER_DIV4_CLOCK
+#elif GYROS_CONFIG_TIMER_DIV == 1024
+#define TIMER_CLOCK      AT91C_TC_CLKS_TIMER_DIV5_CLOCK
+#else
+#error Unsupported GYROS_CONFIG_TIMER_DIV
+#endif
+
 static gyros_abstime_t s_time_hi;
 static unsigned short s_last_time_lo;
 
@@ -112,7 +126,7 @@ gyros__target_init(void)
     AT91C_BASE_PMC->PMC_PCER = 1U << (AT91C_ID_TC0 + GYROS_CONFIG_TIMER_NUM);
 
     /* Select the desired clock source. */
-    TC->TC_CMR = GYROS_CONFIG_TIMER_CLK;
+    TC->TC_CMR = TIMER_CLOCK;
 
     /* Set up an interrupt at MAX_PERIOD and enable the RC interrupt. */
     TC->TC_RC = MAX_PERIOD;

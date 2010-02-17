@@ -35,6 +35,19 @@
 
 #define GTIM            TIM(GYROS_CONFIG_STR91X_TIMER)
 
+#if GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_STR91X_TIMER_HZ < 1
+#error GYROS_CONFIG_STR91X_TIMER_HZ too high
+#endif
+
+#if GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_STR91X_TIMER_HZ - 1 > 0xffff
+#error GYROS_CONFIG_STR91X_TIMER_HZ too low
+#endif
+
+#if !GYROS_CONFIG_DYNTICK && \
+    GYROS_CONFIG_STR91X_TIMER_HZ / GYROS_CONFIG_HZ > 0xffff
+#error GYROS_CONFIG_STR91X_TIMER_HZ too high or GYROS_CONFIG_HZ too low
+#endif
+
 #if GYROS_CONFIG_DYNTICK
 #define MAX_PERIOD      0x8000
 static gyros_abstime_t s_time_hi;
@@ -59,7 +72,7 @@ tim_isr(void)
     gyros__tick(gyros_time());
 #else
     /* Move OC1 forward one timer period. */
-    GTIM->OC1R += GYROS_CONFIG_TIMER_PERIOD;
+    GTIM->OC1R += GYROS_CONFIG_STR91X_TIMER_HZ / GYROS_CONFIG_HZ;
     gyros__tick(++s_time);
 #endif
 }
@@ -145,13 +158,13 @@ gyros__target_init(void)
 
     gyros_target_set_isr(GYROS_IRQ_TIM0 + GYROS_CONFIG_STR91X_TIMER, tim_isr);
 
-    GTIM->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_TIMER_RESOLUTION - 1;
+    GTIM->CR2 = GYROS_CONFIG_STR91X_PCLK / GYROS_CONFIG_STR91X_TIMER_HZ - 1;
     GTIM->CR2 |= 0x4000;        /* Enable OC1 interrupt */
 #if GYROS_CONFIG_DYNTICK
     GTIM->OC1R = MAX_PERIOD;
     GTIM->OC2R = 1;             /* Make OC2 happen right away */
 #else
-    GTIM->OC1R = GYROS_CONFIG_TIMER_PERIOD;
+    GTIM->OC1R = GYROS_CONFIG_STR91X_TIMER_HZ / GYROS_CONFIG_HZ;
 #endif
     GTIM->CNTR = 0;             /* Reset value (exact value ignored) */
     GTIM->CR1 |= 0x8000;        /* Start timer */

@@ -106,7 +106,7 @@ gyros__arch_init(void)
     vtab[15] = (unsigned long)systick_handler;
 
     NVIC_SYSTICK_RELOAD = GYROS_CONFIG_CORE_HZ /
-                          GYROS_CONFIG_TIMER_PERIOD - 1;
+                          GYROS_CONFIG_TIMER_HZ - 1;
     NVIC_SYSTICK_CURRENT = 0; /* reset on write register */
     NVIC_SYSTICK_CTLST = (NVIC_SYSTICK_CTLST & ~0x00010007) | 7;
 #endif

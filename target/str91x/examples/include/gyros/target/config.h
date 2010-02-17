@@ -30,6 +30,11 @@
 #define INCLUDED__gyros_str91x_config_h__200901021701
 
 /*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_STR91X_PCLK               48000000
+
+/*---------------------------------------------------------------------*
  * Application specific configuration  (see gyros/target/defconfig.h
  *                                      and gyros/private/defconfig.h)
  *---------------------------------------------------------------------*/
@@ -37,36 +42,5 @@
 #define GYROS_CONFIG_TRACE                     1
 
 #include <gyros/target/defconfig.h>
-
-/*---------------------------------------------------------------------*
- * GyrOS target specific configuration
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_STR91X_PCLK               48000000
-
-#define GYROS_CONFIG_TIMER_RESOLUTION          1000000
-
-#if GYROS_CONFIG_DYNTICK
-
-#define GYROS_CONFIG_US_TO_TICKS(us)           (us)
-#define GYROS_CONFIG_MS_TO_TICKS(ms)           ((ms) * 1000)
-#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000000)
-
-#define GYROS_CONFIG_TICKS_TO_US(us)           (us)
-#define GYROS_CONFIG_TICKS_TO_MS(ms)           ((ms) / 1000)
-#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000000)
-
-#else /* GYROS_CONFIG_DYNTICK */
-
-#define GYROS_CONFIG_TIMER_PERIOD              1000
-
-#define GYROS_CONFIG_US_TO_TICKS(us)           ((us) / 1000)
-#define GYROS_CONFIG_MS_TO_TICKS(ms)           (ms)
-#define GYROS_CONFIG_S_TO_TICKS(s)             ((s) * 1000)
-
-#define GYROS_CONFIG_TICKS_TO_US(us)           ((us) * 1000)
-#define GYROS_CONFIG_TICKS_TO_MS(ms)           (ms)
-#define GYROS_CONFIG_TICKS_TO_S(s)             ((s) / 1000)
-
-#endif
 
 #endif
