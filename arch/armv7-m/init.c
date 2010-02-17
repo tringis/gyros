@@ -46,7 +46,6 @@ static gyros_abstime_t s_time;
 static void
 systick_handler(void)
 {
-    NVIC_SYSTICK_CTLST;
     gyros__tick(++s_time);
 }
 
