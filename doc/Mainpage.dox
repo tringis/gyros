@@ -73,6 +73,7 @@ from the core.
 
 ARM based:
 - Atmel AT91SAM7S (ARM7TDMI core)
+- Luminary Micro Stellaris LM3S (Cortex-M3 core)
 - STMicroelectronics STR91x (ARM966E-S core)
 
 \section further_reading Further reading
