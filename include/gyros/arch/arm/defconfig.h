@@ -29,10 +29,4 @@
 #ifndef INCLUDED__gyros_arm_defconfig_h__200901101017
 #define INCLUDED__gyros_arm_defconfig_h__200901101017
 
-#ifdef __THUMB_INTERWORK__
-#define GYROS_CONFIG_THUMB                     1
-#else
-#define GYROS_CONFIG_THUMB                     0
-#endif
-
 #endif

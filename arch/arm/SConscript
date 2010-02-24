@@ -2,6 +2,6 @@ gyros_arch_srcs = map(File, [ 'debug.c',
                               'stack_used.c',
                               'task_init.c' ])
 
-gyros_arch_arm_srcs = map(File, [ 'interrupt.c' ])
+gyros_arch_arm_srcs = map(File, [ 'interrupt.c', 'interrupt2.c' ])
 
 Return("gyros_arch_srcs", "gyros_arch_arm_srcs")

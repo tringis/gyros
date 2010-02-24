@@ -32,10 +32,13 @@
 #include <gyros/target/config.h>
 #include <gyros/arch/arm/arm_defs.h>
 
-#if !GYROS_CONFIG_THUMB
 static inline unsigned long
 gyros_interrupt_disable(void)
 {
+#ifdef __thumb__
+    unsigned long gyros__arm_interrupt_disable(void);
+    return gyros__arm_interrupt_disable();
+#else
     unsigned long temp, flags;
 
     /* Inline assembly to set the IRQ bit in CPSR. */
@@ -46,21 +49,31 @@ gyros_interrupt_disable(void)
         : "=r" (temp), "=&r" (flags) :: "memory");
 
     return flags;
+#endif
 }
 
 /* Restore interrupts (IRQ and FIQ) in the ARM core. */
 static inline void
 gyros_interrupt_restore(unsigned long flags)
 {
+#ifdef __thumb__
+    void gyros__arm_interrupt_restore(unsigned long flags);
+    return gyros__arm_interrupt_restore(flags);
+#else
     /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
         "msr    cpsr_c, %0\n\t"
         :: "r" (flags) : "memory");
+#endif
 }
 
 static inline int
 gyros_in_interrupt(void)
 {
+#ifdef __thumb__
+    int gyros__arm_in_interrupt(void);
+    return gyros__arm_in_interrupt();
+#else
     unsigned long cpsr;
 
     /* Inline assembly to set the IRQ bit in CPSR. */
@@ -69,10 +82,8 @@ gyros_in_interrupt(void)
         : "=r" (cpsr) :: "memory");
 
     return (cpsr & 0x1f) != ARM_MODE_SYS;
-}
-#else
-int gyros_in_interrupt(void);
 #endif
+}
 
 /* Reschedule, i.e. make sure the right task is running. */
 static inline void

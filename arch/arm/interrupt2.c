@@ -32,15 +32,42 @@
 #error This file must be compiled in ARM mode
 #endif
 
-void
-gyros__interrupt_enable(void)
-{
-    unsigned long temp;
+/* The following function are used when thumb interworking is
+ * enabled. */
 
-    /* Inline assembly to clear the IRQ and FIQ bits in CPSR. */
+unsigned long
+gyros__arm_interrupt_disable(void)
+{
+    unsigned long temp, flags;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "mrs    %1, cpsr\n\t"
+        "orr    %0, %1, #0xc0\n\t"
+        "msr    cpsr_c, %0\n\t"
+        : "=l" (temp), "=&l" (flags) :: "memory");
+
+    return flags;
+}
+
+void
+gyros__arm_interrupt_restore(unsigned long flags)
+{
+    /* Inline assembly to set the IRQ bit in CPSR. */
+    __asm__ __volatile__(
+        "msr    cpsr_c, %0\n\t"
+        :: "r" (flags) : "memory");
+}
+
+int
+gyros__arm_in_interrupt(void)
+{
+    unsigned long cpsr;
+
+    /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
         "mrs    %0, cpsr\n\t"
-        "bic    %0, %0, #0xc0\n\t"
-        "msr    cpsr_c, %0"
-        : "=l" (temp) :: "memory");
+        : "=r" (cpsr) :: "memory");
+
+    return (cpsr & 0x1f) != ARM_MODE_SYS;
 }
