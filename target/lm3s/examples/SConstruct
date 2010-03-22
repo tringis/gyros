@@ -9,10 +9,11 @@ env = Environment()
 # Create environments
 ######################################################################
 host_env = env.Clone()
-target_env = env.Clone(CC = 'arm-elf-gcc',
-                       AR = 'arm-elf-ar',
-                       RANLIB = 'arm-elf-ranlib',
-                       CCFLAGS = ['-Wall', '-g', '-O2', '-mcpu=cortex-m3'],
+target_env = env.Clone(CC = 'arm-none-eabi-gcc',
+                       AR = 'arm-none-eabi-ar',
+                       RANLIB = 'arm-none-eabi-ranlib',
+                       CCFLAGS = ['-Wall', '-g', '-O2', '-mcpu=cortex-m3',
+                                  '-mthumb'],
                        CPPDEFINES = ['TARGET_IS_TEMPEST_RB1'],
                        CPPPATH = ['#/include',
                                   '#/../include',
@@ -22,7 +23,7 @@ target_env = env.Clone(CC = 'arm-elf-gcc',
                        LINKFLAGS = ['-nostdlib', '-Tlm3s9b9x.ld'],
                        OBJPREFIX = '.lm3s-',
                        PROGSUFFIX = '.elf')
-target_env.PrependENVPath('PATH', '/opt/arm-elf/gcc-m3/bin')
+target_env.PrependENVPath('PATH', '/opt/arm-none-eabi/gcc/bin')
 
 Export("host_env", "target_env")
 
