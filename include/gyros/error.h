@@ -26,34 +26,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/debug.h>
-#include <gyros/interrupt.h>
-#include <gyros/private/debug.h>
+#ifndef INCLUDED__gyros_error_h__201003240827
+#define INCLUDED__gyros_error_h__201003240827
+
 #include <gyros/target/config.h>
+#include <gyros/task.h>
 
-#if GYROS_CONFIG_DEBUG
+/** \file
+  * \brief Error handling.
+  * \details Header file for \ref error_group.
+  *
+  * \defgroup error_group Error handling
+  *
+  * When a fatal error is detected by GyrOS, an error handling
+  * callback function is called, with a string describing the error as
+  * first argument, and an object pointer as second argument.  The
+  * meaning of the object pointer depends on the error message, but is
+  * normally obvious.  If the error is that there's a mutex deadlock,
+  * the pointer points to the mutex causing the deadlock, etc.
+  *
+  * The callback is implemented by the application, and is typically
+  * prints an error message and stops or resets the CPU.  If a
+  * callback is not set, GyrOS just disables all interrupts and hangs
+  * the CPU.
+  *
+  * @{
+  */
 
-static void (*s_handler)(const char *msg, void *object);
+/** Set the error handler to @a msg. The default error handler just
+  * hangs forever in a loop with interrupts disabled.  The error
+  * handler is called with two parameters, both a text message
+  * describing the error, and a pointer to the object relevant to the
+  * error, e.g. a pointer to the mutex when a mutex error is detected,
+  * or a task when a task error is detected, or @c NULL when there is
+  * no relevant object.
+  *
+  * \param handler          Error handler function pointer.
+  */
+void gyros_set_error_handler(void (*handler)(const char *msg, void *object));
 
-void
-gyros_set_error_handler(void (*handler)(const char *msg,
-                                        void *object))
-{
-    unsigned long flags = gyros_interrupt_disable();
-
-    s_handler = handler;
-    gyros_interrupt_restore(flags);
-}
-
-void
-gyros_error(const char *msg, void *object)
-{
-    if (s_handler)
-        s_handler(msg, object);
-
-    gyros_interrupt_disable();
-    for (;;)
-        ;
-}
+/*@}*/
 
 #endif

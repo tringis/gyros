@@ -43,26 +43,11 @@
   * enabled, many common invalid uses of the GyrOS API is detected,
   * and more information about the status of each task tracked,
   * e.g. if a task is blocking on a mutex, and if so, which mutex.
+  * Errors are reported using the standard
+  * \ref error_group "error handling" module.
   *
   * @{
   */
-
-/** Set the error handler to @a msg. The default error handler just
-  * hangs forever in a loop with interrupts disabled.  The error
-  * handler is called with two parameters, both a text message
-  * describing the error, and a pointer to the object relevant to the
-  * error, e.g. a pointer to the mutex when a mutex error is detected,
-  * or a task when a task error is detected, or @c NULL when there is
-  * no relevant object.
-  *
-  * \param handler          Error handler function pointer.
-  */
-#if GYROS_CONFIG_DEBUG
-void gyros_set_error_handler(void (*handler)(const char *msg,
-                                             void *object));
-#else
-#define gyros_set_error_handler(handler) do { } while (0)
-#endif
 
 /** Set the name of the @a object to @a object_name.
   *

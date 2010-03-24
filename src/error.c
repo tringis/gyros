@@ -26,31 +26,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
-
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
-  * 
-  * Convenience include file that includes all GyrOS include files.
-  */
-
-#include <gyros/cond.h>
-#include <gyros/debug.h>
 #include <gyros/error.h>
-#include <gyros/hooks.h>
 #include <gyros/interrupt.h>
-#include <gyros/iterate.h>
-#include <gyros/memory.h>
-#include <gyros/mutex.h>
-#include <gyros/mq.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
-#include <gyros/time.h>
-#include <gyros/timer.h>
-#include <gyros/trace.h>
-#include <gyros/zpool.h>
 
-#endif
+static void (*s_handler)(const char *msg, void *object);
+
+void
+gyros_set_error_handler(void (*handler)(const char *msg, void *object))
+{
+    unsigned long flags = gyros_interrupt_disable();
+
+    s_handler = handler;
+    gyros_interrupt_restore(flags);
+}
+
+void
+gyros_error(const char *msg, void *object)
+{
+    if (s_handler)
+        s_handler(msg, object);
+
+    gyros_interrupt_disable();
+    for (;;)
+        ;
+}
