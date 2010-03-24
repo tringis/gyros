@@ -64,7 +64,7 @@ gyros_zpool_get_free(void *pool)
 }
 
 void*
-gyros_zalloc(void *pool)
+gyros_try_zalloc(void *pool)
 {
     struct zpool *ep = pool;
     struct block *bh;
@@ -97,6 +97,17 @@ gyros_zalloc(void *pool)
     bh->index = index;
 
     return bh + 1;
+}
+
+void*
+gyros_zalloc(void *pool)
+{
+    void *zone = gyros_try_zalloc(pool);
+
+    if (zone == NULL)
+        gyros_error("Out of memory in gyros_zalloc", pool);
+
+    return zone;
 }
 
 static void

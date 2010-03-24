@@ -83,12 +83,20 @@ unsigned gyros_zpool_get_size(void *pool);
   */
 unsigned gyros_zpool_get_free(void *pool);
 
-/** Allocate a zone from the zone pool.  May be called from interrupt
-  * context.  Call gyros_free() to free the allocated zone.
+/** Try to allocate a zone from the zone pool.  May be called from
+  * interrupt context.  Call gyros_free() to free the allocated zone.
   *
   * \param pool         Address of zone pool.
   * \return             Address to zone, or @c NULL if there were
   *                     no free zones.
+  */
+void *gyros_try_zalloc(void *pool);
+
+/** Allocate a zone from the zone pool.  May be called from interrupt
+  * context.  Call gyros_free() to free the allocated zone.
+  *
+  * \param pool         Address of zone pool.
+  * \return             Address to zone.
   */
 void *gyros_zalloc(void *pool);
 
