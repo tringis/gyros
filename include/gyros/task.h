@@ -59,7 +59,7 @@
   * \code
   * gyros_task_t task1;
   * char task1_stack[128];
-
+  *
   * static void task1_main(void *arg)
   * {
   *     ...
