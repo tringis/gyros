@@ -67,8 +67,4 @@ struct gyros_debug_info
 #  endif
 #endif
 
-#if GYROS_CONFIG_DEBUG
-void gyros_error(const char *msg, void *object);
-#endif
-
 #endif

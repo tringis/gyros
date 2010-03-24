@@ -6,6 +6,8 @@
 #include <gyros/interrupt.h>
 #include <gyros/private/debug.h>
 
+#include "private.h"
+
 #define BPU (8U * sizeof(unsigned)) /* BPU = Bits Per Unsigned */
 
 struct gyros__zpool
@@ -103,7 +105,7 @@ gyros_zalloc(gyros_zpool_t *pool)
     void *zone = gyros_try_zalloc(pool);
 
     if (zone == NULL)
-        gyros_error("Out of memory in gyros_zalloc", pool);
+        gyros__error("Out of memory in gyros_zalloc", pool);
 
     return zone;
 }
@@ -120,7 +122,7 @@ gyros_zpool_free(void *addr)
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_DEBUG
     if ((bh->pool->bitmap[bh->index / BPU] & (1U << (bh->index % BPU))) == 0)
-        gyros_error("double free in gyros_zpool_free", addr);
+        gyros__error("double free in gyros_zpool_free", addr);
 #endif
     bh->pool->bitmap[bh->index / BPU] &= ~(1U << (bh->index % BPU));
     bh->pool->free_blocks++;

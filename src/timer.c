@@ -72,7 +72,7 @@ gyros_timer_start(gyros_timer_t *timer,
 
 #if GYROS_CONFIG_DEBUG
     if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
-        gyros_error("uninitialized timer in gyros_timer_start", timer);
+        gyros__error("uninitialized timer in gyros_timer_start", timer);
 #endif
 
     gyros__list_remove(&timer->list_node);
@@ -91,7 +91,7 @@ gyros_timer_stop(gyros_timer_t *timer)
 
 #if GYROS_CONFIG_DEBUG
     if (timer->debug_info.magic != GYROS_TIMER_DEBUG_MAGIC)
-        gyros_error("uninitialized timer in gyros_timer_stop", timer);
+        gyros__error("uninitialized timer in gyros_timer_stop", timer);
 #endif
 
     gyros__list_remove(&timer->list_node);

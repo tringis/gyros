@@ -94,4 +94,6 @@ void gyros__mutex_unlock(gyros_mutex_t *m, int reschedule);
 
 void gyros__cond_reschedule(void);
 
+void gyros__error(const char *msg, void *object);
+
 #endif

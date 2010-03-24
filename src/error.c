@@ -29,6 +29,8 @@
 #include <gyros/error.h>
 #include <gyros/interrupt.h>
 
+#include "private.h"
+
 static void (*s_handler)(const char *msg, void *object);
 
 void
@@ -41,7 +43,7 @@ gyros_set_error_handler(void (*handler)(const char *msg, void *object))
 }
 
 void
-gyros_error(const char *msg, void *object)
+gyros__error(const char *msg, void *object)
 {
     if (s_handler)
         s_handler(msg, object);

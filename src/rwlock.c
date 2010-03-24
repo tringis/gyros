@@ -53,11 +53,11 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_rdlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_rdlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_rdlock called from interrupt", rwlock);
+        gyros__error("rwlock_rdlock called from interrupt", rwlock);
     if (rwlock->writer == gyros.current)
-        gyros_error("rwlock_rdlock deadlock", rwlock);
+        gyros__error("rwlock_rdlock deadlock", rwlock);
 #endif
 
     while (unlikely(rwlock->writer ||
@@ -83,9 +83,9 @@ gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_try_rdlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_try_rdlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_try_rdlock called from interrupt", rwlock);
+        gyros__error("rwlock_try_rdlock called from interrupt", rwlock);
 #endif
 
     if (unlikely(rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list)))
@@ -108,11 +108,11 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_rdlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_rdlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_rdlock called from interrupt", rwlock);
+        gyros__error("rwlock_rdlock called from interrupt", rwlock);
     if (rwlock->writer == gyros.current)
-        gyros_error("gyros_rwlock_rdlock_until deadlock", rwlock);
+        gyros__error("gyros_rwlock_rdlock_until deadlock", rwlock);
 #endif
 
     while (unlikely(rwlock->writer ||
@@ -146,11 +146,11 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_wrlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_wrlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_wrlock called from interrupt", rwlock);
+        gyros__error("rwlock_wrlock called from interrupt", rwlock);
     if (rwlock->writer == gyros.current)
-        gyros_error("gyros_rwlock_wrlock deadlock", rwlock);
+        gyros__error("gyros_rwlock_wrlock deadlock", rwlock);
 #endif
 
     while (unlikely((rwlock->writer != 0 &&
@@ -177,9 +177,9 @@ gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_wrlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_wrlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_wrlock called from interrupt", rwlock);
+        gyros__error("rwlock_wrlock called from interrupt", rwlock);
 #endif
 
     if (unlikely((rwlock->writer != 0 &&
@@ -205,11 +205,11 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_wrlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_wrlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_wrlock called from interrupt", rwlock);
+        gyros__error("rwlock_wrlock called from interrupt", rwlock);
     if (rwlock->writer == gyros.current)
-        gyros_error("gyros_rwlock_wrlock_until deadlock", rwlock);
+        gyros__error("gyros_rwlock_wrlock_until deadlock", rwlock);
 #endif
 
     while (unlikely((rwlock->writer != 0 &&
@@ -244,16 +244,16 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
-        gyros_error("uninitialized rwlock in rwlock_unlock", rwlock);
+        gyros__error("uninitialized rwlock in rwlock_unlock", rwlock);
     if (gyros_in_interrupt())
-        gyros_error("rwlock_unlock called from interrupt", rwlock);
+        gyros__error("rwlock_unlock called from interrupt", rwlock);
 #endif
 
     if (rwlock->writer)
     {
 #if GYROS_CONFIG_DEBUG
         if (rwlock->writer != gyros.current)
-            gyros_error("rwlock_unlock called by non owner task", rwlock);
+            gyros__error("rwlock_unlock called by non owner task", rwlock);
 #endif
         GYROS__TRACE_RWLOCK(WR_UNLOCK, rwlock);
         rwlock->writer = NULL;
@@ -264,7 +264,7 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
         rwlock->readers--;
 #if GYROS_CONFIG_DEBUG
         if (rwlock->readers < 0)
-            gyros_error("rwlock_unlock called for unlocked rwlock", rwlock);
+            gyros__error("rwlock_unlock called for unlocked rwlock", rwlock);
 #endif
     }
     /* It's important that we don't try to wake any readers if there
