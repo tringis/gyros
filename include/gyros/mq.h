@@ -41,16 +41,38 @@
   * sent to the queue using gyros_mq_send() and received from the
   * queue using gyros_mq_receive() or gyros_mq_receive_until().
   *
+  * The message queue must be initialized before use, either using
+  * GYROS_MQ_INITVAL() when defining the message queue, or using
+  * gyros_mq_init().
+  *
   * Message data types are structs whose first member is an instance
   * of gyros_mq_msghdr_t.  See the documentation of \ref
   * gyros_mq_msghdr_t for an example of a message data type.
   *
   * It is convenient to use a \ref zpool_group "zone pool" for message
-  * allocation.
+  * allocation:
+  * 
+  * \code
+  * struct my_message
+  * {
+  *     gyros_mq_msghdr_t hdr;
+  *     int my_data;
+  * };
   *
-  * The message queue must be initialized before use, either using
-  * GYROS_MQ_INITVAL() when defining the message queue, or using
-  * gyros_mq_init().
+  * void send(int data)
+  * {
+  *     struct my_message *msg = gyros_zalloc(zpool);
+  *     msg->my_data = data;
+  *     gyros_mq_send(&mq, msg);
+  * }
+  *
+  * void receive(void)
+  * {
+  *     struct my_message *msg = gyros_mq_receive(&mq);
+  *     printf("data = %d\n", msg->my_data);
+  *     gyros_free(msg);
+  * }
+  * \endcode
   *
   * @{
   */
