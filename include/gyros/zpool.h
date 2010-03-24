@@ -59,46 +59,54 @@
                     ((zone_size) + sizeof(unsigned) - 1) /              \
                     sizeof(unsigned) * sizeof(unsigned)))
 
+/** \brief Zone pool object. */
+typedef struct gyros__zpool gyros_zpool_t;
+
 /** Create a zone pool, which is a memory pool where all blocks (or
   * zones) have the same size.  Zone pools are interrupt safe, meaning
   * that zones can be allocated and freed from interrupts.
   *
-  * \param pool         Address of memory area to be used for the
+  * \param mem          Address of memory area to be used for the
   *                     pool.
-  * \param pool_size    Size in bytes of memory area to be used for
+  * \param mem_size     Size in bytes of memory area to be used for
   *                     the pool.
   * \param zone_size    Size of each zone.
+  * \return             Pointer to pool.
   */
-void gyros_zpool_init(void *pool, unsigned pool_size, unsigned zone_size);
+gyros_zpool_t *gyros_zpool_init(void *mem, unsigned mem_size,
+                                unsigned zone_size);
 
 /** Get the total number zones in the zone pool.
   *
+  * \param pool         Zone pool.
   * \return             Total number of zones.
   */
-unsigned gyros_zpool_get_size(void *pool);
+unsigned gyros_zpool_get_size(gyros_zpool_t *pool);
 
 /** Get the number of unallocated zones in the zone pool.
   *
+  * \param pool         Zone pool.
   * \return             Total number of unallocated (free) zones.
   */
-unsigned gyros_zpool_get_free(void *pool);
+unsigned gyros_zpool_get_free(gyros_zpool_t *pool);
 
 /** Try to allocate a zone from the zone pool.  May be called from
   * interrupt context.  Call gyros_free() to free the allocated zone.
   *
-  * \param pool         Address of zone pool.
+  * \param pool         Zone pool.
   * \return             Address to zone, or @c NULL if there were
   *                     no free zones.
   */
-void *gyros_try_zalloc(void *pool);
+void *gyros_try_zalloc(gyros_zpool_t *pool);
 
 /** Allocate a zone from the zone pool.  May be called from interrupt
-  * context.  Call gyros_free() to free the allocated zone.
+  * context.  Call gyros_free() to free the allocated zone.  Causes a
+  * fatal error if no free zones.
   *
-  * \param pool         Address of zone pool.
+  * \param pool         Zone pool.
   * \return             Address to zone.
   */
-void *gyros_zalloc(void *pool);
+void *gyros_zalloc(gyros_zpool_t *pool);
 
 /*@}*/
 
