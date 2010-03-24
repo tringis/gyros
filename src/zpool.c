@@ -8,11 +8,17 @@
 
 #include "private.h"
 
+#define GYROS_ZPOOL_MAGIC                 ((unsigned)0x726eaa11)
+
 #define BPU (8U * sizeof(unsigned)) /* BPU = Bits Per Unsigned */
 
 struct gyros__zpool
 {
     void (*free_func)(void *addr);
+
+#if GYROS_CONFIG_DEBUG
+    unsigned magic;
+#endif
 
     unsigned block_size;
     unsigned num_blocks;
@@ -48,12 +54,21 @@ gyros_zpool_init(void *mem, unsigned mem_size, unsigned block_size)
     for (i = 0; i < bitmap_bytes / sizeof(unsigned); ++i)
         pool->bitmap[i] = 0;
 
+#if GYROS_CONFIG_DEBUG
+    pool->magic = GYROS_ZPOOL_MAGIC;
+#endif
+
     return pool;
 }
 
 unsigned
 gyros_zpool_get_size(gyros_zpool_t *pool)
 {
+#if GYROS_CONFIG_DEBUG
+    if (pool->magic != GYROS_ZPOOL_MAGIC)
+        gyros__error("uninitialized pool in zpool_get_size", pool);
+#endif
+
     return pool->num_blocks;
 }
 
@@ -61,6 +76,11 @@ gyros_zpool_get_size(gyros_zpool_t *pool)
 unsigned
 gyros_zpool_get_free(gyros_zpool_t *pool)
 {
+#if GYROS_CONFIG_DEBUG
+    if (pool->magic != GYROS_ZPOOL_MAGIC)
+        gyros__error("uninitialized pool in zpool_get_free", pool);
+#endif
+
     return pool->free_blocks;
 }
 
@@ -70,6 +90,11 @@ gyros_try_zalloc(gyros_zpool_t *pool)
     struct block *bh;
     unsigned word = 0, index = 0, mask = 1;
     unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_CONFIG_DEBUG
+    if (pool->magic != GYROS_ZPOOL_MAGIC)
+        gyros__error("uninitialized pool in try_zalloc", pool);
+#endif
 
     while (word < pool->num_blocks / BPU && pool->bitmap[word] == ~0U)
         ++word;
@@ -121,6 +146,8 @@ gyros_zpool_free(void *addr)
 
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_DEBUG
+    if (bh->pool->magic != GYROS_ZPOOL_MAGIC)
+        gyros__error("uninitialized pool in zpool_free", NULL);
     if ((bh->pool->bitmap[bh->index / BPU] & (1U << (bh->index % BPU))) == 0)
         gyros__error("double free in gyros_zpool_free", addr);
 #endif
