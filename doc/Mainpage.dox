@@ -51,7 +51,8 @@ from the core.
   108 bytes RAM (plus stack), and a mutex uses only 16 bytes RAM.
 - Low power consumption using dynamic timer interrupts that prevents
   unneccessary wakeups from low power modes.
-- \ref debug_group to catch common usage errors and see current task status.
+- \ref error_group and \ref debug_group "debugging support" to catch
+  common usage errors and see current task status.
 - \ref hook_group to add custom code to context switches and interrupt
   handlers.
 - \ref trace_group to study real time behavior of tasks and synchronization
