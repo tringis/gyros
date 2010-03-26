@@ -162,9 +162,9 @@ void gyros_task_create(gyros_task_t *task,
                        int stack_size,
                        unsigned short priority);
 
-/** Delete a task.  Deleting a task is dangerous because if the task
-  * is any locks, they will not be returning, which will likely cause
-  * a deadlock later on.
+/** Delete a task.  Deleting a task is dangerous because any
+  * synchronization objects locked by the deleted objects will remain
+  * locked, likely causing deadlocks later on.
   *
   * \param task         Task struct pointer.
   */
