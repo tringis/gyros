@@ -28,7 +28,7 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 #include <gyros/private/trace.h>
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/task.h>
 
 #include <limits.h>

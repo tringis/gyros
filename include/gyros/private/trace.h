@@ -30,7 +30,7 @@
 #define INCLUDED__gyros_private_trace_h__200905062242
 
 #include <gyros/trace.h>
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 
 #if GYROS_CONFIG_TRACE
 

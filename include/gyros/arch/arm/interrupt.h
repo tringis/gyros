@@ -29,7 +29,7 @@
 #ifndef INCLUDE__gyros_arm_interrupt_h__200212292232
 #define INCLUDE__gyros_arm_interrupt_h__200212292232
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/arch/arm/arm_defs.h>
 
 static inline unsigned long

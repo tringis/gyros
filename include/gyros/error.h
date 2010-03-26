@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_error_h__201003240827
 #define INCLUDED__gyros_error_h__201003240827
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/task.h>
 
 /** \file

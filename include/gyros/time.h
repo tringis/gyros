@@ -55,7 +55,7 @@
   * @{
   */
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 
 /** Absolute monotonically increasing time in target specific
   * units. */

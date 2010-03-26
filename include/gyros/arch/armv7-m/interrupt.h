@@ -29,7 +29,7 @@
 #ifndef INCLUDE__gyros_armv7_m_interrupt_h__201002062157
 #define INCLUDE__gyros_armv7_m_interrupt_h__201002062157
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 
 static inline unsigned long
 gyros_interrupt_disable(void)

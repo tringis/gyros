@@ -68,9 +68,9 @@ The example contains the following files:
   to find your GNU toolchain commands, and to generate ARM THUMB
   code or not.
 - \c str91x.ld - Link script.
-- \c include/gyros/target/config.h - GyrOS configuration file.  Edit
-  this file to support time conversion functions, and to enable and
-  disable optional features.
+- \c include/gyros/config.h - GyrOS configuration file.  Edit this
+  file to support time conversion functions, and to enable and disable
+  optional features.
 - \c hwinit.c - Hardware initialization code.  Edit this file to
   make the example run on your board.
 - \c startup.S - Startup code.
@@ -139,9 +139,8 @@ arm-elf-gcc -I $GYROS/include -I $GYROS/target/str91x/include -c file.c
 \subsection building_other_config Configuration file
 
 GyrOS exects to find a configuration include file, included by GyrOS
-internally using the name \c gyros/target/config.h.  A template for
-this configuration file is available in the examples for your target
-port.
+internally using the name \c gyros/config.h.  A template for this
+configuration file is available in the examples for your target port.
 
 \subsection building_other_srcs Source files
 

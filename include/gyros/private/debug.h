@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_private_debug_h__200812022021
 #define INCLUDED__gyros_private_debug_h__200812022021
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 
 /** Structure containing debug information on an object. This struct
   * is the first member of all synchronization objects. */

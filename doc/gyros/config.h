@@ -32,9 +32,9 @@
 /** \defgroup config_group Configuration
   *
   * A few aspects of GyrOS can be configured at build time using the
-  * include file \c gyros/target/config.h.  This file is target specific
+  * include file \c gyros/config.h.  This file is target specific
   * and should be copied from the target's @c examples directory,
-  * e.g. @c targets/at91sam7s/examples/include/gyros/target/config.h.
+  * e.g. @c targets/at91sam7s/examples/include/gyros/config.h.
   */
 
 /*@{*/

@@ -28,7 +28,7 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 #include <gyros/private/target.h>
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/time.h>
 
 #include <gyros/arch/armv7-m/target.h>

@@ -50,7 +50,7 @@
   * @{
   */
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

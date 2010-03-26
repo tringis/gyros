@@ -75,7 +75,7 @@
   * @{
   */
 
-#include <gyros/target/config.h>
+#include <gyros/config.h>
 #include <gyros/target/context.h>
 #include <gyros/private/debug.h>
 #include <gyros/private/list.h>
