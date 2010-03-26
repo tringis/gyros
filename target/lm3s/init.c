@@ -59,6 +59,7 @@
 #define GPTMTAMR_TAMR_PERIODIC (2U << 0)
 #define GPTMTBMR             TIMER_REG(0x008)
 #define GPTMCTL              TIMER_REG(0x00C)
+#define GPTMCTL_TASTALL      (1U << 1)
 #define GPTMCTL_TAEN         (1U << 0)
 #define GPTMIMR              TIMER_REG(0x018)
 #define GPTMIMR_TAMIM        (1U << 4)
@@ -147,6 +148,7 @@ gyros__target_init(void)
     __asm__ __volatile__("dmb\n" ::: "memory");
 
     GPTMCTL &= 0xffff9080; /* Disable timer */
+    GPTMCTL |= GPTMCTL_TASTALL; /* Enable stalling when CPU halted. */
     GPTMCFG = GPTMCFG & ~7; /* 32 bit mode */
     GPTMTAMR = (GPTMTAMR & ~0xff) |
         GPTMTAMR_TACDIR | GPTMTAMR_TAMR_PERIODIC; /* Count up, periodic */
