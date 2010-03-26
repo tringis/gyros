@@ -39,7 +39,7 @@
 static gyros_task_t s_idle_task;
 
 gyros_t gyros = {
-    &s_idle_task,
+    NULL,
     GYROS__LIST_INITVAL(gyros.running),
     GYROS__LIST_INITVAL(gyros.timeouts),
 #if GYROS_CONFIG_TIMER
@@ -195,5 +195,7 @@ gyros_task_create(gyros_task_t *task,
     GYROS__LIST_NODE_INIT(&task->msg_list);
     task->receiving = 0;
 #endif
+    if (gyros.current) /* Don't reschedule before gyros_start() */
+        gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }

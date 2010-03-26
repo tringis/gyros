@@ -131,10 +131,17 @@ typedef struct
   * will return, and the caller is responsible for implementing the
   * idle loop.  Since the idle task must always be running, the custom
   * idle loop must not call functions that may block.
+  *
+  * The only other GyrOS function that may be called before this
+  * function is gyros_task_create().
   */
 void gyros_start(void);
 
-/** Create a new task.
+/** Create a new task.  If the new task has higher priority than the
+  * current task, the current task will be preempted even before
+  * returning from this function.
+  *
+  * This is the only function that may be called before gyros_start().
   *
   * \param task         Task struct pointer.
   * \param name         Task name.  The pointer is stored, not the
