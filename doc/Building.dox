@@ -51,53 +51,6 @@ platforms.  The target specific code is on the other hand very little
 code, so it's not too hard to port to another development platform if
 needed.
 
-Each port has one or more examples that can be very useful when
-starting to use GyrOS.  There's also example startup code available
-for each target, but it's likely going to require changes to properly
-initialize the hardware on the real target.  Initialization of clocks,
-memories and so on will likely vary from board to board.
-
-\section building_example Building an example application
-
-As first example, we will build the supplied examples for the STR91x
-microcontroller family.  The name of this port is str91x, and it
-written for the GNU toolchain, and uses SCons as the build system.
-
-The example contains the following files:
-- \c SConstruct - SCons build file ("Makefile").  Edit this file
-  to find your GNU toolchain commands, and to generate ARM THUMB
-  code or not.
-- \c str91x.ld - Link script.
-- \c include/gyros/config.h - GyrOS configuration file.  Edit this
-  file to support time conversion functions, and to enable and disable
-  optional features.
-- \c hwinit.c - Hardware initialization code.  Edit this file to
-  make the example run on your board.
-- \c startup.S - Startup code.
-- \c test.c - The actual test application.
-
-This simple example just creates two tasks of different priorities,
-one in a tight loop, and the other in a loop around a sleep call.  The
-example is build from the command line like this:
-
-\verbatim
-> cd target/str91x/examples
-> scons
-scons: Reading SConscript files ...
-scons: done reading SConscript files.
-scons: Building targets ...
-...
-scons: done building targets.
-> arm-elf-size test.elf
-   text	   data	    bss	    dec	    hex	filename
-   6160	     96	    688	   6944	   1b20	test.elf
-> 
-\endverbatim
-
-The size of the binary includes the C runtime, and this example has
-both debugging and tracing enabled which increases the size of the
-binary.
-
 \section building_app Building a real application using SCons
 
 Building a real application using SCons is very easy.  Let's say that
@@ -138,9 +91,10 @@ arm-elf-gcc -I $GYROS/include -I $GYROS/target/str91x/include -c file.c
 
 \subsection building_other_config Configuration file
 
-GyrOS exects to find a configuration include file, included by GyrOS
+GyrOS expects to find a configuration include file, included by GyrOS
 internally using the name \c gyros/config.h.  A template for this
-configuration file is available in the examples for your target port.
+configuration file is available in the example directory of your
+target port.
 
 \subsection building_other_srcs Source files
 
