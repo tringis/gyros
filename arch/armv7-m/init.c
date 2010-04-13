@@ -26,6 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <string.h>
+
 #include <gyros/interrupt.h>
 #include <gyros/private/target.h>
 #include <gyros/config.h>
@@ -35,16 +37,17 @@
 
 #include "nvic.h"
 
-static void pendsv_handler(void) __attribute__((__naked__));
+#define STACK_WORDS (GYROS_CONFIG_EXCEPTION_STACK_SIZE / sizeof(unsigned long))
 
-static unsigned long s_exception_stack[GYROS_CONFIG_EXCEPTION_STACK_SIZE /
-                                       sizeof(unsigned long)];
+void gyros__arch_enable_thread_stack(unsigned long *stack_top);
+
+static unsigned long s_exception_stack[STACK_WORDS];
 
 #if !GYROS_CONFIG_DYNTICK
 static gyros_abstime_t s_time;
 
-static void
-systick_handler(void)
+void
+SysTick_Handler(void)
 {
     gyros__tick(++s_time);
 }
@@ -61,72 +64,20 @@ gyros_time(void)
 }
 #endif
 
-static void
-pendsv_handler(void)
-{
-    __asm__ __volatile__(
-#if GYROS_CONFIG_CONTEXT_HOOK || GYROS_CONFIG_TRACE
-        "push    {lr}\n"
-        "ldr	 r0, =gyros__context_hook\n"
-        "blx     r0\n"
-        "pop     {lr}\n"
-#endif
-
-        "mrs     r3, psp\n"
-        "stmdb   r3, {r4-r11}\n"         /* Write registers to task stack. */
-        "ldr     r0, =gyros\n"           /* r0 = &gyros.current */
-        "ldr     r1, [r0]\n"             /* r1 = gyros.current */
-        "str     r3, [r1]\n"             /* gyros.current->context.sp = PSP */
-
-        "ldr     r2, [r0, #4]\n"         /* r2 = gyros.running.next */
-        "subs    r2, r2, #4\n"           /* r2 = TASK(gyros.running.next) */
-        "str     r2, [r0]\n"             /* gyros.current = r2 */
-
-        "ldr     r3, [r2]\n"             /* r3 = SP of new task */
-        "ldmdb   r3, {r4-r11}\n"         /* Load regs for new task */
-        "msr     psp, r3\n"              /* Set PSP to SP of new task */
-        "bx      lr\n"
-        ::: "memory");
-}
-
 void
 gyros__arch_init(void)
 {
-    unsigned long *vtab = (unsigned long*)NVIC_VTABOFFSET;
-    unsigned long temp;
 #if GYROS_CONFIG_STACK_USED
-    unsigned long *p = s_exception_stack;
-    int i;
-
-    for (i = 0;
-         i < GYROS_CONFIG_EXCEPTION_STACK_SIZE / sizeof(unsigned long);
-         ++i)
-    {
-        *p++ = 0xeeeeeeee;
-    }
+    memset(s_exception_stack, 0xee, sizeof(s_exception_stack));
 #endif
 
-    vtab[14] = (unsigned long)pendsv_handler;
+    gyros__arch_enable_thread_stack(s_exception_stack + STACK_WORDS);
 
 #if !GYROS_CONFIG_DYNTICK
-    vtab[15] = (unsigned long)systick_handler;
-
-    NVIC_SYSTICK_RELOAD = GYROS_CONFIG_CORE_HZ /
-                          GYROS_CONFIG_HZ - 1;
-    NVIC_SYSTICK_CURRENT = 0; /* reset on write register */
+    NVIC_SYSTICK_RELOAD = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_HZ - 1;
+    NVIC_SYSTICK_CURRENT = 0; /* reset-on-write register */
     NVIC_SYSTICK_CTLST = (NVIC_SYSTICK_CTLST & ~0x00010007) | 7;
 #endif
-
-    __asm__ __volatile__(
-        "mov     %0, sp\n"
-        "msr     psp, %0\n"              /* PSP = SP */
-        "msr     msp, %1\n"              /* MSP = exception_stack top */
-        "mov     %0, #2\n"
-        "msr     control, %0\n"          /* CONTROL = 2 */
-        : "=&r" (temp)
-        : "r" ((unsigned long)s_exception_stack +
-               GYROS_CONFIG_EXCEPTION_STACK_SIZE)
-        : "memory");
 }
 
 void
@@ -136,19 +87,10 @@ gyros__target_task_init(gyros_task_t *task,
                         void *stack,
                         int stack_size)
 {
-    unsigned long *sp = (unsigned long *)((unsigned long)stack +
-                                          stack_size);
+    unsigned long *sp = (unsigned long *)stack +
+                        stack_size / sizeof(unsigned long);
 
-#if GYROS_CONFIG_STACK_USED
-    {
-        unsigned long *stack_top = sp;
-        unsigned long *p = task->stack;
-
-        do
-            *p++ = 0xeeeeeeee;
-        while (p != stack_top);
-    }
-#endif
+    memset(stack, 0xee, stack_size);
 
     *--sp = 1U << 24;                        /* xPSR (thumb mode) */
     *--sp = (unsigned long)entry;            /* PC */
