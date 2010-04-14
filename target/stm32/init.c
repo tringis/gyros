@@ -37,24 +37,28 @@
 #    define TIMER_APB1_MASK      (1U <<  0)
 #    define TIMER_DBG_CR_MASK    (1U <<  11)
 #    define TIMER_IRQ            28
+#    define TIMER_ISR            TIM2_IRQHandler
 #    define TIMER_ADDR           0x40000000
 #  elif GYROS_CONFIG_STM32_TIMER == 3
 #    define TIMER_APB1_MASK      (1U <<  1)
 #    define TIMER_DBG_CR_MASK    (1U <<  12)
 #    define TIMER_IRQ            29
+#    define TIMER_ISR            TIM3_IRQHandler
 #    define TIMER_ADDR           0x40000400
 #  elif GYROS_CONFIG_STM32_TIMER == 4
 #    define TIMER_APB1_MASK      (1U <<  2)
 #    define TIMER_DBG_CR_MASK    (1U <<  13)
 #    define TIMER_IRQ            30
+#    define TIMER_ISR            TIM4_IRQHandler
 #    define TIMER_ADDR           0x40000800
 #  elif GYROS_CONFIG_STM32_TIMER == 5
 #    define TIMER_APB1_MASK      (1U <<  3)
 #    define TIMER_DBG_CR_MASK    (1U <<  18)
 #    define TIMER_IRQ            50
+#    define TIMER_ISR            TIM5_IRQHandler
 #    define TIMER_ADDR           0x40000c00
 #  else
-#    error Invalid GYROS_CONFIG_STM32_TIMER
+#    error Invalid GYROS_CONFIG_STM32_TIMER value
 #  endif
 
 #define MAX_PERIOD           0x8000
@@ -65,7 +69,7 @@
 
 #define DBGMCU_CR            REG32(0xE0042004)
 
-#define RCC_REG(offset)      REG32(0x40021000)
+#define RCC_REG(offset)      REG32(0x40021000 + (offset))
 
 #define RCC_APB1RSTR         RCC_REG(0x10)
 #define RCC_APB1ENR          RCC_REG(0x1c)
@@ -105,8 +109,8 @@
 static gyros_abstime_t s_time_hi;
 static unsigned short s_last_time_lo;
 
-static void
-timer_isr(void)
+void
+TIMER_ISR(void)
 {
     TIMx_SR = ~TIMx_SR_CC1IF; /* Clear match interrupt */
     gyros__tick(gyros_time());
@@ -145,7 +149,7 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    unsigned long time_lo = TIMx_CNT;
+    unsigned short time_lo = TIMx_CNT;
     gyros_abstime_t time_hi;
 
     if (time_lo < s_last_time_lo)
@@ -155,7 +159,7 @@ gyros_time(void)
 
     gyros_interrupt_restore(flags);
 
-    return (time_hi << 32) | time_lo;
+    return (time_hi << 16) | time_lo;
 }
 #endif
 
@@ -169,10 +173,13 @@ gyros__target_init(void)
     RCC_APB1RSTR |= TIMER_APB1_MASK;
     RCC_APB1RSTR &= ~TIMER_APB1_MASK;
 
+    TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32_TIMER_HZ - 1;
+
     TIMx_ARR = 0xffff;
     DBGMCU_CR |= TIMER_DBG_CR_MASK; /* Stop timer when CPU halted. */
 
-    gyros_target_set_isr(TIMER_IRQ, 0, timer_isr);
+    NVIC_IRQ_CLEAR_PENDING(TIMER_IRQ);
+    NVIC_IRQ_SET_ENABLE(TIMER_IRQ);
 
     TIMx_DIER = TIMx_DIER_CC1IE; /* Enable CC1 match interrupt */
     TIMx_CR1 |= TIMx_CR1_CEN; /* Enable timer */

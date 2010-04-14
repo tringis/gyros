@@ -81,6 +81,4 @@ gyros__tick_reschedule(void)
     gyros__reschedule();
 }
 
-void gyros_target_set_isr(int irq, unsigned prio, void (*isr)(void));
-
 #endif

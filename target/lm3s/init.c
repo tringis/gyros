@@ -33,10 +33,19 @@
 #include "../../arch/armv7-m/nvic.h"
 
 #if GYROS_CONFIG_DYNTICK
-#define TIMER_IRQ  (GYROS_CONFIG_LM3S_TIMER == 0 ? LM3S_IRQ_TIMER_0A : \
-                    GYROS_CONFIG_LM3S_TIMER == 1 ? LM3S_IRQ_TIMER_1A : \
-                    GYROS_CONFIG_LM3S_TIMER == 2 ? LM3S_IRQ_TIMER_2A : \
-                    LM3S_IRQ_TIMER_3A)
+
+#if GYROS_CONFIG_LM3S_TIMER == 0
+#  define TIMER_IRQ  LM3S_IRQ_TIMER_0A
+#  define TIMER_ISR  Timer0A_IRQHandler
+#elif GYROS_CONFIG_LM3S_TIMER == 1
+#  define TIMER_IRQ  LM3S_IRQ_TIMER_1A
+#  define TIMER_ISR  Timer1A_IRQHandler
+#elif GYROS_CONFIG_LM3S_TIMER == 2
+#  define TIMER_IRQ  LM3S_IRQ_TIMER_2A
+#  define TIMER_ISR  Timer2A_IRQHandler
+#else
+#  error Invalid GYROS_CONFIG_LM3S_TIMER value
+#endif
 
 #define MAX_PERIOD           0x80000000
 
@@ -81,8 +90,8 @@
 static gyros_abstime_t s_time_hi;
 static unsigned long s_last_time_lo;
 
-static void
-timer_isr(void)
+void
+TIMER_ISR(void)
 {
     GPTMICR = GPTMICR_TAMCINT; /* Clear match interrupt */
     gyros__tick(gyros_time());
@@ -155,7 +164,8 @@ gyros__target_init(void)
     GPTMIMR = (GPTMIMR & 0xfffff0e0) | GPTMIMR_TAMIM; /* Match interrupt */
     GPTMTAILR = 0xffffffff; /* Count from zero */
 
-    gyros_target_set_isr(TIMER_IRQ, 0, timer_isr);
+    NVIC_IRQ_CLEAR_PENDING(TIMER_IRQ);
+    NVIC_IRQ_SET_ENABLE(TIMER_IRQ);
 
     GPTMTAMR |= GPTMTAMR_TAMIE; /* Enable interrupt */
     GPTMCTL |= GPTMCTL_TAEN; /* Enable timer */
