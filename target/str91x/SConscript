@@ -22,4 +22,4 @@ arm_objs = map(target_arm_env.StaticObject, arch_arm_srcs + ['idle.c'])
 ######################################################################
 # Library target
 ######################################################################
-Default(target_env.StaticLibrary('gyros-str91x', srcs + arm_objs))
+Default(target_env.StaticLibrary('gyros', srcs + arm_objs))

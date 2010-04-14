@@ -23,4 +23,4 @@ arm_objs = map(target_arm_env.StaticObject, arch_arm_srcs)
 ######################################################################
 # Library target
 ######################################################################
-Default(target_env.StaticLibrary('gyros-at91sam7s', srcs + arm_objs))
+Default(target_env.StaticLibrary('gyros', srcs + arm_objs))

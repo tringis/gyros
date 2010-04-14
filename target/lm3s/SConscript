@@ -14,4 +14,4 @@ srcs = common_srcs + arch_srcs + ['init.c']
 ######################################################################
 # Library target
 ######################################################################
-Default(target_env.StaticLibrary('gyros-lm3s', srcs))
+Default(target_env.StaticLibrary('gyros', srcs))
