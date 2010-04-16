@@ -121,7 +121,7 @@ gyros__dyntick_set(gyros_abstime_t now, gyros_abstime_t next_timeout)
         if (dt < MAX_PERIOD / 4 &&
             (long)((unsigned long)next_timeout - GPTMTAV) <= 0)
         {
-            NVIC_IRQ_SET_PENDING(TIMER_IRQ);
+            gyros_target_pend_irq(TIMER_IRQ);
         }
     }
 }
@@ -164,8 +164,7 @@ gyros__target_init(void)
     GPTMIMR = (GPTMIMR & 0xfffff0e0) | GPTMIMR_TAMIM; /* Match interrupt */
     GPTMTAILR = 0xffffffff; /* Count from zero */
 
-    NVIC_IRQ_CLEAR_PENDING(TIMER_IRQ);
-    NVIC_IRQ_SET_ENABLE(TIMER_IRQ);
+    gyros_target_enable_irq(TIMER_IRQ, 1);
 
     GPTMTAMR |= GPTMTAMR_TAMIE; /* Enable interrupt */
     GPTMCTL |= GPTMCTL_TAEN; /* Enable timer */

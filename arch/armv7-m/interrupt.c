@@ -26,65 +26,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_armv7_m_interrupt_h__201002062157
-#define INCLUDE__gyros_armv7_m_interrupt_h__201002062157
+#include <gyros/interrupt.h>
 
-#include <gyros/config.h>
+#include "nvic.h"
 
-static inline unsigned long
-gyros_interrupt_disable(void)
+void
+gyros_target_enable_irq(int irq, unsigned prio)
 {
-    unsigned long flags;
+    unsigned long flags = gyros_interrupt_disable();
 
-    __asm__ __volatile__(
-        "mrs    %0, primask\n\t"
-        "cpsid  i\n\t"
-        : "=&r" (flags) :: "memory");
+    NVIC_IRQ_PRIORITY(irq >> 2) =
+        (NVIC_IRQ_PRIORITY(irq >> 2) & ~(0xff << ((irq & 3) << 3))) |
+        ((prio & 0xff) << ((irq & 3) << 3));
+    gyros_interrupt_restore(flags);
 
-    return flags;
+    NVIC_IRQ_CLEAR_PENDING(irq);
+    NVIC_IRQ_SET_ENABLE(irq);
 }
 
-/* Restore interrupts (IRQ and FIQ) in the ARM core. */
-static inline void
-gyros_interrupt_restore(unsigned long flags)
+void
+gyros_target_disable_irq(int irq)
 {
-    /* Inline assembly to set the IRQ bit in CPSR. */
-    __asm__ __volatile__(
-        "msr    primask, %0\n\t"
-        :: "r" (flags) : "memory");
+    NVIC_IRQ_CLEAR_ENABLE(irq);
 }
 
-static inline int
-gyros_in_interrupt(void)
+void
+gyros_target_pend_irq(int irq)
 {
-    unsigned long ipsr;
-
-    /* Inline assembly to set the IRQ bit in CPSR. */
-    __asm__ __volatile__(
-        "mrs    %0, ipsr\n\t"
-        : "=r" (ipsr) :: "memory");
-
-    return ipsr != 0;
+    NVIC_IRQ_SET_PENDING(irq);
 }
-
-/* Reschedule, i.e. make sure the right task is running. */
-static inline void
-gyros__reschedule(void)
-{
-    *(unsigned long*)0xe000ed04 = 1U << 28;
-}
-
-/* Reschedule, i.e. make sure the right task is running. */
-static inline void
-gyros__tick_reschedule(void)
-{
-    gyros__reschedule();
-}
-
-void gyros_target_enable_irq(int irq, unsigned prio);
-
-void gyros_target_disable_irq(int irq);
-
-void gyros_target_pend_irq(int irq);
-
-#endif

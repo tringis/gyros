@@ -140,7 +140,7 @@ gyros__dyntick_set(gyros_abstime_t now, gyros_abstime_t next_timeout)
         if (dt < MAX_PERIOD / 4 &&
             (short)((unsigned short)next_timeout - TIMx_CNT) <= 0)
         {
-            NVIC_IRQ_SET_PENDING(TIMER_IRQ);
+            gyros_target_pend_irq(TIMER_IRQ);
         }
     }
 }
@@ -178,8 +178,7 @@ gyros__target_init(void)
     TIMx_ARR = 0xffff;
     DBGMCU_CR |= TIMER_DBG_CR_MASK; /* Stop timer when CPU halted. */
 
-    NVIC_IRQ_CLEAR_PENDING(TIMER_IRQ);
-    NVIC_IRQ_SET_ENABLE(TIMER_IRQ);
+    gyros_target_enable_irq(TIMER_IRQ, 1);
 
     TIMx_DIER = TIMx_DIER_CC1IE; /* Enable CC1 match interrupt */
     TIMx_CR1 |= TIMx_CR1_CEN; /* Enable timer */
