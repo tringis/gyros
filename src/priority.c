@@ -39,7 +39,7 @@ gyros_task_get_priority(gyros_task_t *task)
         gyros__error("get_priority non-task", task);
 #endif
 
-    return task->priority;
+    return task->base_priority;
 }
 
 void
@@ -52,9 +52,9 @@ gyros_task_set_priority(gyros_task_t *task, unsigned short priority)
         gyros__error("set_priority non-task", task);
 #endif
 
+    task->base_priority = priority;
     if (task->priority != priority)
     {
-        task->raised_priority = 0;
         task->priority = priority;
         gyros__task_move(task, task->main_list);
         gyros__cond_reschedule();

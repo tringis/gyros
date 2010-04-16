@@ -78,7 +78,7 @@
   */
 #define GYROS_MUTEX_INITVAL(name) \
     { GYROS_DEBUG_INFO(GYROS_MUTEX_DEBUG_MAGIC, #name),                 \
-      (gyros_task_t*)0, 0,                                              \
+      (gyros_task_t*)0,                                                 \
       GYROS__LIST_INITVAL((name).task_list) }
 
 /** \brief Mutual exclusion (mutex) object. */
@@ -87,7 +87,6 @@ typedef struct
     struct gyros_debug_info debug_info; /**< Debug info. */
 
     gyros_task_t *owner; /**< \internal */
-    unsigned short owner_priority; /**< \internal */
     struct gyros__list_node task_list; /**< \internal */
 } gyros_mutex_t;
 

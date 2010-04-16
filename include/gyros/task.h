@@ -101,7 +101,7 @@ typedef struct
     gyros_abstime_t timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
 
-    unsigned char raised_priority; /**< \internal */
+    unsigned short base_priority; /**< \internal */
     unsigned short priority; /**< \internal */
 
 #if GYROS_CONFIG_ITERATE

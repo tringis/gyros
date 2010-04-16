@@ -140,6 +140,7 @@ gyros_start(void)
     s_idle_task.debug_magic = GYROS_TASK_DEBUG_MAGIC;
 #endif
     GYROS_DEBUG_SET_STATE(&s_idle_task, "running");
+    s_idle_task.base_priority = 0;
     s_idle_task.priority = 0;
     s_idle_task.name = "[idle]";
     s_idle_task.stack = 0;
@@ -177,6 +178,7 @@ gyros_task_create(gyros_task_t *task,
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
 #endif
     GYROS_DEBUG_SET_STATE(task, "running");
+    task->base_priority = priority;
     task->priority = priority;
     task->name = name;
     task->stack = stack;

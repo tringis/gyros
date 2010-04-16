@@ -53,7 +53,8 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
     gyros_task_t *t;
     int i;
 
-    printf_func(printf_arg, "%s", "name              prio  stack  task       "
+    printf_func(printf_arg, "%s", "name             priority stack     "
+                                  "task       "
 #if GYROS_CONFIG_DEBUG
                 "state"
 #else
@@ -66,8 +67,15 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
     
     for (t = gyros_task_iterate(0); t; t = gyros_task_iterate(t))
     {
-        printf_func(printf_arg, "%-16s %3d %4d/%4d %p ",
-                    t->name, t->priority,
+        printf_func(printf_arg, "%-16s ", t->name);
+        if (t->priority == t->base_priority)
+            printf_func(printf_arg, "%7d ", t->priority);
+        else
+        {
+            printf_func(printf_arg, "%3d+%3d",
+                        t->base_priority, t->priority - t->base_priority);
+        }
+        printf_func(printf_arg, "%4d/%4d %p ",
                     gyros_task_stack_used(t), t->stack_size, t);
 #if GYROS_CONFIG_DEBUG
         printf_func(printf_arg, "%s", t->debug_state);
