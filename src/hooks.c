@@ -52,12 +52,12 @@ gyros__context_hook(void)
         return;
 
 #if GYROS_CONFIG_TRACE
-    if (unlikely(gyros__trace_enabled))
+    if (GYROS_UNLIKELY(gyros__trace_enabled))
         gyros__trace_context(next);
 #endif
 
 #if GYROS_CONFIG_CONTEXT_HOOK
-    if (unlikely(s_context_hook != NULL))
+    if (GYROS_UNLIKELY(s_context_hook != NULL))
         s_context_hook(gyros.current, next);
 #endif
 }
@@ -68,12 +68,12 @@ void
 gyros__irq_hook(void)
 {
 #if GYROS_CONFIG_TRACE
-    if (unlikely(gyros__trace_enabled))
+    if (GYROS_UNLIKELY(gyros__trace_enabled))
         gyros__trace(GYROS_TRACE_IRQ);
 #endif
 
 #if GYROS_CONFIG_IRQ_HOOK
-    if (unlikely(s_irq_hook != NULL))
+    if (GYROS_UNLIKELY(s_irq_hook != NULL))
         s_irq_hook();
 #endif
 }

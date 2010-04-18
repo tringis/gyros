@@ -30,6 +30,7 @@
 #define INCLUDED__gyros_private_trace_h__200905062242
 
 #include <gyros/trace.h>
+#include <gyros/compiler.h>
 #include <gyros/config.h>
 
 #if GYROS_CONFIG_TRACE
@@ -37,14 +38,14 @@
 extern int gyros__trace_enabled;
 
 #define GYROS__TRACE_TIMER(kind, t)                                           \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_TIMER_ ## kind);   \
         gyros__t->info.timer = (t);                                           \
     }
 
-#define GYROS__TRACE_TIMER_START(t)                                             \
-    if (unlikely(gyros__trace_enabled))                                       \
+#define GYROS__TRACE_TIMER_START(t)                                           \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_TIMER_START);      \
         gyros__t->info.timer_start.timer = (t);                               \
@@ -53,35 +54,35 @@ extern int gyros__trace_enabled;
     }
 
 #define GYROS__TRACE_COND(kind, c)                                            \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_COND_ ## kind);    \
         gyros__t->info.cond = (c);                                            \
     }
 
 #define GYROS__TRACE_MQ(kind, mq)                                             \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MQ_ ## kind);      \
         gyros__t->info.mq = (mq);                                             \
     }
 
 #define GYROS__TRACE_MUTEX(kind, m)                                           \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_MUTEX_ ## kind);   \
         gyros__t->info.mutex = (m);                                           \
     }
 
 #define GYROS__TRACE_RWLOCK(kind, rwlock)                                     \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_RWLOCK_ ## kind);  \
         gyros__t->info.rwlock = (rwlock);                                     \
     }
 
 #define GYROS__TRACE_SEM(kind, s)                                             \
-    if (unlikely(gyros__trace_enabled))                                       \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
         gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_SEM_ ## kind);     \
         gyros__t->info.sem.sem = (s);                                         \

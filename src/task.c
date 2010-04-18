@@ -116,7 +116,7 @@ void
 gyros__task_wake(gyros_task_t *task)
 {
 #if GYROS_CONFIG_TRACE
-    if (unlikely(gyros__trace_enabled))
+    if (GYROS_UNLIKELY(gyros__trace_enabled))
         gyros__trace(GYROS_TRACE_WAKE)->info.wake_task = task;
 #endif
 
@@ -128,7 +128,7 @@ gyros__task_wake(gyros_task_t *task)
 void
 gyros__cond_reschedule(void)
 {
-    if (unlikely(TASK(gyros.running.next) != gyros.current))
+    if (GYROS_UNLIKELY(TASK(gyros.running.next) != gyros.current))
         gyros__reschedule();
 }
 

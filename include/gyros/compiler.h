@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2002-2009, Tobias Ringström <tobias@ringis.se>
+ * Copyright (c) 2002-2010, Tobias RingstrÃ¶m <tobias@ringis.se>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
+#ifndef INCLUDE__gyros_compiler_h__201004161629
+#define INCLUDE__gyros_compiler_h__201004161629
 
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
-  * 
-  * Convenience include file that includes all GyrOS include files.
+/** \file
+  * \brief Compiler support.
+  * \details Header file for \ref compiler_group.
+  *
+  * \defgroup compiler_group Compiler support
+  *
+  * TBD
+  *
+  * @{
   */
 
-#include <gyros/compiler.h>
-#include <gyros/cond.h>
-#include <gyros/debug.h>
-#include <gyros/error.h>
-#include <gyros/hooks.h>
-#include <gyros/interrupt.h>
-#include <gyros/iterate.h>
-#include <gyros/memory.h>
-#include <gyros/mutex.h>
-#include <gyros/mq.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
-#include <gyros/time.h>
-#include <gyros/timer.h>
-#include <gyros/trace.h>
-#include <gyros/zpool.h>
+#ifdef __GNUC__
+#define GYROS_LIKELY(x)       __builtin_expect((x),1)
+#define GYROS_UNLIKELY(x)     __builtin_expect((x),0)
+#else
+#define GYROS_LIKELY(x)       (x)
+#define GYROS_UNLIKELY(x)     (x)
+#endif
+
+/*@}*/
 
 #endif

@@ -123,10 +123,10 @@ alloc_trace(enum gyros_trace_kind kind, gyros_task_t *task)
 {
     gyros_trace_t *t = s_log_pos++;
 
-    if (unlikely(gyros__trace_enabled < 0))
+    if (GYROS_UNLIKELY(gyros__trace_enabled < 0))
         ++gyros__trace_enabled;
 
-    if (unlikely(s_log_pos == s_log_end))
+    if (GYROS_UNLIKELY(s_log_pos == s_log_end))
         s_log_pos = s_log_begin;
 
     t->kind = kind;

@@ -60,8 +60,8 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         gyros__error("rwlock_rdlock deadlock", rwlock);
 #endif
 
-    while (unlikely(rwlock->writer ||
-                    !gyros__list_empty(&rwlock->wr_task_list)))
+    while (GYROS_UNLIKELY(rwlock->writer ||
+                          !gyros__list_empty(&rwlock->wr_task_list)))
     {
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
@@ -87,9 +87,12 @@ gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
     if (gyros_in_interrupt())
         gyros__error("rwlock_try_rdlock called from interrupt", rwlock);
 #endif
-
-    if (unlikely(rwlock->writer || !gyros__list_empty(&rwlock->wr_task_list)))
+    
+    if (GYROS_UNLIKELY(rwlock->writer ||
+                       !gyros__list_empty(&rwlock->wr_task_list)))
+    {
         ret = 0;
+    }
     else
     {
         GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
@@ -115,8 +118,8 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__error("gyros_rwlock_rdlock_until deadlock", rwlock);
 #endif
 
-    while (unlikely(rwlock->writer ||
-                    !gyros__list_empty(&rwlock->wr_task_list)))
+    while (GYROS_UNLIKELY(rwlock->writer ||
+                          !gyros__list_empty(&rwlock->wr_task_list)))
     {
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
@@ -153,9 +156,9 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
         gyros__error("gyros_rwlock_wrlock deadlock", rwlock);
 #endif
 
-    while (unlikely((rwlock->writer != 0 &&
-                     rwlock->writer != gyros.current) ||
-                    rwlock->readers))
+    while (GYROS_UNLIKELY((rwlock->writer != 0 &&
+                           rwlock->writer != gyros.current) ||
+                          rwlock->readers))
     {
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->wr_task_list);
@@ -182,8 +185,8 @@ gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
         gyros__error("rwlock_wrlock called from interrupt", rwlock);
 #endif
 
-    if (unlikely((rwlock->writer != 0 &&
-                  rwlock->writer != gyros.current) || rwlock->readers))
+    if (GYROS_UNLIKELY((rwlock->writer != 0 &&
+                        rwlock->writer != gyros.current) || rwlock->readers))
     {
         ret = 0;
     }
@@ -212,9 +215,9 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__error("gyros_rwlock_wrlock_until deadlock", rwlock);
 #endif
 
-    while (unlikely((rwlock->writer != 0 &&
-                     rwlock->writer != gyros.current) ||
-                    rwlock->readers))
+    while (GYROS_UNLIKELY((rwlock->writer != 0 &&
+                           rwlock->writer != gyros.current) ||
+                          rwlock->readers))
     {
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->wr_task_list);

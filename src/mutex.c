@@ -54,7 +54,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
         gyros__error("mutex_try_lock called from interrupt", m);
 #endif
 
-    if (unlikely(m->owner != NULL))
+    if (GYROS_UNLIKELY(m->owner != NULL))
     {
         gyros_interrupt_restore(flags);
         return 0;
@@ -80,7 +80,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
         gyros__error("mutex_lock deadlock", m);
 #endif
 
-    if (unlikely(m->owner != NULL))
+    if (GYROS_UNLIKELY(m->owner != NULL))
     {
         GYROS__TRACE_MUTEX(BLOCKED, m);
         do
@@ -97,7 +97,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
             gyros__reschedule();
             gyros_interrupt_restore(flags);
             flags = gyros_interrupt_disable();
-        } while (unlikely(m->owner != NULL));
+        } while (GYROS_UNLIKELY(m->owner != NULL));
         GYROS__TRACE_MUTEX(AQUIRED, m);
     }
 
@@ -120,12 +120,12 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
 #endif
 
     m->owner = NULL;
-    if (unlikely(gyros.current->priority != gyros.current->base_priority))
+    if (GYROS_UNLIKELY(gyros.current->priority != gyros.current->base_priority))
     {
         gyros.current->priority = gyros.current->base_priority;
         gyros__task_move(gyros.current, gyros.current->main_list);
     }
-    if (likely(gyros__list_empty(&m->task_list)))
+    if (GYROS_LIKELY(gyros__list_empty(&m->task_list)))
         gyros_interrupt_restore(flags);
     else
     {

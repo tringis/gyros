@@ -39,14 +39,6 @@
 #include <gyros/private/target.h>
 #include <gyros/timer.h>
 
-#ifdef __GNUC__
-#define likely(x)       __builtin_expect((x),1)
-#define unlikely(x)     __builtin_expect((x),0)
-#else
-#define likely(x)       (x)
-#define unlikely(x)     (x)
-#endif
-
 #define TASK(t)     GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
 #define TIMEOUT(t)  GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
 #define TIMER(t)    GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
