@@ -26,45 +26,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_h__200808271854
-#define INCLUDED__gyros_private_h__200808271854
-
-/*---------------------------------------------------------------------*
- * This file is completely internal to GyrOS and contains stuff that
- * are not used by neither the application nor the target port.
- *---------------------------------------------------------------------*/
+#ifndef INCLUDED__gyros_private_state_h__201004161551
+#define INCLUDED__gyros_private_state_h__201004161551
 
 #include <gyros/task.h>
-#include <gyros/mutex.h>
-#include <gyros/private/state.h>
-#include <gyros/private/target.h>
-#include <gyros/timer.h>
 
-#define TASK(t)     GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
-#define TIMEOUT(t)  GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
-#define TIMER(t)    GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
+typedef struct
+{
+    gyros_task_t *current;
+    struct gyros__list_node running;
+    struct gyros__list_node timeouts;
 
-extern gyros_t gyros;
-extern gyros_mutex_t gyros__iterate_mutex;
-
-void gyros__task_zombify(gyros_task_t *task);
-
-void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
-
-void gyros__task_wake(gyros_task_t *task);
-
-void gyros__task_set_timeout(gyros_abstime_t timeout);
-
-void gyros__timer_schedule(gyros_timer_t *timer);
-
-#if GYROS_CONFIG_DYNTICK
-void gyros__dyntick_update(gyros_abstime_t now);
-#else
-#define gyros__dyntick_update(now) do { } while (0)
+#if GYROS_CONFIG_TIMER
+    struct gyros__list_node timers;
 #endif
 
-void gyros__cond_reschedule(void);
+#if GYROS_CONFIG_ITERATE
+    struct gyros__list_node tasks;
+#endif
 
-void gyros__error(const char *msg, void *object);
+#if GYROS_CONFIG_WAIT
+    struct gyros__list_node zombies;
+    struct gyros__list_node reapers;
+#endif
+} gyros_t;
 
 #endif

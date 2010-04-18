@@ -44,7 +44,7 @@ gyros_mutex_init(gyros_mutex_t *m)
 }
 
 int
-gyros_mutex_try_lock(gyros_mutex_t *m)
+gyros__mutex_try_lock_slow(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -68,7 +68,7 @@ gyros_mutex_try_lock(gyros_mutex_t *m)
 }
 
 void
-gyros_mutex_lock(gyros_mutex_t *m)
+gyros__mutex_lock_slow(gyros_mutex_t *m)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -107,7 +107,7 @@ gyros_mutex_lock(gyros_mutex_t *m)
 }
 
 void
-gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
+gyros__mutex_unlock_slow(gyros_mutex_t *m, int reschedule)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -136,10 +136,4 @@ gyros__mutex_unlock(gyros_mutex_t *m, int reschedule)
             gyros__cond_reschedule();
         gyros_interrupt_restore(flags);
     }
-}
-
-void
-gyros_mutex_unlock(gyros_mutex_t *m)
-{
-    gyros__mutex_unlock(m, 1);
 }

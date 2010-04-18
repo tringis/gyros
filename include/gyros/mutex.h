@@ -59,7 +59,11 @@
   * @{
   */
 
+#include <stddef.h>
+
+#include <gyros/atomic.h>
 #include <gyros/private/debug.h>
+#include <gyros/private/state.h>
 #include <gyros/task.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -90,6 +94,12 @@ typedef struct
     struct gyros__list_node task_list; /**< \internal */
 } gyros_mutex_t;
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+int gyros__mutex_try_lock_slow(gyros_mutex_t *m);
+void gyros__mutex_lock_slow(gyros_mutex_t *m);
+void gyros__mutex_unlock_slow(gyros_mutex_t *m, int reschedule);
+#endif
+
 /** Initialize the mutex @a m.
   *
   * \param m            Mutex struct pointer.
@@ -101,19 +111,52 @@ void gyros_mutex_init(gyros_mutex_t *m);
   * \param m            Mutex struct pointer.
   * \return             Non-zero if @a m was locked, else zero.
   */
-int gyros_mutex_try_lock(gyros_mutex_t *m);
+static inline int gyros_mutex_try_lock(gyros_mutex_t *m)
+{
+#if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
+    extern gyros_t gyros;
+    while (GYROS_LIKELY(gyros_ldrex_p(&m->owner) == NULL))
+    {
+        if (GYROS_LIKELY(gyros_strex_p(&m->owner, gyros.current)))
+            return 1;
+    }
+#endif
+    return gyros__mutex_try_lock_slow(m);
+}
 
 /** Lock @a m.
   *
   * \param m            Mutex struct pointer.
   */
-void gyros_mutex_lock(gyros_mutex_t *m);
+static inline void gyros_mutex_lock(gyros_mutex_t *m)
+{
+#if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
+    extern gyros_t gyros;
+    while (GYROS_LIKELY(gyros_ldrex_p(&m->owner) == NULL))
+    {
+        if (GYROS_LIKELY(gyros_strex_p(&m->owner, gyros.current)))
+            return;
+    }
+#endif
+    gyros__mutex_lock_slow(m);
+}
 
 /** Unlock @a m.
   *
   * \param m            Mutex struct pointer.
   */
-void gyros_mutex_unlock(gyros_mutex_t *m);
+static inline void gyros_mutex_unlock(gyros_mutex_t *m)
+{
+#if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
+    extern gyros_t gyros;
+    while (GYROS_LIKELY(gyros_ldrex_p(&m->task_list.next) == &m->task_list))
+    {
+        if (GYROS_LIKELY(gyros_strex_p(&m->owner, NULL)))
+            return;
+    }
+#endif
+    gyros__mutex_unlock_slow(m, 1);
+}
 
 /*@}*/
 

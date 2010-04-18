@@ -48,13 +48,16 @@ gyros_t gyros = {
 #endif
 #if GYROS_CONFIG_ITERATE
     GYROS__LIST_INITVAL(gyros.tasks),
-    GYROS_MUTEX_INITVAL(gyros.iterate_mutex),
 #endif
 #if GYROS_CONFIG_WAIT
     GYROS__LIST_INITVAL(gyros.zombies),
     GYROS__LIST_INITVAL(gyros.reapers),
 #endif
 };
+
+#if GYROS_CONFIG_ITERATE
+gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
+#endif
 
 static void
 add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
@@ -92,7 +95,7 @@ void
 gyros__task_exit(void)
 {
 #if GYROS_CONFIG_ITERATE
-    gyros_mutex_lock(&gyros.iterate_mutex);
+    gyros_mutex_lock(&gyros__iterate_mutex);
 #endif
 
     /* Note that we do not need to call gyros_interrupt_restore()
@@ -101,7 +104,7 @@ gyros__task_exit(void)
     GYROS_DEBUG_SET_STATE(gyros.current, "zombie");
     gyros__task_zombify(gyros.current);
 #if GYROS_CONFIG_ITERATE
-    gyros__mutex_unlock(&gyros.iterate_mutex, 0);
+    gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
     gyros__reschedule();
 }

@@ -37,7 +37,7 @@ gyros_task_delete(gyros_task_t *task)
     unsigned long flags;
 
 #if GYROS_CONFIG_ITERATE
-    gyros_mutex_lock(&gyros.iterate_mutex);
+    gyros_mutex_lock(&gyros__iterate_mutex);
 #endif
 
     flags = gyros_interrupt_disable();
@@ -49,7 +49,7 @@ gyros_task_delete(gyros_task_t *task)
     if (task == gyros.current)
     {
 #if GYROS_CONFIG_ITERATE
-        gyros__mutex_unlock(&gyros.iterate_mutex, 0);
+        gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
         gyros__reschedule(); /* Never returns */
     }
@@ -57,7 +57,7 @@ gyros_task_delete(gyros_task_t *task)
     {
         gyros_interrupt_restore(flags);
 #if GYROS_CONFIG_ITERATE
-        gyros_mutex_unlock(&gyros.iterate_mutex);
+        gyros_mutex_unlock(&gyros__iterate_mutex);
 #endif
     }
 }
