@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2002-2009, Tobias Ringström <tobias@ringis.se>
+ * Copyright (c) 2002-2010, Tobias Ringström <tobias@ringis.se>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_gyros_h__200808261900
-#define INCLUDED__gyros_gyros_h__200808261900
+#ifndef INCLUDE__gyros_armv7_m_atomic_h__201004161532
+#define INCLUDE__gyros_armv7_m_atomic_h__201004161532
 
-/** @file gyros.h
-  * \brief Includes all GyrOS include files.
-  * 
-  * Convenience include file that includes all GyrOS include files.
-  */
+#define GYROS_HAS_LDREX_STREXa
 
-#include <gyros/atomic.h>
-#include <gyros/compiler.h>
-#include <gyros/cond.h>
-#include <gyros/debug.h>
-#include <gyros/error.h>
-#include <gyros/hooks.h>
-#include <gyros/interrupt.h>
-#include <gyros/iterate.h>
-#include <gyros/memory.h>
-#include <gyros/mutex.h>
-#include <gyros/mq.h>
-#include <gyros/rwlock.h>
-#include <gyros/sem.h>
-#include <gyros/sleep.h>
-#include <gyros/task.h>
-#include <gyros/time.h>
-#include <gyros/timer.h>
-#include <gyros/trace.h>
-#include <gyros/zpool.h>
+static inline void *gyros_ldrex_p(void *addr)
+{
+    void *result;
+  
+    __asm__ volatile(
+        "ldrex   %0, [%1]"
+        : "=r" (result) : "r" (addr));
+
+    return result;
+}
+
+static inline int gyros_strex_p(void *value, void *addr)
+{
+    unsigned result;
+  
+    __asm__ volatile(
+        "strex   %0, %2, [%1]"
+        : "=r" (result) : "r" (addr), "r" (value));
+
+    return !result;
+}
 
 #endif
