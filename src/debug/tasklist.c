@@ -26,25 +26,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <string.h>
+
 #include <gyros/debug.h>
 #include <gyros/iterate.h>
 
 #if GYROS_CONFIG_ITERATE
-
-/* Local implementation to avoid string.h dependency. */
-static int
-streq(const char *s1, const char *s2)
-{
-    for (;;)
-    {
-        if (*s1 != *s2)
-            return 0;
-        if (*s1 == 0)
-            return 1;
-        ++s1;
-        ++s2;
-    }
-}
 
 void
 gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
@@ -79,7 +66,7 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
                     gyros_task_stack_used(t), t->stack_size, t);
 #if GYROS_CONFIG_DEBUG
         printf_func(printf_arg, "%s", t->debug_state);
-        if (streq(t->debug_state, "running"))
+        if (strcmp(t->debug_state, "running") == 0)
             printf_func(printf_arg, " @ 0x%08x", gyros_debug_task_pc(t));
         else if (t->debug_object)
         {
