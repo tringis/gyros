@@ -26,8 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include <gyros/private/trace.h>
+#include <gyros/compiler.h>
 #include <gyros/interrupt.h>
+#include <gyros/private/trace.h>
 
 #include <stddef.h>
 
