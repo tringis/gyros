@@ -42,7 +42,7 @@ static inline void *gyros_ldrex_p(void *addr)
     return result;
 }
 
-static inline int gyros_strex_p(void *value, void *addr)
+static inline int gyros_strex_p(void *addr, void *value)
 {
     unsigned result;
   
