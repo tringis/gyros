@@ -68,7 +68,7 @@ gyros_in_interrupt(void)
 static inline void
 gyros__reschedule(void)
 {
-    *(unsigned long*)0xe000ed04 = 1U << 28;
+    *(volatile unsigned long*)0xe000ed04 = 1U << 28; /* pendSV */
 }
 
 /* Reschedule, i.e. make sure the right task is running. */
