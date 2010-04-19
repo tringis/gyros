@@ -48,7 +48,7 @@
 #define NVIC_IRQ_CLEAR_PENDING(n)  NVIC__IRQ_BITCMD(0x280, (n))
 #define NVIC_IRQ_ACTIVE(n)         NVIC__IRQ_BITCMD(0x300, (n))
 
-#define NVIC_IRQ_PRIORITY(n)       NVIC_REG32(0x400 + (n))
+#define NVIC_IRQ_PRIORITY(n)       NVIC_REG8(0x400 + (n))
 
 #define NVIC_IRQ_CSR               NVIC_REG32(0xd04)
 #define NVIC_VTABOFFSET            NVIC_REG32(0xd08)

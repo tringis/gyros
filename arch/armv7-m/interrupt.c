@@ -33,13 +33,7 @@
 void
 gyros_target_enable_irq(int irq, unsigned prio)
 {
-    unsigned long flags = gyros_interrupt_disable();
-
-    NVIC_IRQ_PRIORITY(irq >> 2) =
-        (NVIC_IRQ_PRIORITY(irq >> 2) & ~(0xff << ((irq & 3) << 3))) |
-        ((prio & 0xff) << ((irq & 3) << 3));
-    gyros_interrupt_restore(flags);
-
+    NVIC_IRQ_PRIORITY(irq) = prio;
     NVIC_IRQ_CLEAR_PENDING(irq);
     NVIC_IRQ_SET_ENABLE(irq);
 }
