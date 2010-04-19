@@ -41,8 +41,12 @@
 #define GYROS_CONFIG_IDLE_WFI                  1
 #endif
 
-#ifndef GYROS_CONFIG_MAX_BASEPRI
-#define GYROS_CONFIG_MAX_BASEPRI               0xc0
+#ifndef GYROS_CONFIG_MAX_PRIORITY
+#define GYROS_CONFIG_MAX_PRIORITY              0x60
+#endif
+
+#ifndef GYROS_CONFIG_SYSTICK_PRIORITY
+#define GYROS_CONFIG_SYSTICK_PRIORITY          0xa0
 #endif
 
 #if !GYROS_CONFIG_DYNTICK && !defined(GYROS_CONFIG_HZ)

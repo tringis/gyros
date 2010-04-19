@@ -77,7 +77,10 @@ gyros__arch_init(void)
     NVIC_SYSTICK_RELOAD = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_HZ - 1;
     NVIC_SYSTICK_CURRENT = 0; /* reset-on-write register */
     NVIC_SYSTICK_CTLST = (NVIC_SYSTICK_CTLST & ~0x00010007) | 7;
+    NVIC_SYSTICK_PRIO = GYROS_CONFIG_SYSTICK_PRIORITY;
 #endif
+
+    NVIC_PENDSV_PRIO = 0xff;
 }
 
 void

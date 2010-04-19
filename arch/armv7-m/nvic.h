@@ -31,6 +31,8 @@
 
 #define NVIC_REG32(offset)         (*(volatile unsigned long*)(0xe000e000 + \
                                                                (offset)))
+#define NVIC_REG8(offset)          (*(volatile unsigned char*)(0xe000e000 + \
+                                                               (offset)))
 
 #define NVIC_SYSTICK_CTLST         NVIC_REG32(0x010)
 #define NVIC_SYSTICK_RELOAD        NVIC_REG32(0x014)
@@ -50,5 +52,9 @@
 
 #define NVIC_IRQ_CSR               NVIC_REG32(0xd04)
 #define NVIC_VTABOFFSET            NVIC_REG32(0xd08)
+
+#define NVIC_SYS_HANDLER_PRIO(n)   NVIC_REG8(0xd18 + (n) - 4)
+#define NVIC_PENDSV_PRIO           NVIC_SYS_HANDLER_PRIO(14)
+#define NVIC_SYSTICK_PRIO          NVIC_SYS_HANDLER_PRIO(15)
 
 #endif
