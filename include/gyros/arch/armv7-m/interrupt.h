@@ -44,11 +44,9 @@ gyros_interrupt_disable(void)
     return flags;
 }
 
-/* Restore interrupts (IRQ and FIQ) in the ARM core. */
 static inline void
 gyros_interrupt_restore(unsigned long flags)
 {
-    /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
         "msr    basepri, %0\n\t"
         :: "r" (flags) : "memory");
@@ -59,7 +57,6 @@ gyros_in_interrupt(void)
 {
     unsigned long ipsr;
 
-    /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
         "mrs    %0, ipsr\n\t"
         : "=r" (ipsr) :: "memory");
