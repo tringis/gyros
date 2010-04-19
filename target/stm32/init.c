@@ -178,7 +178,7 @@ gyros__target_init(void)
     TIMx_ARR = 0xffff;
     DBGMCU_CR |= TIMER_DBG_CR_MASK; /* Stop timer when CPU halted. */
 
-    gyros_target_enable_irq(TIMER_IRQ, 1);
+    gyros_target_enable_irq(TIMER_IRQ, GYROS_CONFIG_SYSTICK_PRIORITY);
 
     TIMx_DIER = TIMx_DIER_CC1IE; /* Enable CC1 match interrupt */
     TIMx_CR1 |= TIMx_CR1_CEN; /* Enable timer */

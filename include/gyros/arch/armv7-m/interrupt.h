@@ -39,7 +39,7 @@ gyros_interrupt_disable(void)
     __asm__ __volatile__(
         "mrs    %0, basepri\n\t"
         "msr    basepri_max, %1\n\t"
-        : "=&r" (flags) : "r" (GYROS_CONFIG_MAX_PRIORITY): "memory");
+        : "=&r" (flags) : "r" (GYROS_CONFIG_MAX_IRQ_PRIORITY): "memory");
 
     return flags;
 }

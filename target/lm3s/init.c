@@ -164,7 +164,7 @@ gyros__target_init(void)
     GPTMIMR = (GPTMIMR & 0xfffff0e0) | GPTMIMR_TAMIM; /* Match interrupt */
     GPTMTAILR = 0xffffffff; /* Count from zero */
 
-    gyros_target_enable_irq(TIMER_IRQ, 1);
+    gyros_target_enable_irq(TIMER_IRQ, GYROS_CONFIG_SYSTICK_PRIORITY);
 
     GPTMTAMR |= GPTMTAMR_TAMIE; /* Enable interrupt */
     GPTMCTL |= GPTMCTL_TAEN; /* Enable timer */
