@@ -37,9 +37,9 @@ gyros_interrupt_disable(void)
     unsigned long flags;
 
     __asm__ __volatile__(
-        "mrs    %0, primask\n\t"
-        "cpsid  i\n\t"
-        : "=&r" (flags) :: "memory");
+        "mrs    %0, basepri\n\t"
+        "msr    basepri_max, %1\n\t"
+        : "=&r" (flags) : "r" (GYROS_CONFIG_MAX_BASEPRI): "memory");
 
     return flags;
 }
@@ -50,7 +50,7 @@ gyros_interrupt_restore(unsigned long flags)
 {
     /* Inline assembly to set the IRQ bit in CPSR. */
     __asm__ __volatile__(
-        "msr    primask, %0\n\t"
+        "msr    basepri, %0\n\t"
         :: "r" (flags) : "memory");
 }
 
