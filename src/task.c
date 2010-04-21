@@ -94,19 +94,21 @@ gyros__task_zombify(gyros_task_t *task)
 void
 gyros__task_exit(void)
 {
+    unsigned long flags;
+
 #if GYROS_CONFIG_ITERATE
     gyros_mutex_lock(&gyros__iterate_mutex);
 #endif
 
-    /* Note that we do not need to call gyros_interrupt_restore()
-     * because gyros__reschedule below never returns. */
-    gyros_interrupt_disable();
+    flags = gyros_interrupt_disable();
     GYROS_DEBUG_SET_STATE(gyros.current, "zombie");
     gyros__task_zombify(gyros.current);
 #if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
     gyros__reschedule();
+    gyros_interrupt_restore(flags);
+    gyros__error("task exit with interrupts disabled", gyros.current);
 }
 
 void

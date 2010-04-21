@@ -51,7 +51,9 @@ gyros_task_delete(gyros_task_t *task)
 #if GYROS_CONFIG_ITERATE
         gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
-        gyros__reschedule(); /* Never returns */
+        gyros__reschedule();
+        gyros_interrupt_restore(flags);
+        gyros__error("task deleted self with interrupts disabled", task);
     }
     else
     {
