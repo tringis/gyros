@@ -60,7 +60,7 @@ gyros__arm_interrupt_restore(unsigned long flags)
 }
 
 int
-gyros__arm_in_interrupt(void)
+gyros__arm_get_cpsr(void)
 {
     unsigned long cpsr;
 
@@ -69,5 +69,5 @@ gyros__arm_in_interrupt(void)
         "mrs    %0, cpsr\n\t"
         : "=r" (cpsr) :: "memory");
 
-    return (cpsr & 0x1f) != ARM_MODE_SYS;
+    return cpsr;
 }

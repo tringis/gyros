@@ -46,14 +46,18 @@ gyros_mutex_init(gyros_mutex_t *m)
 int
 gyros__mutex_try_lock_slow(gyros_mutex_t *m)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC)
         gyros__error("uninitialized mutex in mutex_try_lock", m);
     if (gyros_in_interrupt())
         gyros__error("mutex_try_lock called from interrupt", m);
+    if (gyros_interrupts_disabled())
+        gyros__error("mutex_try_lock called with interrupts disabled", m);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     if (GYROS_UNLIKELY(m->owner != NULL))
     {
@@ -70,16 +74,20 @@ gyros__mutex_try_lock_slow(gyros_mutex_t *m)
 void
 gyros__mutex_lock_slow(gyros_mutex_t *m)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC)
         gyros__error("uninitialized mutex in mutex_lock", m);
     if (gyros_in_interrupt())
         gyros__error("mutex_lock called from interrupt", m);
+    if (gyros_interrupts_disabled())
+        gyros__error("mutex_lock called with interrupts disabled", m);
     if (m->owner == gyros.current)
         gyros__error("mutex_lock deadlock", m);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     if (GYROS_UNLIKELY(m->owner != NULL))
     {

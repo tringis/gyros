@@ -68,11 +68,11 @@ gyros_interrupt_restore(unsigned long flags)
 }
 
 static inline int
-gyros_in_interrupt(void)
+gyros__get_cpsr(void)
 {
 #ifdef __thumb__
-    int gyros__arm_in_interrupt(void);
-    return gyros__arm_in_interrupt();
+    int gyros__arm_get_cpsr(void);
+    return gyros__arm_get_cpsr();
 #else
     unsigned long cpsr;
 
@@ -81,8 +81,20 @@ gyros_in_interrupt(void)
         "mrs    %0, cpsr\n\t"
         : "=r" (cpsr) :: "memory");
 
-    return (cpsr & 0x1f) != ARM_MODE_SYS;
+    return cpsr;
 #endif
+}
+
+static inline int
+gyros_in_interrupt(void)
+{
+    return (gyros__get_cpsr() & 0x1f) != ARM_MODE_SYS;
+}
+
+static inline int
+gyros_interrupts_disabled(void)
+{
+    return (gyros__get_cpsr() & ARM_IRQ_BIT) != 0;
 }
 
 /* Reschedule, i.e. make sure the right task is running. */

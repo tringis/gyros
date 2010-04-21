@@ -32,14 +32,63 @@
 #include <gyros/config.h>
 
 static inline unsigned long
-gyros_interrupt_disable(void)
+gyros__get_primask(void)
 {
-    unsigned long flags;
+    unsigned long primask;
+
+    __asm__ __volatile__(
+        "mrs    %0, primask\n\t"
+        : "=&r" (primask) :: "memory");
+
+    return primask;
+}
+
+static inline unsigned long
+gyros__get_faultmask(void)
+{
+    unsigned long faultmask;
+
+    __asm__ __volatile__(
+        "mrs    %0, faultmask\n\t"
+        : "=&r" (faultmask) :: "memory");
+
+    return faultmask;
+}
+
+static inline unsigned long
+gyros__get_basepri(void)
+{
+    unsigned long basepri;
 
     __asm__ __volatile__(
         "mrs    %0, basepri\n\t"
-        "msr    basepri_max, %1\n\t"
-        : "=&r" (flags) : "r" (GYROS_CONFIG_MAX_IRQ_PRIORITY): "memory");
+        : "=&r" (basepri) :: "memory");
+
+    return basepri;
+}
+
+static inline void
+gyros__set_basepri(unsigned long basepri)
+{
+    __asm__ __volatile__(
+        "msr    basepri, %0\n\t"
+        :: "r" (basepri): "memory");
+}
+
+static inline void
+gyros__set_basepri_max(unsigned long basepri_max)
+{
+    __asm__ __volatile__(
+        "msr    basepri_max, %0\n\t"
+        :: "r" (basepri_max): "memory");
+}
+
+static inline unsigned long
+gyros_interrupt_disable(void)
+{
+    unsigned long flags = gyros__get_basepri();
+
+    gyros__set_basepri_max(GYROS_CONFIG_MAX_IRQ_PRIORITY);
 
     return flags;
 }
@@ -47,9 +96,7 @@ gyros_interrupt_disable(void)
 static inline void
 gyros_interrupt_restore(unsigned long flags)
 {
-    __asm__ __volatile__(
-        "msr    basepri, %0\n\t"
-        :: "r" (flags) : "memory");
+    gyros__set_basepri(flags);
 }
 
 static inline int
@@ -62,6 +109,14 @@ gyros_in_interrupt(void)
         : "=r" (ipsr) :: "memory");
 
     return ipsr != 0;
+}
+
+static inline int
+gyros_interrupts_disabled(void)
+{
+    return ((gyros__get_primask() & 1) == 1 ||
+            (gyros__get_faultmask() & 1) == 1 ||
+            gyros__get_basepri() != 0);
 }
 
 /* Reschedule, i.e. make sure the right task is running. */

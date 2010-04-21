@@ -56,14 +56,18 @@ gyros_sem_init_binary(gyros_sem_t *s)
 void
 gyros_sem_wait(gyros_sem_t *s)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
         gyros__error("uninitialized sem in sem_wait", s);
     if (gyros_in_interrupt())
         gyros__error("sem_wait called from interrupt", s);
+    if (gyros_interrupts_disabled())
+        gyros__error("sem_wait called with interrupts disabled", s);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     while (GYROS_UNLIKELY(s->value == 0))
     {
@@ -82,14 +86,18 @@ gyros_sem_wait(gyros_sem_t *s)
 int
 gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
         gyros__error("uninitialized sem in sem_wait_until", s);
     if (gyros_in_interrupt())
         gyros__error("sem_wait_until called from interrupt", s);
+    if (gyros_interrupts_disabled())
+        gyros__error("sem_wait_until called with interrupts disabled", s);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     if (GYROS_UNLIKELY(s->value == 0))
     {

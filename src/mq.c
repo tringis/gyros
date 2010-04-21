@@ -76,6 +76,8 @@ gyros_mq_receive(gyros_mq_t *mq)
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
         gyros__error("uninitialized mq in mq_send", mq);
+    if (!gyros_in_interrupt() && gyros_interrupts_disabled())
+        gyros__error("mq_receive_until called with interrupts disabled", mq);
 #endif
 
     while (GYROS_UNLIKELY(gyros__list_empty(&mq->msg_list)))
@@ -103,15 +105,19 @@ gyros_mq_receive(gyros_mq_t *mq)
 void*
 gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
 {
-    unsigned long flags = gyros_interrupt_disable();
     gyros_mq_msghdr_t *msghdr;
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
         gyros__error("uninitialized mq in mq_send", mq);
     if (gyros_in_interrupt())
         gyros__error("mq_receive_until called from interrupt", mq);
+    if (gyros_interrupts_disabled())
+        gyros__error("mq_receive_until called with interrupts disabled", mq);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     if (GYROS_UNLIKELY(gyros__list_empty(&mq->msg_list)))
     {

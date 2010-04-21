@@ -44,14 +44,18 @@ gyros_cond_init(gyros_cond_t *c)
 void
 gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros__error("uninitialized cond in cond_wait", c);
     if (gyros_in_interrupt())
         gyros__error("cond_wait called from interrupt", c);
+    if (gyros_interrupts_disabled())
+        gyros__error("cond_wait called with interrupts disabled", c);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock_slow(m, 0);
@@ -67,14 +71,18 @@ int
 gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
                       gyros_abstime_t timeout)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (c->debug_info.magic != GYROS_COND_DEBUG_MAGIC)
         gyros__error("uninitialized cond in cond_wait_until", c);
     if (gyros_in_interrupt())
         gyros__error("cond_wait_until called from interrupt", c);
+    if (gyros_interrupts_disabled())
+        gyros__error("cond_wait_until called with interrupts disabled", c);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock_slow(m, 0);

@@ -37,13 +37,17 @@
 gyros_task_t*
 gyros_task_wait(void)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
     gyros_task_t *task;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
         gyros__error("task_wait called from interrupt", NULL);
+    if (gyros_interrupts_disabled())
+        gyros__error("task_wait called with interrupts disabled", NULL);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     while (gyros.zombies.next == &gyros.zombies)
     {
@@ -66,13 +70,17 @@ gyros_task_wait(void)
 gyros_task_t*
 gyros_task_wait_until(gyros_abstime_t timeout)
 {
-    unsigned long flags = gyros_interrupt_disable();
+    unsigned long flags;
     gyros_task_t *task;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
         gyros__error("task_wait_until called from interrupt", NULL);
+    if (gyros_interrupts_disabled())
+        gyros__error("task_wait_until called with interrupts disabled", NULL);
 #endif
+
+    flags = gyros_interrupt_disable();
 
     if (gyros__list_empty(&gyros.zombies))
     {

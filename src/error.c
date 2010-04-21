@@ -45,10 +45,11 @@ gyros_set_error_handler(void (*handler)(const char *msg, void *object))
 void
 gyros__error(const char *msg, void *object)
 {
+    gyros_interrupt_disable();
+
     if (s_handler)
         s_handler(msg, object);
 
-    gyros_interrupt_disable();
     for (;;)
         ;
 }
