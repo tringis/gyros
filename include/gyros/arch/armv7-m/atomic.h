@@ -29,7 +29,7 @@
 #ifndef INCLUDE__gyros_armv7_m_atomic_h__201004161532
 #define INCLUDE__gyros_armv7_m_atomic_h__201004161532
 
-#define GYROS_HAS_LDREX_STREXa
+#define GYROS_HAS_LDREX_STREX
 
 static inline void *gyros_ldrex_p(void *addr)
 {

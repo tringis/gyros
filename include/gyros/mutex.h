@@ -62,6 +62,7 @@
 #include <stddef.h>
 
 #include <gyros/atomic.h>
+#include <gyros/compiler.h>
 #include <gyros/private/debug.h>
 #include <gyros/private/state.h>
 #include <gyros/task.h>
