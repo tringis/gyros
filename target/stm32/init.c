@@ -93,6 +93,7 @@
 #define TIMx_SR_CC3IF        BIT16(3)
 #define TIMx_SR_CC4IF        BIT16(4)
 #define TIMx_EGR             TIMER_REG(0x14)
+#define TIMx_EGR_UG          BIT16(0)
 #define TIMx_CCMR1           TIMER_REG(0x18)
 #define TIMx_CCMR2           TIMER_REG(0x1c)
 #define TIMx_CCER            TIMER_REG(0x20)
@@ -174,8 +175,9 @@ gyros__target_init(void)
     RCC_APB1RSTR &= ~TIMER_APB1_MASK;
 
     TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32_TIMER_HZ - 1;
-
     TIMx_ARR = 0xffff;
+    TIMx_EGR |= TIMx_EGR_UG; /* Generate update even to load PSC and ARR */
+
     DBGMCU_CR |= TIMER_DBG_CR_MASK; /* Stop timer when CPU halted. */
 
     gyros_target_enable_irq(TIMER_IRQ, GYROS_CONFIG_SYSTICK_PRIORITY);
