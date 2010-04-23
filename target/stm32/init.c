@@ -33,7 +33,13 @@
 #include "../../arch/armv7-m/nvic.h"
 
 #if GYROS_CONFIG_DYNTICK
-#  if GYROS_CONFIG_STM32_TIMER == 2
+#  if GYROS_CONFIG_STM32_TIMER == 1
+#    define TIMER_APB2_MASK      (1U <<  11)
+#    define TIMER_DBG_CR_MASK    (1U <<  10)
+#    define TIMER_IRQ            27
+#    define TIMER_ISR            TIM1_CC_IRQHandler
+#    define TIMER_ADDR           0x40012C00
+#  elif GYROS_CONFIG_STM32_TIMER == 2
 #    define TIMER_APB1_MASK      (1U <<  0)
 #    define TIMER_DBG_CR_MASK    (1U <<  11)
 #    define TIMER_IRQ            28
@@ -57,6 +63,12 @@
 #    define TIMER_IRQ            50
 #    define TIMER_ISR            TIM5_IRQHandler
 #    define TIMER_ADDR           0x40000c00
+#  elif GYROS_CONFIG_STM32_TIMER == 8
+#    define TIMER_APB2_MASK      (1U <<  13)
+#    define TIMER_DBG_CR_MASK    (1U <<  17)
+#    define TIMER_IRQ            46
+#    define TIMER_ISR            TIM8_CC_IRQHandler
+#    define TIMER_ADDR           0x40013400
 #  else
 #    error Invalid GYROS_CONFIG_STM32_TIMER value
 #  endif
@@ -71,7 +83,9 @@
 
 #define RCC_REG(offset)      REG32(0x40021000 + (offset))
 
+#define RCC_APB2RSTR         RCC_REG(0x0c)
 #define RCC_APB1RSTR         RCC_REG(0x10)
+#define RCC_APB2ENR          RCC_REG(0x18)
 #define RCC_APB1ENR          RCC_REG(0x1c)
 
 #define TIMER_REG(offset)    REG16(TIMER_ADDR + (offset))
@@ -170,9 +184,15 @@ gyros__target_init(void)
     gyros__arch_init();
 
 #if GYROS_CONFIG_DYNTICK
+#ifdef TIMER_APB1_MASK
     RCC_APB1ENR |= TIMER_APB1_MASK;
     RCC_APB1RSTR |= TIMER_APB1_MASK;
     RCC_APB1RSTR &= ~TIMER_APB1_MASK;
+#else
+    RCC_APB2ENR |= TIMER_APB2_MASK;
+    RCC_APB2RSTR |= TIMER_APB2_MASK;
+    RCC_APB2RSTR &= ~TIMER_APB2_MASK;
+#endif
 
     TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32_TIMER_HZ - 1;
     TIMx_ARR = 0xffff;
