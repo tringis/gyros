@@ -86,11 +86,11 @@ gyros__set_basepri_max(unsigned long basepri_max)
 static inline unsigned long
 gyros_interrupt_disable(void)
 {
-    unsigned long flags = gyros__get_basepri();
+    unsigned long basepri = gyros__get_basepri();
 
     gyros__set_basepri_max(GYROS_CONFIG_MAX_IRQ_PRIORITY);
 
-    return flags;
+    return basepri;
 }
 
 static inline void
