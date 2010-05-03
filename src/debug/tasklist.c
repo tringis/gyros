@@ -40,14 +40,14 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
     gyros_task_t *t;
     int i;
 
-    printf_func(printf_arg, "%s", "name             priority stack     "
-                                  "task       "
+    printf_func(printf_arg, "%-16s %7s %-9s %-10s %s\n",
+                "name", "prio", "  stack", "task",
 #if GYROS_CONFIG_DEBUG
                 "state"
 #else
                 "pc"
 #endif
-                "\n");
+                );
     for (i = 0; i < 79; ++i)
         printf_func(printf_arg, "-");
     printf_func(printf_arg, "\n");
