@@ -36,5 +36,5 @@ gyros_debug_task_pc(gyros_task_t *task)
 
     const unsigned long *sp = (const unsigned long*)task->context.sp;
 
-    return (unsigned long)sp[-6];
+    return (unsigned long)sp[6];
 }
