@@ -35,7 +35,8 @@
   *
   * \defgroup compiler_group Compiler support
   *
-  * TBD
+  * This group contains functions that allow compatible use of
+  * compiler specific functionality.
   *
   * @{
   */
@@ -44,7 +45,11 @@
 #define GYROS_LIKELY(x)       __builtin_expect((x),1)
 #define GYROS_UNLIKELY(x)     __builtin_expect((x),0)
 #else
+/** Assist the compiler's optimizer by hinting that the expression @a
+  * x is likely to be true.  Should be used very sparingly. */
 #define GYROS_LIKELY(x)       (x)
+/** Assist the compiler's optimizer by hinting that the expression @a
+  * x is unlikely to be true.  Should be used very sparingly. */
 #define GYROS_UNLIKELY(x)     (x)
 #endif
 
