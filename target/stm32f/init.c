@@ -33,75 +33,154 @@
 #include "../../arch/armv7-m/nvic.h"
 
 #if GYROS_CONFIG_DYNTICK
-#  if GYROS_CONFIG_STM32F_TIMER == 1
-#    define TIMER_IRQ            27
-#    define TIMER_ISR            TIM1_CC_IRQHandler
-#    define TIMER_ADDR           0x40012C00
-#  elif GYROS_CONFIG_STM32F_TIMER == 2
-#    define TIMER_IRQ            28
-#    define TIMER_ISR            TIM2_IRQHandler
-#    define TIMER_ADDR           0x40000000
-#  elif GYROS_CONFIG_STM32F_TIMER == 3
-#    define TIMER_IRQ            29
-#    define TIMER_ISR            TIM3_IRQHandler
-#    define TIMER_ADDR           0x40000400
-#  elif GYROS_CONFIG_STM32F_TIMER == 4
-#    define TIMER_IRQ            30
-#    define TIMER_ISR            TIM4_IRQHandler
-#    define TIMER_ADDR           0x40000800
-#  elif GYROS_CONFIG_STM32F_TIMER == 5
-#    define TIMER_IRQ            50
-#    define TIMER_ISR            TIM5_IRQHandler
-#    define TIMER_ADDR           0x40000c00
-#  elif GYROS_CONFIG_STM32F_TIMER == 8
-#    define TIMER_IRQ            46
-#    define TIMER_ISR            TIM8_CC_IRQHandler
-#    define TIMER_ADDR           0x40013400
-#  else
-#    error Unsupported GYROS_CONFIG_STM32F_TIMER value
-#  endif
 
-#define MAX_PERIOD           0x8000
-
-#define REG16(addr)          (*(volatile unsigned short*)(addr))
-#define BIT16(n)             ((unsigned short)1 << (n))
 #define REG32(addr)          (*(volatile unsigned long*)(addr))
+#define BIT(n)               (1U << (n))
 
-#define TIMER_REG(offset)    REG16(TIMER_ADDR + (offset))
+#if GYROS_CONFIG_STM32F_TIMER < 0 || GYROS_CONFIG_STM32F_TIMER > 8
+#   error Unsupported GYROS_CONFIG_STM32F_TIMER value
+#endif
 
-#define TIMx_CR1             TIMER_REG(0x00)
-#define TIMx_CR1_CEN         BIT16(0)
-#define TIMx_CR2             TIMER_REG(0x04)
-#define TIMx_CSMCR           TIMER_REG(0x08)
-#define TIMx_DIER            TIMER_REG(0x0c)
-#define TIMx_DIER_UIE        BIT16(0)
-#define TIMx_DIER_CC1IE      BIT16(1)
-#define TIMx_DIER_CC2IE      BIT16(2)
-#define TIMx_DIER_CC3IE      BIT16(3)
-#define TIMx_DIER_CC4IE      BIT16(4)
-#define TIMx_SR              TIMER_REG(0x10)
-#define TIMx_SR_UIF          BIT16(0)
-#define TIMx_SR_CC1IF        BIT16(1)
-#define TIMx_SR_CC2IF        BIT16(2)
-#define TIMx_SR_CC3IF        BIT16(3)
-#define TIMx_SR_CC4IF        BIT16(4)
-#define TIMx_EGR             TIMER_REG(0x14)
-#define TIMx_EGR_UG          BIT16(0)
-#define TIMx_CCMR1           TIMER_REG(0x18)
-#define TIMx_CCMR2           TIMER_REG(0x1c)
-#define TIMx_CCER            TIMER_REG(0x20)
-#define TIMx_CNT             TIMER_REG(0x24)
-#define TIMx_PSC             TIMER_REG(0x28)
-#define TIMx_ARR             TIMER_REG(0x2c)
-#define TIMx_CCR1            TIMER_REG(0x34)
-#define TIMx_CCR2            TIMER_REG(0x38)
-#define TIMx_CCR3            TIMER_REG(0x3c)
-#define TIMx_CCR4            TIMER_REG(0x40)
-#define TIMx_DCR             TIMER_REG(0x48)
-#define TIMx_DMAR            TIMER_REG(0x4c)
+#if GYROS_CONFIG_STM32F_TIMER == 1
+#   define TIMER_IRQ                      27
+#   define TIMER_ISR                      TIM1_CC_IRQHandler
+#elif GYROS_CONFIG_STM32F_TIMER == 2
+#   define TIMER_IRQ                      28
+#   define TIMER_ISR                      TIM2_IRQHandler
+#elif GYROS_CONFIG_STM32F_TIMER == 3
+#   define TIMER_IRQ                      29
+#   define TIMER_ISR                      TIM3_IRQHandler
+#elif GYROS_CONFIG_STM32F_TIMER == 4
+#   define TIMER_IRQ                      30
+#   define TIMER_ISR                      TIM4_IRQHandler
+#elif GYROS_CONFIG_STM32F_TIMER == 5
+#   define TIMER_IRQ                      50
+#   define TIMER_ISR                      TIM5_IRQHandler
+#elif GYROS_CONFIG_STM32F_TIMER == 8
+#   define TIMER_IRQ                      46
+#   define TIMER_ISR                      TIM8_CC_IRQHandler
+#endif
+
+#if GYROS_CONFIG_STM32F_FAMILY == 100     /* STM32F10x */
+#   define RCC_REG(offset)                REG32(0x40021000 + (offset))
+#   define RCC_APB2RSTR                   RCC_REG(0x0c)
+#   define RCC_APB1RSTR                   RCC_REG(0x10)
+#   define RCC_APB2ENR                    RCC_REG(0x18)
+#   define RCC_APB1ENR                    RCC_REG(0x1c)
+#   if GYROS_CONFIG_STM32F_TIMER == 1
+#       define TIMER_ADDR                 0x40012C00
+#       define TIMER_APB2_MASK            (1U << 11)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 10)
+#   elif GYROS_CONFIG_STM32F_TIMER == 2
+#       define TIMER_ADDR                 0x40000000
+#       define TIMER_APB1_MASK            (1U <<  0)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 11)
+#   elif GYROS_CONFIG_STM32F_TIMER == 3
+#       define TIMER_ADDR                 0x40000400
+#       define TIMER_APB1_MASK            (1U <<  1)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 12)
+#   elif GYROS_CONFIG_STM32F_TIMER == 4
+#       define TIMER_ADDR                 0x40000800
+#       define TIMER_APB1_MASK            (1U <<  2)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 13)
+#   elif GYROS_CONFIG_STM32F_TIMER == 5
+#       define TIMER_ADDR                 0x40000c00
+#       define TIMER_APB1_MASK            (1U <<  3)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 18)
+#   elif GYROS_CONFIG_STM32F_TIMER == 8
+#       define TIMER_ADDR                 0x40013400
+#       define TIMER_APB2_MASK            (1U << 13)
+#       define TIMER_DBGMCU_CR_MASK       (1U << 17)
+#   endif
+#   define TIMER_BITS                     16
+#   define DBGMCU_CR                      REG32(0xE0042004)
+#elif GYROS_CONFIG_STM32F_FAMILY == 200   /* STM32F20x */
+#   define RCC_REG(offset)                REG32(0x40023800 + (offset))
+#   define RCC_APB1RSTR                   RCC_REG(0x20)
+#   define RCC_APB2RSTR                   RCC_REG(0x24)
+#   define RCC_APB1ENR                    RCC_REG(0x40)
+#   define RCC_APB2ENR                    RCC_REG(0x44)
+#   if GYROS_CONFIG_STM32F_TIMER == 1
+#       define TIMER_ADDR                 0x40010000
+#       define TIMER_APB2_MASK            (1U <<  0)
+#   elif GYROS_CONFIG_STM32F_TIMER == 2
+#       define TIMER_ADDR                 0x40000000
+#       define TIMER_APB1_MASK            (1U <<  0)
+#   elif GYROS_CONFIG_STM32F_TIMER == 3
+#       define TIMER_ADDR                 0x40000400
+#       define TIMER_APB1_MASK            (1U <<  1)
+#   elif GYROS_CONFIG_STM32F_TIMER == 4
+#       define TIMER_ADDR                 0x40000800
+#       define TIMER_APB1_MASK            (1U <<  2)
+#   elif GYROS_CONFIG_STM32F_TIMER == 5
+#       define TIMER_ADDR                 0x40000c00
+#       define TIMER_APB1_MASK            (1U <<  3)
+#   elif GYROS_CONFIG_STM32F_TIMER == 8
+#       define TIMER_ADDR                 0x40010400
+#       define TIMER_APB2_MASK            (1U <<  1)
+#   endif
+#   if GYROS_CONFIG_STM32F_TIMER == 2 || GYROS_CONFIG_STM32F_TIMER == 5
+#       define TIMER_BITS                 32
+#   else
+#       define TIMER_BITS                 16
+#   endif
+#   define DBGMCU_APB1_FZ                 REG32(0xE0042008)
+#   define DBGMCU_APB2_FZ                 REG32(0xE004200c)
+#else
+#   error Unsupported GYROS_CONFIG_STM32F_FAMILY value
+#endif
+
+#ifdef TIMER_APB1_MASK
+#   define TIMER_CLK_HZ                   GYROS_CONFIG_STM32F_APB1_HZ
+#else
+#   define TIMER_CLK_HZ                   GYROS_CONFIG_STM32F_APB2_HZ
+#endif
+
+#if TIMER_BITS == 16
+#   define TIMER_T                        short
+#   define MAX_PERIOD                     0x8000
+#elif TIMER_BITS == 32
+#   define TIMER_T                        int
+#   define MAX_PERIOD                     0x80000000
+#else
+#   error Unsupported TIMER_BITS
+#endif
+
+#define TIMER_REG(offset)                 REG32(TIMER_ADDR + (offset))
+
+#define TIMx_CR1                          TIMER_REG(0x00)
+#define TIMx_CR1_CEN                      BIT(0)
+#define TIMx_CR2                          TIMER_REG(0x04)
+#define TIMx_CSMCR                        TIMER_REG(0x08)
+#define TIMx_DIER                         TIMER_REG(0x0c)
+#define TIMx_DIER_UIE                     BIT(0)
+#define TIMx_DIER_CC1IE                   BIT(1)
+#define TIMx_DIER_CC2IE                   BIT(2)
+#define TIMx_DIER_CC3IE                   BIT(3)
+#define TIMx_DIER_CC4IE                   BIT(4)
+#define TIMx_SR                           TIMER_REG(0x10)
+#define TIMx_SR_UIF                       BIT(0)
+#define TIMx_SR_CC1IF                     BIT(1)
+#define TIMx_SR_CC2IF                     BIT(2)
+#define TIMx_SR_CC3IF                     BIT(3)
+#define TIMx_SR_CC4IF                     BIT(4)
+#define TIMx_EGR                          TIMER_REG(0x14)
+#define TIMx_EGR_UG                       BIT(0)
+#define TIMx_CCMR1                        TIMER_REG(0x18)
+#define TIMx_CCMR2                        TIMER_REG(0x1c)
+#define TIMx_CCER                         TIMER_REG(0x20)
+#define TIMx_CNT                          TIMER_REG(0x24)
+#define TIMx_PSC                          TIMER_REG(0x28)
+#define TIMx_ARR                          TIMER_REG(0x2c)
+#define TIMx_CCR1                         TIMER_REG(0x34)
+#define TIMx_CCR2                         TIMER_REG(0x38)
+#define TIMx_CCR3                         TIMER_REG(0x3c)
+#define TIMx_CCR4                         TIMER_REG(0x40)
+#define TIMx_DCR                          TIMER_REG(0x48)
+#define TIMx_DMAR                         TIMER_REG(0x4c)
 
 static gyros_abstime_t s_time_hi;
-static unsigned short s_last_time_lo;
+static unsigned TIMER_T s_last_time_lo;
 
 void
 TIMER_ISR(void)
@@ -131,8 +210,8 @@ gyros__dyntick_set(gyros_abstime_t now, gyros_abstime_t next_timeout)
 
         /* If dt is small enough to be a risk, we check if the time is
          * already past, and if so just pend the timer interrupt. */
-        if (dt < MAX_PERIOD / 4 &&
-            (short)((unsigned short)next_timeout - TIMx_CNT) <= 0)
+        if (dt < 0x2000 &&
+            (signed TIMER_T)((unsigned TIMER_T)next_timeout - TIMx_CNT) <= 0)
         {
             gyros_target_pend_irq(TIMER_IRQ);
         }
@@ -143,7 +222,7 @@ gyros_abstime_t
 gyros_time(void)
 {
     unsigned long flags = gyros_interrupt_disable();
-    unsigned short time_lo = TIMx_CNT;
+    unsigned TIMER_T time_lo = TIMx_CNT;
     gyros_abstime_t time_hi;
 
     if (time_lo < s_last_time_lo)
@@ -153,7 +232,7 @@ gyros_time(void)
 
     gyros_interrupt_restore(flags);
 
-    return (time_hi << 16) | time_lo;
+    return (time_hi << TIMER_BITS) | time_lo;
 }
 #endif
 
@@ -163,8 +242,33 @@ gyros__target_init(void)
     gyros__arch_init();
 
 #if GYROS_CONFIG_DYNTICK
-    TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32F_TIMER_HZ - 1;
+
+    /* Enack timer clock and reset the timer. */
+#ifdef TIMER_APB1_MASK
+    RCC_APB1ENR |= TIMER_APB1_MASK;
+    RCC_APB1RSTR |= TIMER_APB1_MASK;
+    RCC_APB1RSTR &= ~TIMER_APB1_MASK;
+#else
+    RCC_APB2ENR |= TIMER_APB2_MASK;
+    RCC_APB2RSTR |= TIMER_APB2_MASK;
+    RCC_APB2RSTR &= ~TIMER_APB2_MASK;
+#endif
+
+    /* Stop timer when CPU halted (by a debuggger). */
+#if defined(TIMER_DBGMCU_CR_MASK)
+    DBGMCU_CR |= TIMER_DBGMCU_CR_MASK;
+#elif defined(DBGMCU_APB1_FZ) && defined(TIMER_APB1_MASK)
+    DBGMCU_APB1_FZ |= TIMER_APB1_MASK;
+#elif defined(DBGMCU_APB2_FZ) && defined(TIMER_APB2_MASK)
+    DBGMCU_APB2_FZ |= TIMER_APB2_MASK;
+#endif
+
+    TIMx_PSC = TIMER_CLK_HZ / GYROS_CONFIG_STM32F_TIMER_HZ - 1;
+#if TIMER_BITS == 16
     TIMx_ARR = 0xffff;
+#else
+    TIMx_ARR = 0xffffffff;
+#endif
     TIMx_EGR |= TIMx_EGR_UG; /* Generate update even to load PSC and ARR */
 
     gyros_target_enable_irq(TIMER_IRQ, GYROS_CONFIG_SYSTICK_PRIORITY);
@@ -173,5 +277,6 @@ gyros__target_init(void)
     TIMx_CR1 |= TIMx_CR1_CEN; /* Enable timer */
 
     gyros__dyntick_suspend();
-#endif
+
+#endif /* GYROS_CONFIG_DYNTICK */
 }

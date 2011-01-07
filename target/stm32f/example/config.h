@@ -32,7 +32,17 @@
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
  *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_STM32F_TIMER_HZ           72000000
+#define GYROS_CONFIG_STM32F_FAMILY             100 /* 100 = STM32F10x,
+                                                      200 = STM32F2xx */
+
+/* Core clock (HCLK) frequency */
+#define GYROS_CONFIG_CORE_HZ                   120000000
+
+/* APB1 frequency (see RCC_CFGR[PPRE1]) */
+#define GYROS_CONFIG_STM32F_APB1_HZ            GYROS_CONFIG_CORE_HZ
+
+/* APB1 frequency (see RCC_CFGR[PPRE2]) */
+#define GYROS_CONFIG_STM32F_APB2_HZ            GYROS_CONFIG_CORE_HZ
 
 /*---------------------------------------------------------------------*
  * Application specific configuration  (see gyros/target/defconfig.h
