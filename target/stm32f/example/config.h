@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2002-2009, Tobias Ringström <tobias@ringis.se>
+ * Copyright (c) 2002-2010, Tobias Ringström <tobias@ringis.se>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,14 +21,26 @@
  * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS ATOMICION) HOWEVER CAUSED AND ON ANY
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_stm32_atomic_h__201004161545
-#define INCLUDE__gyros_stm32_atomic_h__201004161545
+#ifndef INCLUDED__gyros_stm32f_config_h__201004131716
+#define INCLUDED__gyros_stm32f_config_h__201004131716
 
-#include <gyros/arch/armv7-m/atomic.h>
+/*---------------------------------------------------------------------*
+ * GyrOS target specific configuration
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_STM32F_TIMER_HZ           72000000
+
+/*---------------------------------------------------------------------*
+ * Application specific configuration  (see gyros/target/defconfig.h
+ *                                      and gyros/private/defconfig.h)
+ *---------------------------------------------------------------------*/
+#define GYROS_CONFIG_DEBUG                     1
+#define GYROS_CONFIG_TRACE                     1
+
+#include <gyros/target/defconfig.h>
 
 #endif

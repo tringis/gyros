@@ -26,9 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_stm32_interrupt_h__201002062211
-#define INCLUDE__gyros_stm32_interrupt_h__201002062211
+#ifndef INCLUDE__gyros_stm32f_context_h__200812301810
+#define INCLUDE__gyros_stm32f_context_h__200812301810
 
-#include <gyros/arch/armv7-m/interrupt.h>
+#include <gyros/arch/armv7-m/context.h>
 
 #endif

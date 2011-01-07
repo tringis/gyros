@@ -33,44 +33,44 @@
 #include "../../arch/armv7-m/nvic.h"
 
 #if GYROS_CONFIG_DYNTICK
-#  if GYROS_CONFIG_STM32_TIMER == 1
+#  if GYROS_CONFIG_STM32F_TIMER == 1
 #    define TIMER_APB2_MASK      (1U <<  11)
 #    define TIMER_DBG_CR_MASK    (1U <<  10)
 #    define TIMER_IRQ            27
 #    define TIMER_ISR            TIM1_CC_IRQHandler
 #    define TIMER_ADDR           0x40012C00
-#  elif GYROS_CONFIG_STM32_TIMER == 2
+#  elif GYROS_CONFIG_STM32F_TIMER == 2
 #    define TIMER_APB1_MASK      (1U <<  0)
 #    define TIMER_DBG_CR_MASK    (1U <<  11)
 #    define TIMER_IRQ            28
 #    define TIMER_ISR            TIM2_IRQHandler
 #    define TIMER_ADDR           0x40000000
-#  elif GYROS_CONFIG_STM32_TIMER == 3
+#  elif GYROS_CONFIG_STM32F_TIMER == 3
 #    define TIMER_APB1_MASK      (1U <<  1)
 #    define TIMER_DBG_CR_MASK    (1U <<  12)
 #    define TIMER_IRQ            29
 #    define TIMER_ISR            TIM3_IRQHandler
 #    define TIMER_ADDR           0x40000400
-#  elif GYROS_CONFIG_STM32_TIMER == 4
+#  elif GYROS_CONFIG_STM32F_TIMER == 4
 #    define TIMER_APB1_MASK      (1U <<  2)
 #    define TIMER_DBG_CR_MASK    (1U <<  13)
 #    define TIMER_IRQ            30
 #    define TIMER_ISR            TIM4_IRQHandler
 #    define TIMER_ADDR           0x40000800
-#  elif GYROS_CONFIG_STM32_TIMER == 5
+#  elif GYROS_CONFIG_STM32F_TIMER == 5
 #    define TIMER_APB1_MASK      (1U <<  3)
 #    define TIMER_DBG_CR_MASK    (1U <<  18)
 #    define TIMER_IRQ            50
 #    define TIMER_ISR            TIM5_IRQHandler
 #    define TIMER_ADDR           0x40000c00
-#  elif GYROS_CONFIG_STM32_TIMER == 8
+#  elif GYROS_CONFIG_STM32F_TIMER == 8
 #    define TIMER_APB2_MASK      (1U <<  13)
 #    define TIMER_DBG_CR_MASK    (1U <<  17)
 #    define TIMER_IRQ            46
 #    define TIMER_ISR            TIM8_CC_IRQHandler
 #    define TIMER_ADDR           0x40013400
 #  else
-#    error Invalid GYROS_CONFIG_STM32_TIMER value
+#    error Invalid GYROS_CONFIG_STM32F_TIMER value
 #  endif
 
 #define MAX_PERIOD           0x8000
@@ -194,7 +194,7 @@ gyros__target_init(void)
     RCC_APB2RSTR &= ~TIMER_APB2_MASK;
 #endif
 
-    TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32_TIMER_HZ - 1;
+    TIMx_PSC = GYROS_CONFIG_CORE_HZ / GYROS_CONFIG_STM32F_TIMER_HZ - 1;
     TIMx_ARR = 0xffff;
     TIMx_EGR |= TIMx_EGR_UG; /* Generate update even to load PSC and ARR */
 
