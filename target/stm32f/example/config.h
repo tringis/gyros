@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2002-2010, Tobias Ringström <tobias@ringis.se>
+ * Copyright (c) 2002-2011, Tobias Ringström <tobias@ringis.se>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
