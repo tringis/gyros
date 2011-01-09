@@ -32,8 +32,8 @@
 /*---------------------------------------------------------------------*
  * GyrOS target specific configuration
  *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_STM32F_FAMILY             100 /* 100 = STM32F10x,
-                                                      200 = STM32F2xx */
+#define GYROS_CONFIG_STM32F10x
+/* #define GYROS_CONFIG_STM32F2xx */
 
 /* Core clock (HCLK) frequency */
 #define GYROS_CONFIG_CORE_HZ                   120000000

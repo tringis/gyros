@@ -37,7 +37,13 @@
 #define REG32(addr)          (*(volatile unsigned long*)(addr))
 #define BIT(n)               (1U << (n))
 
-#if GYROS_CONFIG_STM32F_TIMER < 0 || GYROS_CONFIG_STM32F_TIMER > 8
+#if !defined(GYROS_CONFIG_STM32F10x) && !defined(GYROS_CONFIG_STM32F2xx)
+#   error Neither GYROS_CONFIG_STM32F10x nor GYROS_CONFIG_STM32F2xx defined.
+#elif defined(GYROS_CONFIG_STM32F10x) && defined(GYROS_CONFIG_STM32F2xx)
+#   error Both GYROS_CONFIG_STM32F10x and GYROS_CONFIG_STM32F2xx defined.
+#endif
+
+#if GYROS_CONFIG_STM32F_TIMER < 1 || GYROS_CONFIG_STM32F_TIMER > 8
 #   error Unsupported GYROS_CONFIG_STM32F_TIMER value
 #endif
 
@@ -61,7 +67,7 @@
 #   define TIMER_ISR                      TIM8_CC_IRQHandler
 #endif
 
-#if GYROS_CONFIG_STM32F_FAMILY == 100     /* STM32F10x */
+#if defined(GYROS_CONFIG_STM32F10x)
 #   define RCC_REG(offset)                REG32(0x40021000 + (offset))
 #   define RCC_APB2RSTR                   RCC_REG(0x0c)
 #   define RCC_APB1RSTR                   RCC_REG(0x10)
@@ -94,7 +100,7 @@
 #   endif
 #   define TIMER_BITS                     16
 #   define DBGMCU_CR                      REG32(0xE0042004)
-#elif GYROS_CONFIG_STM32F_FAMILY == 200   /* STM32F20x */
+#elif defined(GYROS_CONFIG_STM32F2xx)
 #   define RCC_REG(offset)                REG32(0x40023800 + (offset))
 #   define RCC_APB1RSTR                   RCC_REG(0x20)
 #   define RCC_APB2RSTR                   RCC_REG(0x24)
@@ -126,8 +132,6 @@
 #   endif
 #   define DBGMCU_APB1_FZ                 REG32(0xE0042008)
 #   define DBGMCU_APB2_FZ                 REG32(0xE004200c)
-#else
-#   error Unsupported GYROS_CONFIG_STM32F_FAMILY value
 #endif
 
 #ifdef TIMER_APB1_MASK
