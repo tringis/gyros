@@ -26,14 +26,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_str91x_defconfig_h__200901101016
-#define INCLUDED__gyros_str91x_defconfig_h__200901101016
+#ifndef INCLUDED__gyros_stm32f_defconfig_h__200901101016
+#define INCLUDED__gyros_stm32f_defconfig_h__200901101016
 
 #ifndef GYROS_CONFIG_DYNTICK
 #define GYROS_CONFIG_DYNTICK                   1
 #endif
 
 #if GYROS_CONFIG_DYNTICK
+
+#ifndef GYROS_CONFIG_STM32F_AHB_HZ
+#error GYROS_CONFIG_STM32F_AHB_HZ not defined
+#endif
+
+#ifndef GYROS_CONFIG_STM32F_APB1_HZ
+#error GYROS_CONFIG_STM32F_APB1_HZ not defined
+#endif
+
+#ifndef GYROS_CONFIG_STM32F_APB2_HZ
+#error GYROS_CONFIG_STM32F_APB2_HZ not defined
+#endif
 
 #ifndef GYROS_CONFIG_STM32F_TIMER
 #define GYROS_CONFIG_STM32F_TIMER              2

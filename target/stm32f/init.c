@@ -135,9 +135,13 @@
 #endif
 
 #ifdef TIMER_APB1_MASK
-#   define TIMER_CLK_HZ                   GYROS_CONFIG_STM32F_APB1_HZ
+#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32F_APB1_HZ <         \
+                                        GYROS_CONFIG_STM32F_AHB_HZ ? 2 : 1) * \
+                                       GYROS_CONFIG_STM32F_APB1_HZ)
 #else
-#   define TIMER_CLK_HZ                   GYROS_CONFIG_STM32F_APB2_HZ
+#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32F_APB2_HZ <         \
+                                        GYROS_CONFIG_STM32F_AHB_HZ ? 2 : 1) * \
+                                       GYROS_CONFIG_STM32F_APB2_HZ)
 #endif
 
 #if TIMER_BITS == 16
