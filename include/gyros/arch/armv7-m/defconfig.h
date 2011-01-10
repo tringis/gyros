@@ -53,6 +53,11 @@
 #define GYROS_CONFIG_SYSTICK_PRIORITY          0xa0
 #endif
 
+
+#if !GYROS_CONFIG_DYNTICK && !defined(GYROS_CONFIG_CORE_HZ)
+#error GYROS_CONFIG_CORE_HZ not defined
+#endif
+
 #if !GYROS_CONFIG_DYNTICK && !defined(GYROS_CONFIG_HZ)
 #define GYROS_CONFIG_HZ                        1000
 #endif
