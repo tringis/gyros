@@ -29,6 +29,9 @@
 #ifndef INCLUDED__gyros_zpool_h__200902072124
 #define INCLUDED__gyros_zpool_h__200902072124
 
+#include <gyros/config.h>
+#include <gyros/private/debug.h>
+
 /** \file
   * \brief Zone pool allocator.
   * \details Header file for \ref zpool_group.
@@ -51,16 +54,19 @@
   * \param zone_size    Size of the zones.
   * \return             Required pool size in bytes.
   */
-#define GYROS_ZPOOL_SIZE(num_zones, zone_size)                          \
-    (sizeof(void*) +                                                    \
-     (4 + ((num_zones) + 8 * sizeof(unsigned) - 1) /                    \
-          (8 * sizeof(unsigned)) * sizeof(unsigned)) +                  \
-     (num_zones) * (sizeof(unsigned) + sizeof(void*) +                  \
-                    ((zone_size) + sizeof(unsigned) - 1) /              \
-                    sizeof(unsigned) * sizeof(unsigned)))
+#define GYROS_ZPOOL_SIZE(num_zones, zone_size)                                \
+    (sizeof(gyros_zpool_t) + (num_zones) *                                    \
+     (sizeof(void*) + ((zone_size) + sizeof(void*) - 1) ~(sizeof(void*) - 1)))
 
-/** \brief Zone pool object. */
-typedef struct gyros__zpool gyros_zpool_t;
+/** \brief Zone pool object.  */
+typedef struct
+{
+    void (*free_func)(void *addr); /**< \internal */
+    struct gyros_debug_info debug_info; /**< \internal */
+    unsigned total_blocks; /**< \internal */
+    unsigned free_blocks; /**< \internal */
+    union gyros__zpool_bh *free_list; /**< \internal */
+} gyros_zpool_t;
 
 /** Create a zone pool, which is a memory pool where all blocks (or
   * zones) have the same size.  Zone pools are interrupt safe, meaning
@@ -107,6 +113,13 @@ void *gyros_try_zalloc(gyros_zpool_t *pool);
   * \return             Address to zone.
   */
 void *gyros_zalloc(gyros_zpool_t *pool);
+
+/** Free a zone previously allocated from the zone pool.  May be
+  * called from interrupt context.
+  *
+  * \param pool         Zone pool.
+  */
+void gyros_zpool_free(void *addr);
 
 /*@}*/
 
