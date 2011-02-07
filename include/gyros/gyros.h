@@ -43,7 +43,7 @@
 #include <gyros/hooks.h>
 #include <gyros/interrupt.h>
 #include <gyros/iterate.h>
-#include <gyros/memory.h>
+#include <gyros/mempool.h>
 #include <gyros/mutex.h>
 #include <gyros/mq.h>
 #include <gyros/rwlock.h>
@@ -53,6 +53,5 @@
 #include <gyros/time.h>
 #include <gyros/timer.h>
 #include <gyros/trace.h>
-#include <gyros/zpool.h>
 
 #endif

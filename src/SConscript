@@ -4,9 +4,9 @@ gyros_common_srcs = map(File, [ 'cond.c',
                                 'debug/tracedump.c',
                                 'delete.c',
                                 'error.c',
-                                'free.c',
                                 'hooks.c',
                                 'iterate.c',
+                                'mempool.c',
                                 'mq.c',
                                 'mutex.c',
                                 'priority.c',
@@ -20,7 +20,6 @@ gyros_common_srcs = map(File, [ 'cond.c',
                                 'trace.c',
                                 'udelay.c',
                                 'wait.c',
-                                'yield.c',
-                                'zpool.c' ])
+                                'yield.c' ])
 
 Return("gyros_common_srcs")

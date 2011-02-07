@@ -49,8 +49,8 @@
   * of gyros_mq_msghdr_t.  See the documentation of \ref
   * gyros_mq_msghdr_t for an example of a message data type.
   *
-  * It is convenient to use a \ref zpool_group "zone pool" for message
-  * allocation:
+  * It is convenient to use a \ref mempool_group "memory pool" for
+  * message allocation:
   * 
   * \code
   * struct my_message
@@ -61,7 +61,7 @@
   *
   * void send(int data)
   * {
-  *     struct my_message *msg = gyros_zalloc(zpool);
+  *     struct my_message *msg = gyros_alloc(zpool, sizeof(*msg));
   *     msg->my_data = data;
   *     gyros_mq_send(&mq, msg);
   * }

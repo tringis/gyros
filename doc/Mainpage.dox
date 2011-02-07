@@ -68,7 +68,7 @@ from the core.
 - \ref time_group "Time management" and both relative and absolute time
   \ref sleep_group "sleeping".
 - Periodic and one shot \ref timer_group "timers".
-- Basic dynamic \ref memory_group "memory management".
+- An multiple block size \ref mempool_group "memory pool".
 
 \section supported_hw Supported hardware
 
