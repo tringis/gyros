@@ -94,6 +94,8 @@ enum gyros_trace_kind
     GYROS_TRACE_SEM_BLOCKED,        /**< gyros_sem_wait() blocking */
     GYROS_TRACE_SEM_AQUIRED,        /**< gyros_sem_wait() aquired semaphore */
     GYROS_TRACE_SEM_SIGNAL,         /**< gyros_sem_signal() */
+
+    GYROS__TRACE_KIND_COUNT         /**< \internal */
 };
 
 /** \brief Trace log entry. */
@@ -158,12 +160,25 @@ typedef struct
 } gyros_trace_t;
 
 /** Initialize tracing.  Must be called before any other trace
-  * functions.
+  * functions.  Does not clear the trace log to allow for iterating
+  * over a previous trace log.  Use gyros_trace_clear() to clear
+  * the trace log.
   *
   * \param log              Address of log area.  Must be int aligned.
   * \param log_size         Size of log area in bytes.
   */
 void gyros_trace_init(void *log, int log_size);
+
+/** Clear the trace log.  Must not be called when tracing is enabled.
+  */
+void gyros_trace_clear(void);
+
+/** Set the current trace position.
+  *
+  * \param pos              New position.  Must be a valid position
+  *                         returned by gyros_trace_iterate().
+  */
+void gyros_trace_seek(gyros_trace_t *pos);
 
 /** Enable tracing.
   */

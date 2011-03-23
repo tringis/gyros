@@ -45,15 +45,30 @@ static gyros_trace_t *s_log_pos;
 void
 gyros_trace_init(void *log, int log_size)
 {
-    static gyros_trace_t *i;
     int n = log_size / sizeof(gyros_trace_t);
 
     s_log_begin = log; /* TODO: Fix alignment!!! */
     s_log_end = s_log_begin + n;
     s_log_pos = s_log_begin;
+}
+
+void
+gyros_trace_clear(void)
+{
+    static gyros_trace_t *i;
 
     for (i = s_log_begin; i != s_log_end; ++i)
+    {
+        i->timestamp = 0;
         i->kind = GYROS_TRACE_EMPTY;
+    }
+    s_log_pos = s_log_begin;
+}
+
+void
+gyros_trace_seek(gyros_trace_t *pos)
+{
+    s_log_pos = pos;
 }
 
 void
@@ -114,9 +129,7 @@ gyros_trace_iterate(gyros_trace_t *prev)
     else if (prev == s_log_pos)
         return NULL;
 
-    prev = (prev == s_log_begin ? s_log_end : prev) - 1;
-
-    return prev->kind == GYROS_TRACE_EMPTY ? NULL : prev;
+    return (prev == s_log_begin ? s_log_end : prev) - 1;
 }
 
 static gyros_trace_t*

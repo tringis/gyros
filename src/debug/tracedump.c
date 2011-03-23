@@ -95,6 +95,8 @@ trace_kind_type(enum gyros_trace_kind kind)
     case GYROS_TRACE_SEM_AQUIRED:
     case GYROS_TRACE_SEM_SIGNAL:
         return "SEM";
+    case GYROS__TRACE_KIND_COUNT:
+        break;
     }
 
     return "UNKNOWN";
@@ -121,7 +123,8 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
     next_t = gyros_trace_iterate(t);
     while (t)
     {
-        if (t->kind == GYROS_TRACE_EMPTY)
+        if (t->kind <= GYROS_TRACE_EMPTY ||
+            t->kind >= GYROS__TRACE_KIND_COUNT)
         {
             t = next_t;
             next_t = gyros_trace_iterate(t);
@@ -138,6 +141,7 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
         switch (t->kind)
         {
         case GYROS_TRACE_EMPTY:
+        case GYROS__TRACE_KIND_COUNT:
             break;
         case GYROS_TRACE_TRACE:
             if (t->info.trace < 0)
