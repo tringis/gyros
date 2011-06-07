@@ -43,6 +43,14 @@ gyros__get_primask(void)
     return primask;
 }
 
+static inline void
+gyros__set_primask(unsigned long primask)
+{
+    __asm__ __volatile__(
+        "msr    primask, %0\n\t"
+        :: "r" (primask): "memory");
+}
+
 static inline unsigned long
 gyros__get_faultmask(void)
 {
