@@ -75,7 +75,6 @@ gyros_try_alloc(gyros_mempool_t *pool, unsigned size)
     {
         if (size <= pool->slots[i].block_size)
         {
-            printf("using slot %u\n", i);
             slot_t *slot = pool->slots + i;
             unsigned long flags = gyros_interrupt_disable();
 
