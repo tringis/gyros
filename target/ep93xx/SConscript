@@ -1,0 +1,25 @@
+Import("target_env")
+try:
+    Import("target_arm_env")
+except:
+    target_arm_env = target_env
+
+######################################################################
+# Common source files
+######################################################################
+common_srcs = SConscript('../../src/SConscript')
+arch_srcs, arch_arm_srcs = SConscript('../../arch/arm/SConscript')
+
+######################################################################
+# Target specific source files
+######################################################################
+srcs = common_srcs + arch_srcs + [ 'exceptions.S',
+                                   'init.c',
+                                   'interrupt.c']
+
+arm_objs = map(target_arm_env.StaticObject, arch_arm_srcs + ['idle.c'])
+
+######################################################################
+# Library target
+######################################################################
+Default(target_env.StaticLibrary('gyros', srcs + arm_objs))
