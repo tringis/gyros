@@ -29,9 +29,11 @@
 #ifndef INCLUDE__gyros_armv7_m_atomic_h__201004161532
 #define INCLUDE__gyros_armv7_m_atomic_h__201004161532
 
+#include <gyros/compiler.h>
+
 #define GYROS_HAS_LDREX_STREX
 
-static inline void *gyros_ldrex_p(void *addr)
+GYROS_ALWAYS_INLINE void *gyros_ldrex_p(void *addr)
 {
     void *result;
   
@@ -42,7 +44,7 @@ static inline void *gyros_ldrex_p(void *addr)
     return result;
 }
 
-static inline int gyros_strex_p(void *addr, void *value)
+GYROS_ALWAYS_INLINE int gyros_strex_p(void *addr, void *value)
 {
     unsigned result;
   

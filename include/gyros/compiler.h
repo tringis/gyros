@@ -44,6 +44,7 @@
 #ifdef __GNUC__
 #define GYROS_LIKELY(x)       __builtin_expect((x),1)
 #define GYROS_UNLIKELY(x)     __builtin_expect((x),0)
+#define GYROS_ALWAYS_INLINE   static inline __attribute__((__always_inline__))
 #else
 /** Assist the compiler's optimizer by hinting that the expression @a
   * x is likely to be true.  Should be used very sparingly. */
@@ -51,6 +52,8 @@
 /** Assist the compiler's optimizer by hinting that the expression @a
   * x is unlikely to be true.  Should be used very sparingly. */
 #define GYROS_UNLIKELY(x)     (x)
+/** Flag that the function should always be inlined. */
+#define GYROS_ALWAYS_INLINE   static inline
 #endif
 
 /*@}*/

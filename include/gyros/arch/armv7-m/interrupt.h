@@ -30,8 +30,9 @@
 #define INCLUDE__gyros_armv7_m_interrupt_h__201002062157
 
 #include <gyros/config.h>
+#include <gyros/compiler.h>
 
-static inline unsigned long
+GYROS_ALWAYS_INLINE unsigned long
 gyros__get_primask(void)
 {
     unsigned long primask;
@@ -43,7 +44,7 @@ gyros__get_primask(void)
     return primask;
 }
 
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__set_primask(unsigned long primask)
 {
     __asm__ __volatile__(
@@ -51,7 +52,7 @@ gyros__set_primask(unsigned long primask)
         :: "r" (primask): "memory");
 }
 
-static inline unsigned long
+GYROS_ALWAYS_INLINE unsigned long
 gyros__get_faultmask(void)
 {
     unsigned long faultmask;
@@ -63,7 +64,7 @@ gyros__get_faultmask(void)
     return faultmask;
 }
 
-static inline unsigned long
+GYROS_ALWAYS_INLINE unsigned long
 gyros__get_basepri(void)
 {
     unsigned long basepri;
@@ -75,7 +76,7 @@ gyros__get_basepri(void)
     return basepri;
 }
 
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__set_basepri(unsigned long basepri)
 {
     __asm__ __volatile__(
@@ -83,7 +84,7 @@ gyros__set_basepri(unsigned long basepri)
         :: "r" (basepri): "memory");
 }
 
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__set_basepri_max(unsigned long basepri_max)
 {
     __asm__ __volatile__(
@@ -91,7 +92,7 @@ gyros__set_basepri_max(unsigned long basepri_max)
         :: "r" (basepri_max): "memory");
 }
 
-static inline unsigned long
+GYROS_ALWAYS_INLINE unsigned long
 gyros_interrupt_disable(void)
 {
     unsigned long basepri = gyros__get_basepri();
@@ -101,13 +102,13 @@ gyros_interrupt_disable(void)
     return basepri;
 }
 
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros_interrupt_restore(unsigned long flags)
 {
     gyros__set_basepri(flags);
 }
 
-static inline int
+GYROS_ALWAYS_INLINE int
 gyros_in_interrupt(void)
 {
     unsigned long ipsr;
@@ -119,7 +120,7 @@ gyros_in_interrupt(void)
     return ipsr != 0;
 }
 
-static inline int
+GYROS_ALWAYS_INLINE int
 gyros_interrupts_disabled(void)
 {
     return ((gyros__get_primask() & 1) == 1 ||
@@ -128,14 +129,14 @@ gyros_interrupts_disabled(void)
 }
 
 /* Reschedule, i.e. make sure the right task is running. */
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__reschedule(void)
 {
     *(volatile unsigned long*)0xe000ed04 = 1U << 28; /* pendSV */
 }
 
 /* Reschedule, i.e. make sure the right task is running. */
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__tick_reschedule(void)
 {
     gyros__reschedule();

@@ -30,9 +30,10 @@
 #define INCLUDE__gyros_arm_interrupt_h__200212292232
 
 #include <gyros/config.h>
+#include <gyros/compiler.h>
 #include <gyros/arch/arm/arm_defs.h>
 
-static inline unsigned long
+GYROS_ALWAYS_INLINE unsigned long
 gyros_interrupt_disable(void)
 {
 #ifdef __thumb__
@@ -53,7 +54,7 @@ gyros_interrupt_disable(void)
 }
 
 /* Restore interrupts (IRQ and FIQ) in the ARM core. */
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros_interrupt_restore(unsigned long flags)
 {
 #ifdef __thumb__
@@ -67,7 +68,7 @@ gyros_interrupt_restore(unsigned long flags)
 #endif
 }
 
-static inline int
+GYROS_ALWAYS_INLINE int
 gyros__get_cpsr(void)
 {
 #ifdef __thumb__
@@ -85,20 +86,20 @@ gyros__get_cpsr(void)
 #endif
 }
 
-static inline int
+GYROS_ALWAYS_INLINE int
 gyros_in_interrupt(void)
 {
     return (gyros__get_cpsr() & 0x1f) != ARM_MODE_SYS;
 }
 
-static inline int
+GYROS_ALWAYS_INLINE int
 gyros_interrupts_disabled(void)
 {
     return (gyros__get_cpsr() & ARM_IRQ_BIT) != 0;
 }
 
 /* Reschedule, i.e. make sure the right task is running. */
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__reschedule(void)
 {
     /* The interrupt exit code always reschedules for ARM */
@@ -107,7 +108,7 @@ gyros__reschedule(void)
 }
 
 /* Reschedule, i.e. make sure the right task is running. */
-static inline void
+GYROS_ALWAYS_INLINE void
 gyros__tick_reschedule(void)
 {
     /* The interrupt exit code always reschedules for ARM */
