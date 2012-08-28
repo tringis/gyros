@@ -33,6 +33,10 @@
 #include <gyros/compiler.h>
 #include <gyros/arch/arm/arm_defs.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 GYROS_ALWAYS_INLINE unsigned long
 gyros_interrupt_disable(void)
 {
@@ -116,5 +120,9 @@ gyros__tick_reschedule(void)
 
 /* Enable interrupts in the ARM core. */
 void gyros__interrupt_enable(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

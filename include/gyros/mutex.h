@@ -67,6 +67,10 @@
 #include <gyros/private/state.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_MUTEX_DEBUG_MAGIC               ((unsigned)0xe398123d)
 #endif
@@ -160,5 +164,9 @@ static inline void gyros_mutex_unlock(gyros_mutex_t *m)
 }
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_private_list_h__200206071350
 #define INCLUDED__gyros_private_list_h__200206071350
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \internal */
 struct gyros__list_node {
     struct gyros__list_node *next; /**< \internal */
@@ -69,5 +73,9 @@ gyros__list_remove(struct gyros__list_node *node)
     node->next = node;
     node->prev = node;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

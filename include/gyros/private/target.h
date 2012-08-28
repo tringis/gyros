@@ -33,6 +33,10 @@
 #include <gyros/task.h>
 #include <gyros/time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*---------------------------------------------------------------------*'
  * The following function are called by the target port, but never
  * from the application.
@@ -76,6 +80,10 @@ void gyros__dyntick_suspend(void);
 
 /* Called to program the timer for the next scheduled timeout. */
 void gyros__dyntick_set(gyros_abstime_t now, gyros_abstime_t next_timeout);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

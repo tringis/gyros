@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_ep93xx_h__200808312206
 #define INCLUDED__gyros_ep93xx_h__200808312206
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define REG32(addr)   (*(volatile unsigned*)(addr))
 
 typedef volatile unsigned short reg16;
@@ -67,5 +71,9 @@ struct VIC_regs
 #define TIM1_Value   REG32(0x80810004)
 #define TIM1_Cntl    REG32(0x80810008)
 #define TIM1_Clear   REG32(0x8081000C)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

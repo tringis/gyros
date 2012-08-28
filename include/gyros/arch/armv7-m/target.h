@@ -29,6 +29,14 @@
 #ifndef INCLUDED__gyros_arch_armv7_m_target_h__201002122108
 #define INCLUDED__gyros_arch_armv7_m_target_h__201002122108
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void gyros__arch_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

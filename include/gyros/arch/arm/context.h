@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_arm_context_h__200212281230
 #define INCLUDED__gyros_arm_context_h__200212281230
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct gyros__context
 {
     unsigned long r[13];
@@ -37,5 +41,9 @@ struct gyros__context
     unsigned long pc;
     unsigned long psr;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

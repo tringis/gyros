@@ -31,6 +31,10 @@
 
 #include <gyros/compiler.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GYROS_HAS_LDREX_STREX
 
 GYROS_ALWAYS_INLINE void *gyros_ldrex_p(void *addr)
@@ -54,5 +58,9 @@ GYROS_ALWAYS_INLINE int gyros_strex_p(void *addr, void *value)
 
     return !result;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

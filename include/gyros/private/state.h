@@ -31,6 +31,10 @@
 
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     gyros_task_t *current;
@@ -50,5 +54,9 @@ typedef struct
     struct gyros__list_node reapers;
 #endif
 } gyros_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

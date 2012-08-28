@@ -83,6 +83,10 @@
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_MQ_DEBUG_MAGIC                 ((unsigned)0x736a0997)
 #endif
@@ -164,5 +168,9 @@ void *gyros_mq_receive(gyros_mq_t *mq);
 void *gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

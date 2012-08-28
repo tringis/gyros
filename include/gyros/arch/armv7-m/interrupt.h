@@ -32,6 +32,10 @@
 #include <gyros/config.h>
 #include <gyros/compiler.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 GYROS_ALWAYS_INLINE unsigned long
 gyros__get_primask(void)
 {
@@ -147,5 +151,9 @@ void gyros_target_enable_irq(int irq, unsigned prio);
 void gyros_target_disable_irq(int irq);
 
 void gyros_target_pend_irq(int irq);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

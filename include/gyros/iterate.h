@@ -43,6 +43,10 @@
 
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Iterate through all tasks.  Start iteration by calling this
   * function with @a previous set to @c NULL.  Continue calling this
   * function with the value returned by the previous call until @c
@@ -58,5 +62,9 @@
 gyros_task_t *gyros_task_iterate(gyros_task_t *previous);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -32,6 +32,10 @@
 #include <gyros/config.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \file
   * \brief Debugging support.
   * \details Header file for \ref debug_group.
@@ -110,5 +114,9 @@ void gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
 unsigned long gyros_debug_task_pc(gyros_task_t *task);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

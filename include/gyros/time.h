@@ -57,6 +57,10 @@
 
 #include <gyros/config.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Absolute monotonically increasing time in target specific
   * units. */
 typedef unsigned GYROS_CONFIG_TIME_TYPE gyros_abstime_t;
@@ -187,5 +191,9 @@ static inline int gyros_time_reached(gyros_abstime_t time)
 }
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

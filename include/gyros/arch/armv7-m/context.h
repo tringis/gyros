@@ -29,9 +29,17 @@
 #ifndef INCLUDED__gyros_armv7_m_context_h__201002061542
 #define INCLUDED__gyros_armv7_m_context_h__201002061542
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct gyros__context
 {
     unsigned sp;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

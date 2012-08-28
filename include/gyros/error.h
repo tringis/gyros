@@ -32,6 +32,10 @@
 #include <gyros/config.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \file
   * \brief Error handling.
   * \details Header file for \ref error_group.
@@ -66,5 +70,9 @@
 void gyros_set_error_handler(void (*handler)(const char *msg, void *object));
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

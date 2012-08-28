@@ -48,6 +48,10 @@
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_SEM_DEBUG_MAGIC                 ((unsigned)0xe111100a)
 #endif
@@ -132,5 +136,9 @@ int gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout);
 void gyros_sem_signal(gyros_sem_t *s);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

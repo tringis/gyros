@@ -31,6 +31,10 @@
 
 #include <gyros/arch/arm/interrupt.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GYROS_IRQ_WDG          0
 #define GYROS_IRQ_SW           1
 #define GYROS_IRQ_ARMRX        2
@@ -66,5 +70,9 @@
 #define GYROS_IRQ_PFQBC       31
 
 void gyros_target_set_isr(int irq, void (*isr)(void));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

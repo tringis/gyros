@@ -40,6 +40,10 @@
 #include <gyros/private/target.h>
 #include <gyros/timer.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define TASK(t)     GYROS__LIST_CONTAINER(t, gyros_task_t, main_list_node)
 #define TIMEOUT(t)  GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
 #define TIMER(t)    GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
@@ -66,5 +70,9 @@ void gyros__dyntick_update(gyros_abstime_t now);
 void gyros__cond_reschedule(void);
 
 void gyros__error(const char *msg, void *object);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

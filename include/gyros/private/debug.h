@@ -31,6 +31,10 @@
 
 #include <gyros/config.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Structure containing debug information on an object. This struct
   * is the first member of all synchronization objects. */
 struct gyros_debug_info
@@ -65,6 +69,10 @@ struct gyros_debug_info
 #    define GYROS_DEBUG_SET_STATE(task, state)           do { } while (0)
 #    define GYROS_DEBUG_SET_STATE2(task, state, object)  do { } while (0)
 #  endif
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

@@ -46,6 +46,10 @@
 #include <gyros/private/list.h>
 #include <gyros/time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_TIMER_DEBUG_MAGIC           ((unsigned)0xe111100a)
 #endif
@@ -119,5 +123,9 @@ void gyros_timer_start(gyros_timer_t *timer,
 void gyros_timer_stop(gyros_timer_t *timer);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

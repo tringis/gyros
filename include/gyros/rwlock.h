@@ -53,6 +53,10 @@
 #include <gyros/config.h>
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_RWLOCK_DEBUG_MAGIC               ((unsigned)0xe151110d)
 #endif
@@ -142,5 +146,9 @@ int gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 void gyros_rwlock_unlock(gyros_rwlock_t *rwlock);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -32,6 +32,10 @@
 #include <gyros/config.h>
 #include <gyros/private/debug.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \file
   * \brief Memory pool management.
   * \details Header file for \ref mempool_group.
@@ -104,5 +108,9 @@ void *gyros_alloc(gyros_mempool_t *pool, unsigned size);
 void gyros_free(void *addr);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

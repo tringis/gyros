@@ -43,6 +43,10 @@
 
 #include <gyros/target/interrupt.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Disable all interrupts.
   * \return             Value used to restore interrupts using
   *                     gyros_interrupt_restore().
@@ -60,5 +64,9 @@ void gyros_interrupt_restore(unsigned long flags);
 int gyros_in_interrupt(void);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

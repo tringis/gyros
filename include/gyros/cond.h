@@ -46,6 +46,10 @@
 #include <gyros/mutex.h>
 #include <gyros/private/debug.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_COND_DEBUG_MAGIC                ((unsigned)0xe0899aa1)
 #endif
@@ -112,5 +116,9 @@ void gyros_cond_signal_one(gyros_cond_t *c);
 void gyros_cond_signal_all(gyros_cond_t *c);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -31,6 +31,10 @@
 
 #include <gyros/arch/arm/interrupt.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GYROS_IRQ_FIQ                0 // Advanced Interrupt Controller (FIQ)
 #define GYROS_IRQ_SYS                1 // System Peripheral
 #define GYROS_IRQ_PIOA               2 // Parallel IO Controller
@@ -78,5 +82,9 @@ int gyros_target_set_isr(int irq, int mode, gyros_target_aic_isr_t isr);
  * epilogue and calling convention.  The interrupt must be enabled
  * with aic_irq_enable(). */
 int gyros_target_add_sys_isr(gyros_target_aic_isr_t isr);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

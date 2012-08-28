@@ -31,6 +31,10 @@
 
 #include <gyros/task.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \file
   * \brief Hook support.
   * \details Header file for \ref hook_group.
@@ -67,5 +71,9 @@ void gyros_set_context_hook(void (*context_hook)(gyros_task_t *current,
 void gyros_set_irq_hook(void (*irq_hook)(void));
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

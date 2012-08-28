@@ -37,6 +37,10 @@
 #include <gyros/task.h>
 #include <gyros/timer.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \file
   * \brief Trace support.
   * \details Header file for \ref trace_group.
@@ -214,5 +218,9 @@ void gyros_trace_running_tasks(void);
 gyros_trace_t *gyros_trace_iterate(gyros_trace_t *prev);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

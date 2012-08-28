@@ -29,6 +29,10 @@
 #ifndef INCLUDED__gyros_str91x_h__200808312206
 #define INCLUDED__gyros_str91x_h__200808312206
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef volatile unsigned short reg16;
 typedef volatile unsigned reg32;
 
@@ -160,5 +164,9 @@ struct VIC_regs
 #define TIM(n)       ((struct TIM_regs*)(0x58002000 + 0x1000 * (n)))
 #define VIC0         ((struct VIC_regs*)0xfffff000)
 #define VIC1         ((struct VIC_regs*)0xfc000000)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

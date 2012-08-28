@@ -43,6 +43,10 @@
 
 #include <gyros/time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Sleep until the absolute time @a timeout has been reached.
   *
   * \param timeout      Absolute time to sleep until.
@@ -85,5 +89,9 @@ static inline int gyros_sleep_s(int seconds)
 }
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

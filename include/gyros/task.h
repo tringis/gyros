@@ -81,6 +81,10 @@
 #include <gyros/private/list.h>
 #include <gyros/time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #  define GYROS_TASK_DEBUG_MAGIC                ((unsigned)0xefcd6711)
 #endif
@@ -241,5 +245,9 @@ void gyros_yield(void);
 int gyros_task_stack_used(gyros_task_t *task);
 
 /*@}*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

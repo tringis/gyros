@@ -33,6 +33,10 @@
 #include <gyros/compiler.h>
 #include <gyros/config.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if GYROS_CONFIG_TRACE
 
 extern int gyros__trace_enabled;
@@ -104,5 +108,9 @@ extern int gyros__trace_enabled;
 gyros_trace_t *gyros__trace(enum gyros_trace_kind kind);
 
 void gyros__trace_context(gyros_task_t *next);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
