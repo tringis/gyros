@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2002-2009, Tobias Ringström <tobias@ringis.se>
+ * Copyright (c) 2002-2012, Tobias Ringström <tobias@ringis.se>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,9 @@ from the core.
 ARM based:
 - Atmel AT91SAM7S (ARM7TDMI core)
 - Luminary Micro Stellaris LM3S (Cortex-M3 core)
+- STMicroelectronics STM32 (Cortex-M3 core)
 - STMicroelectronics STR91x (ARM966E-S core)
+- Cirrus Logic EP93xx (ARM920T core)
 
 \section further_reading Further reading
 
