@@ -76,7 +76,7 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_zombify(gyros_task_t *task)
 {
-    gyros__list_remove(&gyros.current->main_list_node);
+    gyros__task_suspend(gyros.current);
     gyros__list_remove(&gyros.current->timeout_list_node);
 #if GYROS_CONFIG_ITERATE
     gyros__list_remove(&gyros.current->task_list_node);
@@ -112,6 +112,13 @@ gyros__task_exit(void)
 }
 
 void
+gyros__task_suspend(gyros_task_t *task)
+{
+    gyros__list_remove(&task->main_list_node);
+    gyros.current->main_list = NULL;
+}
+
+void
 gyros__task_move(gyros_task_t *task, struct gyros__list_node *list)
 {
     gyros__list_remove(&task->main_list_node);
@@ -129,6 +136,14 @@ gyros__task_wake(gyros_task_t *task)
     GYROS_DEBUG_SET_STATE(task, "running");
     gyros__list_remove(&task->timeout_list_node);
     gyros__task_move(task, &gyros.running);
+}
+
+void
+gyros__set_priority(gyros_task_t *task, unsigned short priority)
+{
+    task->priority = priority;
+    if (task->main_list)
+        gyros__task_move(task, task->main_list);
 }
 
 void

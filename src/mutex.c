@@ -98,10 +98,7 @@ gyros__mutex_lock_slow(gyros_mutex_t *m)
             /* Implement priority inheritance to prevent priority
              * inversion. */
             if (m->owner->priority < gyros.current->priority)
-            {
-                m->owner->priority = gyros.current->priority;
-                gyros__task_move(m->owner, m->owner->main_list);
-            }
+                gyros__set_priority(m->owner, gyros.current->priority);
             GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
             gyros__reschedule();
             gyros_interrupt_restore(flags);

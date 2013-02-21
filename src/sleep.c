@@ -42,7 +42,7 @@ gyros_sleep_until(gyros_abstime_t timeout)
         gyros__error("tried to sleep in interrupt", NULL);
 #endif
 
-    gyros__list_remove(&gyros.current->main_list_node);
+    gyros__task_suspend(gyros.current);
     gyros__task_set_timeout(timeout);
     GYROS_DEBUG_SET_STATE(gyros.current, "sleep_until");
     gyros__reschedule();

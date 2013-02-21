@@ -53,9 +53,13 @@ extern gyros_mutex_t gyros__iterate_mutex;
 
 void gyros__task_zombify(gyros_task_t *task);
 
+void gyros__task_suspend(gyros_task_t *task);
+
 void gyros__task_move(gyros_task_t *task, struct gyros__list_node *list);
 
 void gyros__task_wake(gyros_task_t *task);
+
+void gyros__set_priority(gyros_task_t *task, unsigned short priority);
 
 void gyros__task_set_timeout(gyros_abstime_t timeout);
 

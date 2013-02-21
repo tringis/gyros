@@ -58,7 +58,7 @@ gyros_task_wait(void)
         flags = gyros_interrupt_disable();
     }
     task = TASK(gyros.zombies.next);
-    gyros__list_remove(&task->main_list_node);
+    gyros__task_suspend(task);
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = 0;
 #endif
@@ -98,7 +98,7 @@ gyros_task_wait_until(gyros_abstime_t timeout)
     }
 
     task = TASK(gyros.zombies.next);
-    gyros__list_remove(&task->main_list_node);
+    gyros__task_suspend(task);
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = 0;
 #endif

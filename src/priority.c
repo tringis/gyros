@@ -55,8 +55,7 @@ gyros_task_set_priority(gyros_task_t *task, unsigned short priority)
     task->base_priority = priority;
     if (task->priority != priority)
     {
-        task->priority = priority;
-        gyros__task_move(task, task->main_list);
+        gyros__set_priority(task, priority);
         gyros__cond_reschedule();
     }
     gyros_interrupt_restore(flags);
