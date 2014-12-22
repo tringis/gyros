@@ -83,6 +83,7 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
 void
 gyros__tick(gyros_abstime_t now)
 {
+    unsigned long flags = gyros_interrupt_disable();
     int reschedule = 0;
 
     while (!gyros__list_empty(&gyros.timeouts))
@@ -120,4 +121,5 @@ gyros__tick(gyros_abstime_t now)
 #endif
 
     gyros__dyntick_update(now);
+    gyros_interrupt_restore(flags);
 }
