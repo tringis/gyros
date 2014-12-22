@@ -131,14 +131,12 @@ gyros__mutex_unlock_slow(gyros_mutex_t *m, int reschedule)
         gyros.current->priority = gyros.current->base_priority;
         gyros__task_move(gyros.current, gyros.current->main_list);
     }
-    if (GYROS_LIKELY(gyros__list_empty(&m->task_list)))
-        gyros_interrupt_restore(flags);
-    else
+    if (GYROS_UNLIKELY(!gyros__list_empty(&m->task_list)))
     {
         GYROS__TRACE_MUTEX(UNLOCK, m);
         gyros__task_wake(TASK(m->task_list.next));
         if (reschedule)
             gyros__cond_reschedule();
-        gyros_interrupt_restore(flags);
     }
+    gyros_interrupt_restore(flags);
 }
