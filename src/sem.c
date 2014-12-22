@@ -132,18 +132,14 @@ gyros_sem_signal(gyros_sem_t *s)
 #endif
 
     GYROS__TRACE_SEM(SIGNAL, s);
-    if (GYROS_UNLIKELY(s->value >= s->max_value))
-        gyros_interrupt_restore(flags);
-    else
+    if (GYROS_LIKELY(s->value < s->max_value))
     {
         s->value++;
-        if (gyros__list_empty(&s->task_list))
-            gyros_interrupt_restore(flags);
-        else
+        if (!gyros__list_empty(&s->task_list))
         {
             gyros__task_wake(TASK(s->task_list.next));
             gyros__cond_reschedule();
-            gyros_interrupt_restore(flags);
         }
     }
+    gyros_interrupt_restore(flags);
 }
