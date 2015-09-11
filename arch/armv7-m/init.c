@@ -93,7 +93,9 @@ gyros__target_task_init(gyros_task_t *task,
     unsigned long *sp = (unsigned long *)stack +
                         stack_size / sizeof(unsigned long);
 
+#if GYROS_CONFIG_STACK_USED
     memset(stack, 0xee, stack_size);
+#endif
 
     /* ARM EABI requires the stack to be 8-byte aligned */
     if ((unsigned long)sp & 0x7)
@@ -109,14 +111,6 @@ gyros__target_task_init(gyros_task_t *task,
     *--sp = (unsigned long)arg;              /* R0 */
 
     task->context.sp = (unsigned long)sp;
-
-#if GYROS_CONFIG_STACK_USED
-    {
-        int i;
-        for (i = 0; i < 9; ++i)
-            *--sp = 0;
-    }
-#endif
 }
 
 void
