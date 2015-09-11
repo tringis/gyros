@@ -37,7 +37,7 @@ gyros__target_task_init(gyros_task_t *task,
                         int stack_size)
 {
     task->context.r[0] = (unsigned long)arg;
-    task->context.sp = (unsigned long)stack + stack_size;
+    task->context.sp = ((unsigned long)stack + stack_size) & 0xfffffff8;
     task->context.lr = (unsigned long)gyros__task_exit;
     task->context.pc = (unsigned long)entry + 4;
     task->context.psr = ARM_MODE_SYS;

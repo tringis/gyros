@@ -95,6 +95,10 @@ gyros__target_task_init(gyros_task_t *task,
 
     memset(stack, 0xee, stack_size);
 
+    /* ARM EABI requires the stack to be 8-byte aligned */
+    if ((unsigned long)sp & 0x7)
+        --sp;
+
     *--sp = 1U << 24;                        /* xPSR (thumb mode) */
     *--sp = (unsigned long)entry;            /* PC */
     *--sp = (unsigned long)gyros__task_exit; /* LR */
