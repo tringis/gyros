@@ -120,3 +120,23 @@ gyros__idle(void)
     __asm__ __volatile__("wfi" ::: "memory");
 #endif
 }
+
+#if GYROS_CONFIG_STACK_USED
+int
+gyros_isr_stack_used(void)
+{
+    unsigned long *p = s_exception_stack;
+    unsigned long *e = s_exception_stack + STACK_WORDS;
+
+    while (p != e && *p == 0xeeeeeeee)
+        p++;
+
+    return (unsigned long)e - (unsigned long)p;
+}
+
+int
+gyros_isr_stack_size(void)
+{
+    return 4 * STACK_WORDS;
+}
+#endif
