@@ -48,15 +48,13 @@ PendSV_Handler:
 	ldr	r1, [r0]	     /* r1 = gyros.current */
 	str	r3, [r1]	     /* gyros.current->context.sp = PSP */
 
-	mov	r1, #1
-	msr	primask, r1	     /* disable exceptions */
+	cpsid	i		     /* disable exceptions */
 
 	ldr	r2, [r0, #4]	     /* r2 = gyros.running.next */
 	subs	r2, r2, #4	     /* r2 = TASK(gyros.running.next) */
 	str	r2, [r0]	     /* gyros.current = r2 */
 
-	mov	r1, #0
-	msr	primask, r1	     /* reenable exceptions */
+	cpsie	i		     /* reenable exceptions */
 
 	ldr	r3, [r2]	     /* r3 = SP of new task */
 	ldmdb	r3, {r4-r11}	     /* Load regs for new task */
