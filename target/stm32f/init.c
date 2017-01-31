@@ -37,7 +37,9 @@
 #define REG32(addr)          (*(volatile unsigned long*)(addr))
 #define BIT(n)               (1U << (n))
 
-#if !defined(GYROS_CONFIG_STM32F10x) && !defined(GYROS_CONFIG_STM32F2xx)
+#if !defined(GYROS_CONFIG_STM32F10x) && \
+    !defined(GYROS_CONFIG_STM32F2xx) && \
+    !defined(GYROS_CONFIG_STM32F7xx)
 #   error Neither GYROS_CONFIG_STM32F10x nor GYROS_CONFIG_STM32F2xx defined.
 #elif defined(GYROS_CONFIG_STM32F10x) && defined(GYROS_CONFIG_STM32F2xx)
 #   error Both GYROS_CONFIG_STM32F10x and GYROS_CONFIG_STM32F2xx defined.
@@ -100,7 +102,7 @@
 #   endif
 #   define TIMER_BITS                     16
 #   define DBGMCU_CR                      REG32(0xE0042004)
-#elif defined(GYROS_CONFIG_STM32F2xx)
+#elif defined(GYROS_CONFIG_STM32F2xx) || defined(GYROS_CONFIG_STM32F7xx)
 #   define RCC_REG(offset)                REG32(0x40023800 + (offset))
 #   define RCC_APB1RSTR                   RCC_REG(0x20)
 #   define RCC_APB2RSTR                   RCC_REG(0x24)
