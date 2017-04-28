@@ -140,9 +140,13 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     while (GYROS_UNLIKELY(rwlock->writer ||
                           !gyros__list_empty(&rwlock->wr_task_list)))
     {
+        if (!gyros__task_set_timeout(timeout))
+        {
+            gyros_interrupt_restore(flags);
+            return 0;
+        }
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
-        gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_rdlock_until", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
@@ -256,9 +260,13 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
                            rwlock->writer != gyros.current) ||
                           rwlock->readers))
     {
+        if (!gyros__task_set_timeout(timeout))
+        {
+            gyros_interrupt_restore(flags);
+            return 0;
+        }
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->wr_task_list);
-        gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_wrlock_until", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);

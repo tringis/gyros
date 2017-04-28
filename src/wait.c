@@ -84,8 +84,12 @@ gyros_task_wait_until(gyros_abstime_t timeout)
 
     if (gyros__list_empty(&gyros.zombies))
     {
+        if (!gyros__task_set_timeout(timeout))
+        {
+            gyros_interrupt_restore(flags);
+            return NULL;
+        }
         gyros__task_move(gyros.current, &gyros.reapers);
-        gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE(gyros.current, "task_wait_until");
         gyros__reschedule();
         gyros_interrupt_restore(flags);

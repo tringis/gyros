@@ -121,9 +121,13 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
 
     if (GYROS_UNLIKELY(gyros__list_empty(&mq->msg_list)))
     {
+        if (!gyros__task_set_timeout(timeout))
+        {
+            gyros_interrupt_restore(flags);
+            return NULL;
+        }
         GYROS__TRACE_MQ(RECEIVE_BLOCKED, mq);
         gyros__task_move(gyros.current, &mq->task_list);
-        gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "mq_receive_until", mq);
         gyros__reschedule();
         gyros_interrupt_restore(flags);

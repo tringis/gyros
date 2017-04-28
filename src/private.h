@@ -61,7 +61,7 @@ void gyros__task_wake(gyros_task_t *task);
 
 void gyros__set_priority(gyros_task_t *task, unsigned short priority);
 
-void gyros__task_set_timeout(gyros_abstime_t timeout);
+int gyros__task_set_timeout(gyros_abstime_t timeout);
 
 void gyros__timer_schedule(gyros_timer_t *timer);
 

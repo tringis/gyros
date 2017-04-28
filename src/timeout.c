@@ -64,11 +64,14 @@ gyros__dyntick_update(gyros_abstime_t now)
 }
 #endif
 
-void
+int
 gyros__task_set_timeout(gyros_abstime_t timeout)
 {
-    struct gyros__list_node *i;
+    gyros_abstime_t now = gyros_time();
+    if (gyros_time_compare(timeout, now) <= 0)
+        return 0;
 
+    struct gyros__list_node *i;
     for (i = gyros.timeouts.next; i != &gyros.timeouts; i = i->next)
     {
         if ((gyros_reltime_t)(timeout - TIMEOUT(i)->timeout) < 0)
@@ -77,7 +80,8 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
     gyros__list_insert_before(&gyros.current->timeout_list_node, i);
     gyros.current->timeout = timeout;
     gyros.current->timed_out = 0;
-    gyros__dyntick_update(gyros_time());
+    gyros__dyntick_update(now);
+    return 1;
 }
 
 void

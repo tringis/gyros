@@ -101,9 +101,13 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
 
     if (GYROS_UNLIKELY(s->value == 0))
     {
+        if (!gyros__task_set_timeout(timeout))
+        {
+            gyros_interrupt_restore(flags);
+            return 0;
+        }
         GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros.current, &s->task_list);
-        gyros__task_set_timeout(timeout);
         GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait_until", s);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
