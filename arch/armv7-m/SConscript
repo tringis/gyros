@@ -1,7 +1,7 @@
-gyros_arch_srcs = map(File, [ 'debug.c',
-                              'init.c',
-                              'interrupt.c',
-                              'pendsv.S',
-                              'stack_used.c' ])
+gyros_arch_srcs = list(map(File, [ 'debug.c',
+                                   'init.c',
+                                   'interrupt.c',
+                                   'pendsv.S',
+                                   'stack_used.c' ]))
 
 Return("gyros_arch_srcs")

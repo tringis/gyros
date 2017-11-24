@@ -18,7 +18,7 @@ srcs = common_srcs + arch_srcs + [ 'exceptions.S',
                                    'init.c',
                                    'interrupt.c' ]
 
-arm_objs = map(target_arm_env.StaticObject, arch_arm_srcs)
+arm_objs = list(map(target_arm_env.StaticObject, arch_arm_srcs))
 
 ######################################################################
 # Library target
