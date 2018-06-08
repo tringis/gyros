@@ -214,10 +214,6 @@ gyros_task_create(gyros_task_t *task,
 #endif
     add_task_to_list(task, &gyros.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list_node);
-#if GYROS_CONFIG_MESSAGE_QUEUE
-    GYROS__LIST_NODE_INIT(&task->msg_list);
-    task->receiving = 0;
-#endif
     if (gyros.current) /* Don't reschedule before gyros_start() */
         gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
