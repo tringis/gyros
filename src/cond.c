@@ -85,7 +85,10 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
     flags = gyros_interrupt_disable();
 
     if (!gyros__task_set_timeout(timeout))
+    {
+        gyros_interrupt_restore(flags);
         return 0;
+    }
 
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock_slow(m, 0);
