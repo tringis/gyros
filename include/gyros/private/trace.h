@@ -93,6 +93,15 @@ extern int gyros__trace_enabled;
         gyros__t->info.sem.value = (s)->value;                                \
     }
 
+#define GYROS__TRACE_EVENT_GROUP(kind, e)                                     \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
+    {                                                                         \
+        gyros_trace_t *gyros__t =                                             \
+            gyros__trace(GYROS_TRACE_EVENT_GROUP_ ## kind);                   \
+        gyros__t->info.event_group.event_group = (e);                         \
+        gyros__t->info.event_group.events = (e)->events;                      \
+    }
+
 #else
 
 #define GYROS__TRACE_TIMER(kind, t)
@@ -102,6 +111,7 @@ extern int gyros__trace_enabled;
 #define GYROS__TRACE_MUTEX(kind, m)
 #define GYROS__TRACE_RWLOCK(kind, rwlock)
 #define GYROS__TRACE_SEM(kind, s)
+#define GYROS__TRACE_EVENT_GROUP(kind, s)
 
 #endif
 

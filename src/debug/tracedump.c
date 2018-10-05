@@ -95,6 +95,10 @@ trace_kind_type(enum gyros_trace_kind kind)
     case GYROS_TRACE_SEM_AQUIRED:
     case GYROS_TRACE_SEM_SIGNAL:
         return "SEM";
+    case GYROS_TRACE_EVENT_GROUP_BLOCKED:
+    case GYROS_TRACE_EVENT_GROUP_AQUIRED:
+    case GYROS_TRACE_EVENT_GROUP_SET:
+        return "EVENT_GROUP";
     case GYROS__TRACE_KIND_COUNT:
         break;
     }
@@ -241,6 +245,19 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
         case GYROS_TRACE_SEM_SIGNAL:
             DUMP_OBJECT("SIGNAL", t->info.sem.sem);
             printf_func(printf_arg, " (%u)", t->info.sem.value);
+            break;
+
+        case GYROS_TRACE_EVENT_GROUP_BLOCKED:
+            DUMP_OBJECT("BLOCKED", t->info.event_group.event_group);
+            printf_func(printf_arg, " (%u)", t->info.event_group.events);
+            break;
+        case GYROS_TRACE_EVENT_GROUP_AQUIRED:
+            DUMP_OBJECT("AQUIRED", t->info.event_group.event_group);
+            printf_func(printf_arg, " (%u)", t->info.event_group.events);
+            break;
+        case GYROS_TRACE_EVENT_GROUP_SET:
+            DUMP_OBJECT("SET", t->info.event_group.event_group);
+            printf_func(printf_arg, " (%u)", t->info.event_group.events);
             break;
         }
         if (t->kind != GYROS_TRACE_EMPTY)

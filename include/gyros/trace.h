@@ -30,6 +30,7 @@
 #define INCLUDED__gyros_trace_h__200905062204
 
 #include <gyros/cond.h>
+#include <gyros/event_group.h>
 #include <gyros/mq.h>
 #include <gyros/mutex.h>
 #include <gyros/rwlock.h>
@@ -99,6 +100,11 @@ enum gyros_trace_kind
     GYROS_TRACE_SEM_AQUIRED,        /**< gyros_sem_wait() aquired semaphore */
     GYROS_TRACE_SEM_SIGNAL,         /**< gyros_sem_signal() */
 
+    GYROS_TRACE_EVENT_GROUP_BLOCKED, /**< gyros_event_group_get() blocking */
+    GYROS_TRACE_EVENT_GROUP_AQUIRED, /**< gyros_event_group_get() got event */
+    GYROS_TRACE_EVENT_GROUP_SET,     /**< gyros_event_group_set() */
+    GYROS_TRACE_EVENT_GROUP_CLEAR,   /**< gyros_event_group_clear() */
+
     GYROS__TRACE_KIND_COUNT         /**< \internal */
 };
 
@@ -160,6 +166,13 @@ typedef struct
             /** Semaphore value. */
             unsigned value;
         } sem;
+        struct gyros_trace_event_group_info
+        {
+            /** The event group. */
+            gyros_event_group_t *event_group;
+            /** Event group events. */
+            unsigned events;
+        } event_group;
     } info;
 } gyros_trace_t;
 
