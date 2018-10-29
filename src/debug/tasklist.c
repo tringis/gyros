@@ -54,7 +54,10 @@ gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
     
     for (t = gyros_task_iterate(0); t; t = gyros_task_iterate(t))
     {
-        printf_func(printf_arg, "%-16s ", t->name);
+        if (strlen(t->name) <= 16)
+            printf_func(printf_arg, "%-16s ", t->name);
+        else
+            printf_func(printf_arg, "%s\n%-16s ", t->name, "");
         if (t->priority == t->base_priority)
             printf_func(printf_arg, "%7d ", t->priority);
         else
