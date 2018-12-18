@@ -65,7 +65,7 @@ extern "C" {
   * gyros_sem_t my_sem = GYROS_SEM_INITVAL(my_sem, 0);
   * \endcode
   *
-  * \param name         Name of the message queue variable.
+  * \param name         Name of the semaphore variable.
   * \param start_value  Start value.
   */
 #define GYROS_SEM_INITVAL(name, start_value)            \
