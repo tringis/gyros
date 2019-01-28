@@ -107,7 +107,7 @@ void gyros_event_group_get(gyros_event_group_t *e,
   * \param wait_all     Wait for all events.
   * \param events       Returned events.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if the semaphore was signalled, or
+  * \return             Non-zero if an event was set, or
   *                     zero if @a timeout was reached.
   */
 bool gyros_event_group_get_until(gyros_event_group_t *e,
@@ -119,15 +119,15 @@ bool gyros_event_group_get_until(gyros_event_group_t *e,
 /** Set @a events in the event @a e.  May be called from interrupt
   * context.
   *
-  * \param e            Semaphore struct pointer.
+  * \param e            Event group struct pointer.
   * \param events       Events to set.
   */
 void gyros_event_group_set(gyros_event_group_t *e, unsigned events);
 
-/** Clear all events in the event group.  May be called from interrupt
+/** Clear @a events in the event group.  May be called from interrupt
   * context.
   *
-  * \param e            event group struct pointer.
+  * \param e            Event group struct pointer.
   * \param events       Events to clear.
   */
 void gyros_event_group_clear(gyros_event_group_t *e, unsigned events);
