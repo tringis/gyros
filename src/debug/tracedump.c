@@ -98,6 +98,7 @@ trace_kind_type(enum gyros_trace_kind kind)
     case GYROS_TRACE_EVENT_GROUP_BLOCKED:
     case GYROS_TRACE_EVENT_GROUP_AQUIRED:
     case GYROS_TRACE_EVENT_GROUP_SET:
+    case GYROS_TRACE_EVENT_GROUP_CLEAR:
         return "EVENT_GROUP";
     case GYROS__TRACE_KIND_COUNT:
         break;
@@ -257,6 +258,10 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
             break;
         case GYROS_TRACE_EVENT_GROUP_SET:
             DUMP_OBJECT("SET", t->info.event_group.event_group);
+            printf_func(printf_arg, " (%u)", t->info.event_group.events);
+            break;
+        case GYROS_TRACE_EVENT_GROUP_CLEAR:
+            DUMP_OBJECT("CLEAR", t->info.event_group.event_group);
             printf_func(printf_arg, " (%u)", t->info.event_group.events);
             break;
         }
