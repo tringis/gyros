@@ -86,20 +86,22 @@ gyros__arch_init(void)
 void
 gyros__target_task_init(gyros_task_t *task,
                         void (*entry)(void *arg),
-                        void *arg,
-                        void *stack,
-                        int stack_size)
+                        void *arg)
 {
-    unsigned long *sp = (unsigned long *)stack +
-                        stack_size / sizeof(unsigned long);
-
 #if GYROS_CONFIG_STACK_USED
-    memset(stack, 0xee, stack_size);
+    memset(task->stack, 0xee, task->stack_size);
 #endif
 
     /* ARM EABI requires the stack to be 8-byte aligned */
-    if ((unsigned long)sp & 0x7)
-        --sp;
+    while ((unsigned long)task->stack & 7ul)
+    {
+        task->stack = (void*)((unsigned long)task->stack + 1);
+        task->stack_size--;
+    }
+    task->stack_size &= ~7ul;
+
+    unsigned long *sp = (unsigned long*)((unsigned long)task->stack +
+                                         task->stack_size);
 
     *--sp = 1U << 24;                        /* xPSR (thumb mode) */
     *--sp = (unsigned long)entry;            /* PC */

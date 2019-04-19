@@ -206,7 +206,7 @@ gyros_task_create(gyros_task_t *task,
     task->stack_size = stack_size;
 
     /* Perform architecture specific initalization */
-    gyros__target_task_init(task, entry, arg, stack, stack_size);
+    gyros__target_task_init(task, entry, arg);
 
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_ITERATE

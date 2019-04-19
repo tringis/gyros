@@ -26,33 +26,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <string.h>
+
 #include <gyros/arch/arm/arm_defs.h>
 #include <gyros/private/target.h>
 
 void
 gyros__target_task_init(gyros_task_t *task,
                         void (*entry)(void *arg),
-                        void *arg,
-                        void *stack,
-                        int stack_size)
+                        void *arg)
 {
+#if GYROS_CONFIG_STACK_USED
+    memset(task->stack, 0xee, task->stack_size);
+#endif
+
+    /* ARM EABI requires the stack to be 8-byte aligned */
+    while ((unsigned long)task->stack & 7ul)
+    {
+        task->stack = (void*)((unsigned long)task->stack + 1);
+        task->stack_size--;
+    }
+    task->stack_size &= ~7ul;
+
     task->context.r[0] = (unsigned long)arg;
-    task->context.sp = ((unsigned long)stack + stack_size) & 0xfffffff8;
+    task->context.sp = (unsigned long)task->stack + task->stack_size;
     task->context.lr = (unsigned long)gyros__task_exit;
     task->context.pc = (unsigned long)entry + 4;
     task->context.psr = ARM_MODE_SYS;
     if ((unsigned long)entry & 1)
         task->context.psr |= ARM_THUMB_BIT;
-
-#if GYROS_CONFIG_STACK_USED
-    {
-        unsigned long *p = task->stack;
-        unsigned long *e = (unsigned long*)((unsigned long)task->stack +
-                                            task->stack_size);
-
-        do
-            *p++ = 0xeeeeeeee;
-        while (p != e);
-    }
-#endif
 }

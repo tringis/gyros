@@ -60,9 +60,7 @@ void gyros__target_init(void);
 /* Target specific initialization of the task struct. */
 void gyros__target_task_init(gyros_task_t *task,
                              void (*entry)(void *arg),
-                             void *arg,
-                             void *stack,
-                             int stack_size);
+                             void *arg);
 
 /* Reschedule, i.e. make sure the first task in the running list
  * becomes current. */
