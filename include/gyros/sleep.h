@@ -58,45 +58,39 @@ int gyros_sleep_until(gyros_abstime_t timeout);
 /** Sleep at least @a microseconds microseconds.
   *
   * \param time         Time to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
   */
-static inline int gyros_sleep(gyros_reltime_t time)
+static inline void gyros_sleep(gyros_reltime_t time)
 {
-    return gyros_sleep_until(gyros_time() + time + 1);
+    gyros_abstime_t timeout = gyros_time() + time + 1;
+    while (!gyros_sleep_until(timeout))
+        ;
 }
 
 /** Sleep at least @a microseconds microseconds.
   *
   * \param microseconds Minimum number of microseconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
   */
-static inline int gyros_sleep_us(int microseconds)
+static inline void gyros_sleep_us(int microseconds)
 {
-    return gyros_sleep(gyros_us(microseconds));
+    gyros_sleep(gyros_us(microseconds));
 }
 
 /** Sleep at least @a milliseconds milliseconds.
   *
   * \param milliseconds Minimum number of milliseconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
   */
-static inline int gyros_sleep_ms(int milliseconds)
+static inline void gyros_sleep_ms(int milliseconds)
 {
-    return gyros_sleep(gyros_ms(milliseconds));
+    gyros_sleep(gyros_ms(milliseconds));
 }
 
 /** Sleep at least @a seconds seconds.
   *
   * \param seconds      Minimum number of seconds to sleep.
-  * \return             Non-zero if the sleep was complete, or
-  *                     zero if it was aborted prematurely.
   */
-static inline int gyros_sleep_s(int seconds)
+static inline void gyros_sleep_s(int seconds)
 {
-    return gyros_sleep(gyros_s(seconds));
+    gyros_sleep(gyros_s(seconds));
 }
 
 /*@}*/
