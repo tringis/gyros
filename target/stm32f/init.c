@@ -279,7 +279,7 @@ gyros__target_init(void)
 #else
     TIMx_ARR = 0xffffffff;
 #endif
-    TIMx_EGR |= TIMx_EGR_UG; /* Generate update even to load PSC and ARR */
+    TIMx_EGR |= TIMx_EGR_UG; /* Generate update event to load PSC and ARR */
 
     gyros_target_enable_irq(TIMER_IRQ, GYROS_CONFIG_SYSTICK_PRIORITY);
 
