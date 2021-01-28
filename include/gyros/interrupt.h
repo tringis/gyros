@@ -41,6 +41,8 @@
   * @{
   */
 
+#include <stdbool.h>
+
 #include <gyros/target/interrupt.h>
 
 #ifdef __cplusplus
@@ -59,9 +61,9 @@ unsigned long gyros_interrupt_disable(void);
 void gyros_interrupt_restore(unsigned long flags);
 
 /** Check whether currently in interrupt context.
-  * \return             Non-zero value if called from interrupt context.
+  * \return             True if called from interrupt context, else false.
   */
-int gyros_in_interrupt(void);
+bool gyros_in_interrupt(void);
 
 /*@}*/
 

@@ -43,7 +43,7 @@ gyros_mutex_init(gyros_mutex_t *m)
     GYROS__LIST_NODE_INIT(&m->task_list);
 }
 
-int
+bool
 gyros__mutex_try_lock_slow(gyros_mutex_t *m)
 {
     unsigned long flags;
@@ -62,13 +62,13 @@ gyros__mutex_try_lock_slow(gyros_mutex_t *m)
     if (GYROS_UNLIKELY(m->owner != NULL))
     {
         gyros_interrupt_restore(flags);
-        return 0;
+        return false;
     }
 
     m->owner = gyros.current;
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
 void
@@ -112,7 +112,7 @@ gyros__mutex_lock_slow(gyros_mutex_t *m)
 }
 
 void
-gyros__mutex_unlock_slow(gyros_mutex_t *m, int reschedule)
+gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule)
 {
     unsigned long flags = gyros_interrupt_disable();
 

@@ -29,6 +29,8 @@
 #ifndef INCLUDE__gyros_armv7_m_interrupt_h__201002062157
 #define INCLUDE__gyros_armv7_m_interrupt_h__201002062157
 
+#include <stdbool.h>
+
 #include <gyros/config.h>
 #include <gyros/compiler.h>
 
@@ -112,7 +114,7 @@ gyros_interrupt_restore(unsigned long flags)
     gyros__set_basepri(flags);
 }
 
-GYROS_ALWAYS_INLINE int
+GYROS_ALWAYS_INLINE bool
 gyros_in_interrupt(void)
 {
     unsigned long ipsr;
@@ -124,7 +126,7 @@ gyros_in_interrupt(void)
     return ipsr != 0;
 }
 
-GYROS_ALWAYS_INLINE int
+GYROS_ALWAYS_INLINE bool
 gyros_interrupts_disabled(void)
 {
     return ((gyros__get_primask() & 1) == 1 ||

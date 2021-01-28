@@ -50,6 +50,8 @@
   * @{
   */
 
+#include <stdbool.h>
+
 #include <gyros/config.h>
 #include <gyros/task.h>
 
@@ -105,17 +107,17 @@ void gyros_rwlock_rdlock(gyros_rwlock_t *rwlock);
   *
   * \param rwlock       Read/write lock struct pointer.
   */
-int gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock);
+bool gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock);
 
 /** Aquire a reader lock on @a rwlock, unless @a timeout is passed
   * before the lock can be aquired without blocking.
   *
   * \param rwlock       Read/write lock struct pointer.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if the semaphore was signalled, or
-  *                     zero if @a timeout was reached.
+  * \return             True if the semaphore was signalled, or
+  *                     false if @a timeout was reached.
   */
-int gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
+bool gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
 /** Aquire a writer lock on @a rwlock.
   *
@@ -127,17 +129,17 @@ void gyros_rwlock_wrlock(gyros_rwlock_t *rwlock);
   *
   * \param rwlock       Read/write lock struct pointer.
   */
-int gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock);
+bool gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock);
 
 /** Aquire a writer lock on @a rwlock, unless @a timeout is passed
   * before the lock can be aquired without blocking.
   *
   * \param rwlock       Read/write lock struct pointer.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if the semaphore was signalled, or
-  *                     zero if @a timeout was reached.
+  * \return             True if the semaphore was signalled, or
+  *                     false if @a timeout was reached.
   */
-int gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
+bool gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout);
 
 /** Unlock the read/write lock @a rwlock.
   *

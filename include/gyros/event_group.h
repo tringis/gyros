@@ -107,8 +107,8 @@ void gyros_event_group_get(gyros_event_group_t *e,
   * \param wait_all     Wait for all events.
   * \param events       Returned events.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if an event was set, or
-  *                     zero if @a timeout was reached.
+  * \return             True if an event was set, or
+  *                     false if @a timeout was reached.
   */
 bool gyros_event_group_get_until(gyros_event_group_t *e,
                                  unsigned wait_events,

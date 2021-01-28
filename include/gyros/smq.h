@@ -51,7 +51,7 @@
   * @{
   */
 
-#include <limits.h>
+#include <stdbool.h>
 
 #include <gyros/config.h>
 #include <gyros/private/debug.h>
@@ -97,21 +97,21 @@ void gyros_smq_init(gyros_smq_t *smq,
   *
   * \param smq          Message queue to which the message is sent.
   * \param msg          Message to send.
-  * \param block        Non-zero to block if there is no room in the queue.
-  * \return             Non-zero if message was sent, else zero.
+  * \param block        True to block if there is no room in the queue.
+  * \return             True if message was sent, else false.
   */
-int gyros_smq_send(gyros_smq_t *smq,
-                   const void *msg,
-                   int block);
+bool gyros_smq_send(gyros_smq_t *smq,
+                    const void *msg,
+                    bool block);
 
 /** Receive the next message from the message queue @a mq.  May be
   * called from interrupt context.
   *
   * \param smq          Message queue from which the message is received.
   * \param msg          Message to send.
-  * \return             Non-zero if a message was received, else zero.
+  * \return             True if a message was received, else false.
   */
-int gyros_smq_receive(gyros_smq_t *smq, void *msg);
+bool gyros_smq_receive(gyros_smq_t *smq, void *msg);
 
 /** Receive the next message from the message queue @a mq, or return
   * @a NULL if @a timeout has passed.  May not be called from
@@ -119,9 +119,9 @@ int gyros_smq_receive(gyros_smq_t *smq, void *msg);
   *
   * \param mq           Message queue from which the message is received.
   * \param timeout      Timeout in absolute time.  See gyros_time().
-  * \return             Non-zero if a message was received, else zero.
+  * \return             True if a message was received, else false.
   */
-int gyros_smq_receive_until(gyros_smq_t *smq,
+bool gyros_smq_receive_until(gyros_smq_t *smq,
                             void *msg,
                             gyros_abstime_t timeout);
 
@@ -129,9 +129,9 @@ int gyros_smq_receive_until(gyros_smq_t *smq,
   * context.
   *
   * \param mq           Message queue from which the message is received.
-  * \return             Non-zero if @a mq was empty, else zero.
+  * \return             True if @a mq was empty, else false.
   */
-int gyros_smq_empty(gyros_smq_t *smq);
+bool gyros_smq_empty(gyros_smq_t *smq);
 
 /*@}*/
 

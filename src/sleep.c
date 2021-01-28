@@ -27,12 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include <gyros/interrupt.h>
+#include <gyros/sleep.h>
 
 #include <stddef.h>
 
 #include "private.h"
 
-int
+bool
 gyros_sleep_until(gyros_abstime_t timeout)
 {
     unsigned long flags = gyros_interrupt_disable();

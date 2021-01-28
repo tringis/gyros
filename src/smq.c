@@ -53,8 +53,8 @@ gyros_smq_init(gyros_smq_t *smq,
     smq->write_pos = 0;
 }
 
-int
-gyros_smq_send(gyros_smq_t *smq, const void *msg, int block)
+bool
+gyros_smq_send(gyros_smq_t *smq, const void *msg, bool block)
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -69,7 +69,7 @@ gyros_smq_send(gyros_smq_t *smq, const void *msg, int block)
         if (!block || gyros_in_interrupt())
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
         gyros__task_move(gyros.current, &smq->task_list);
@@ -93,10 +93,10 @@ gyros_smq_send(gyros_smq_t *smq, const void *msg, int block)
         gyros_interrupt_restore(flags);
     }
 
-    return 1;
+    return true;
 }
 
-int
+bool
 gyros_smq_receive(gyros_smq_t *smq, void *msg)
 {
     unsigned long flags;
@@ -114,7 +114,7 @@ gyros_smq_receive(gyros_smq_t *smq, void *msg)
         if (gyros_in_interrupt())
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
         gyros__task_move(gyros.current, &smq->task_list);
@@ -132,10 +132,10 @@ gyros_smq_receive(gyros_smq_t *smq, void *msg)
     GYROS__TRACE_SMQ(RECEIVED, smq);
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
-int
+bool
 gyros_smq_receive_until(gyros_smq_t *smq,
                         void *msg,
                         gyros_abstime_t timeout)
@@ -157,7 +157,7 @@ gyros_smq_receive_until(gyros_smq_t *smq,
         if (!gyros__task_set_timeout(timeout))
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
         gyros__task_move(gyros.current, &smq->task_list);
@@ -168,7 +168,7 @@ gyros_smq_receive_until(gyros_smq_t *smq,
         if (smq->used == 0)
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
     }
 
@@ -180,10 +180,10 @@ gyros_smq_receive_until(gyros_smq_t *smq,
     GYROS__TRACE_SMQ(RECEIVED, smq);
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
-int
+bool
 gyros_smq_empty(gyros_smq_t *smq)
 {
     unsigned long flags = gyros_interrupt_disable();
@@ -193,7 +193,7 @@ gyros_smq_empty(gyros_smq_t *smq)
         gyros__error("uninitialized smq in smq_send", smq);
 #endif
 
-    int empty = smq->used == 0;
+    bool empty = smq->used == 0;
     gyros_interrupt_restore(flags);
     return empty;
 }

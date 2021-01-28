@@ -83,7 +83,7 @@ gyros_sem_wait(gyros_sem_t *s)
     gyros_interrupt_restore(flags);
 }
 
-int
+bool
 gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
 {
     unsigned long flags;
@@ -104,7 +104,7 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         if (!gyros__task_set_timeout(timeout))
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_SEM(BLOCKED, s);
         gyros__task_move(gyros.current, &s->task_list);
@@ -115,14 +115,14 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
         if (s->value == 0)
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
     }
     s->value--;
     GYROS__TRACE_SEM(AQUIRED, s);
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
 void

@@ -59,6 +59,7 @@
   * @{
   */
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include <gyros/atomic.h>
@@ -100,9 +101,9 @@ typedef struct
 } gyros_mutex_t;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-int gyros__mutex_try_lock_slow(gyros_mutex_t *m);
+bool gyros__mutex_try_lock_slow(gyros_mutex_t *m);
 void gyros__mutex_lock_slow(gyros_mutex_t *m);
-void gyros__mutex_unlock_slow(gyros_mutex_t *m, int reschedule);
+void gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule);
 #endif
 
 /** Initialize the mutex @a m.
@@ -114,16 +115,16 @@ void gyros_mutex_init(gyros_mutex_t *m);
 /** Try locking @a m.
   *
   * \param m            Mutex struct pointer.
-  * \return             Non-zero if @a m was locked, else zero.
+  * \return             True if @a m was locked, else false.
   */
-static inline int gyros_mutex_try_lock(gyros_mutex_t *m)
+static inline bool gyros_mutex_try_lock(gyros_mutex_t *m)
 {
 #if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
     extern gyros_t gyros;
     while (GYROS_LIKELY(gyros_ldrex_p(&m->owner) == NULL))
     {
         if (GYROS_LIKELY(gyros_strex_p(&m->owner, gyros.current)))
-            return 1;
+            return true;
     }
 #endif
     return gyros__mutex_try_lock_slow(m);

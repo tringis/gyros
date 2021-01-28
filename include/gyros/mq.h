@@ -78,6 +78,7 @@
   */
 
 #include <limits.h>
+#include <stdbool.h>
 
 #include <gyros/config.h>
 #include <gyros/private/debug.h>
@@ -171,9 +172,9 @@ void *gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout);
   * context.
   *
   * \param mq           Message queue from which the message is received.
-  * \return             Non-zero if @a mq was empty, else zero.
+  * \return             True if @a mq was empty, else false.
   */
-int gyros_mq_empty(gyros_mq_t *mq);
+bool gyros_mq_empty(gyros_mq_t *mq);
 
 /*@}*/
 

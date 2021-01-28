@@ -80,11 +80,11 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
     gyros_interrupt_restore(flags);
 }
 
-int
+bool
 gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
 {
     unsigned long flags;
-    int ret;
+    bool ret;
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
@@ -103,20 +103,20 @@ gyros_rwlock_try_rdlock(gyros_rwlock_t *rwlock)
     if (GYROS_UNLIKELY(rwlock->writer ||
                        !gyros__list_empty(&rwlock->wr_task_list)))
     {
-        ret = 0;
+        ret = false;
     }
     else
     {
         GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
         rwlock->readers++;
-        ret = 1;
+        ret = true;
     }
     gyros_interrupt_restore(flags);
 
     return ret;
 }
 
-int
+bool
 gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags;
@@ -143,7 +143,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         if (!gyros__task_set_timeout(timeout))
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->rd_task_list);
@@ -154,7 +154,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         if (gyros.current->timed_out)
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
     }
 
@@ -162,7 +162,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     GYROS__TRACE_RWLOCK(RD_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
 void
@@ -199,11 +199,11 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
     gyros_interrupt_restore(flags);
 }
 
-int
+bool
 gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
 {
     unsigned long flags;
-    int ret;
+    bool ret;
 
 #if GYROS_CONFIG_DEBUG
     if (rwlock->debug_info.magic != GYROS_RWLOCK_DEBUG_MAGIC)
@@ -222,20 +222,20 @@ gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
     if (GYROS_UNLIKELY((rwlock->writer != 0 &&
                         rwlock->writer != gyros.current) || rwlock->readers))
     {
-        ret = 0;
+        ret = false;
     }
     else
     {
         rwlock->writer = gyros.current;
         GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
-        ret = 1;
+        ret = true;
     }
     gyros_interrupt_restore(flags);
 
     return ret;
 }
 
-int
+bool
 gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
 {
     unsigned long flags;
@@ -263,7 +263,7 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         if (!gyros__task_set_timeout(timeout))
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
         gyros__task_move(gyros.current, &rwlock->wr_task_list);
@@ -274,7 +274,7 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         if (gyros.current->timed_out)
         {
             gyros_interrupt_restore(flags);
-            return 0;
+            return false;
         }
     }
 
@@ -282,7 +282,7 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
     GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 
-    return 1;
+    return true;
 }
 
 void

@@ -43,6 +43,7 @@
   */
 
 #include <limits.h>
+#include <stdbool.h>
 
 #include <gyros/config.h>
 #include <gyros/private/debug.h>
@@ -124,10 +125,10 @@ void gyros_sem_wait(gyros_sem_t *s);
   *
   * \param s            Semaphore struct pointer.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if the semaphore was signalled, or
-  *                     zero if @a timeout was reached.
+  * \return             True if the semaphore was signalled, or
+  *                     false if @a timeout was reached.
   */
-int gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout);
+bool gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout);
 
 /** Signal the semaphore @a s.  May be called from interrupt context.
   *

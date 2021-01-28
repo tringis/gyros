@@ -43,6 +43,8 @@
   * @{
   */
 
+#include <stdbool.h>
+
 #include <gyros/mutex.h>
 #include <gyros/private/debug.h>
 
@@ -97,11 +99,11 @@ void gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m);
   * \param c            Condition variable struct pointer.
   * \param m            Mutex struct pointer.
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Non-zero if the semaphore was signalled, or
+  * \return             True if the semaphore was signalled, or
   *                     zero if @a timeout was reached.
   */
-int gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
-                          gyros_abstime_t timeout);
+bool gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
+                           gyros_abstime_t timeout);
 
 /** Signal one task waiting for the condition variable @a c.
   *

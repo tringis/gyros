@@ -55,6 +55,8 @@
   * @{
   */
 
+#include <stdbool.h>
+
 #include <gyros/config.h>
 
 #ifdef __cplusplus
@@ -183,9 +185,9 @@ static inline gyros_reltime_t gyros_time_compare(gyros_abstime_t time1,
   * called from interrupt context.
   *
   * \param time         Absolute time to test.
-  * \return             Non-zero if @a time has been reached.
+  * \return             True if @a time has been reached, else false.
   */
-static inline int gyros_time_reached(gyros_abstime_t time)
+static inline bool gyros_time_reached(gyros_abstime_t time)
 {
     return gyros_time_compare(time, gyros_time()) <= 0;
 }

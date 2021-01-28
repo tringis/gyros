@@ -50,10 +50,10 @@ extern "C" {
 /** Sleep until the absolute time @a timeout has been reached.
   *
   * \param timeout      Absolute time to sleep until.
-  * \return             Non-zero if @a time has been reached, or
-  *                     zero if the sleep was aborted prematurely.
+  * \return             True if @a time has been reached, or
+  *                     false if the sleep was aborted prematurely.
   */
-int gyros_sleep_until(gyros_abstime_t timeout);
+bool gyros_sleep_until(gyros_abstime_t timeout);
 
 /** Sleep at least @a microseconds microseconds.
   *

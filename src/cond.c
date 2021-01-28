@@ -67,7 +67,7 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
     gyros_mutex_lock(m);
 }
 
-int
+bool
 gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
                       gyros_abstime_t timeout)
 {
@@ -87,7 +87,7 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
     if (!gyros__task_set_timeout(timeout))
     {
         gyros_interrupt_restore(flags);
-        return 0;
+        return false;
     }
 
     GYROS__TRACE_COND(WAIT, c);
