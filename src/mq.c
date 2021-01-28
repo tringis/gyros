@@ -145,3 +145,18 @@ gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout)
 
     return msghdr;
 }
+
+int
+gyros_mq_empty(gyros_mq_t *mq)
+{
+    unsigned long flags = gyros_interrupt_disable();
+
+#if GYROS_CONFIG_DEBUG
+    if (mq->debug_info.magic != GYROS_MQ_DEBUG_MAGIC)
+        gyros__error("uninitialized mq in mq_empty", mq);
+#endif
+
+    int empty = gyros__list_empty(&mq->msg_list);
+    gyros_interrupt_restore(flags);
+    return empty;
+}

@@ -167,6 +167,14 @@ void *gyros_mq_receive(gyros_mq_t *mq);
   */
 void *gyros_mq_receive_until(gyros_mq_t *mq, gyros_abstime_t timeout);
 
+/** Test if the message queue is empty. May be called from interrupt
+  * context.
+  *
+  * \param mq           Message queue from which the message is received.
+  * \return             Non-zero if @a mq was empty, else zero.
+  */
+int gyros_mq_empty(gyros_mq_t *mq);
+
 /*@}*/
 
 #ifdef __cplusplus
