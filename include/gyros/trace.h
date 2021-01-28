@@ -35,6 +35,7 @@
 #include <gyros/mutex.h>
 #include <gyros/rwlock.h>
 #include <gyros/sem.h>
+#include <gyros/smq.h>
 #include <gyros/task.h>
 #include <gyros/timer.h>
 
@@ -85,6 +86,9 @@ enum gyros_trace_kind
     GYROS_TRACE_MQ_SEND,            /**< gyros_mq_send() */
     GYROS_TRACE_MQ_RECEIVE_BLOCKED, /**< gyros_mq_receive() blocking */
     GYROS_TRACE_MQ_RECEIVED,        /**< gyros_mq_receive() returning */
+    GYROS_TRACE_SMQ_SEND,           /**< gyros_smq_send() */
+    GYROS_TRACE_SMQ_RECEIVE_BLOCKED,/**< gyros_smq_receive() blocking */
+    GYROS_TRACE_SMQ_RECEIVED,       /**< gyros_smq_receive() returning */
     GYROS_TRACE_MUTEX_BLOCKED,      /**< gyros_mutex_lock() blocking */
     GYROS_TRACE_MUTEX_AQUIRED,      /**< gyros_mutex_lock() aquired mutex */
     GYROS_TRACE_MUTEX_UNLOCK,       /**< gyros_mutex_unlock() */
@@ -154,6 +158,8 @@ typedef struct
         gyros_cond_t *cond;
         /** For @c GYROS_TRACE_MQ_*: The message queue. */
         gyros_mq_t *mq;
+        /** For @c GYROS_TRACE_SMQ_*: The static message queue. */
+        gyros_smq_t *smq;
         /** For @c GYROS_TRACE_MUTEX_*: The mutex. */
         gyros_mutex_t *mutex;
         /** For @c GYROS_TRACE_RWLOCK_*: The read/write lock. */

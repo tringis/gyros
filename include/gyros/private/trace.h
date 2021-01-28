@@ -71,6 +71,13 @@ extern int gyros__trace_enabled;
         gyros__t->info.mq = (mq);                                             \
     }
 
+#define GYROS__TRACE_SMQ(kind, smq)                                           \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
+    {                                                                         \
+        gyros_trace_t *gyros__t = gyros__trace(GYROS_TRACE_SMQ_ ## kind);     \
+        gyros__t->info.smq = (smq);                                           \
+    }
+
 #define GYROS__TRACE_MUTEX(kind, m)                                           \
     if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
     {                                                                         \
@@ -108,6 +115,7 @@ extern int gyros__trace_enabled;
 #define GYROS__TRACE_TIMER_START(t)
 #define GYROS__TRACE_COND(kind, c)
 #define GYROS__TRACE_MQ(kind, mq)
+#define GYROS__TRACE_SMQ(kind, smq)
 #define GYROS__TRACE_MUTEX(kind, m)
 #define GYROS__TRACE_RWLOCK(kind, rwlock)
 #define GYROS__TRACE_SEM(kind, s)

@@ -80,6 +80,10 @@ trace_kind_type(enum gyros_trace_kind kind)
     case GYROS_TRACE_MQ_RECEIVE_BLOCKED:
     case GYROS_TRACE_MQ_RECEIVED:
         return "MQ";
+    case GYROS_TRACE_SMQ_SEND:
+    case GYROS_TRACE_SMQ_RECEIVE_BLOCKED:
+    case GYROS_TRACE_SMQ_RECEIVED:
+        return "SMQ";
     case GYROS_TRACE_MUTEX_BLOCKED:
     case GYROS_TRACE_MUTEX_AQUIRED:
     case GYROS_TRACE_MUTEX_UNLOCK:
@@ -204,6 +208,16 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
             break;
         case GYROS_TRACE_MQ_RECEIVED:
             DUMP_OBJECT("RECEIVED", t->info.mq);
+            break;
+
+        case GYROS_TRACE_SMQ_SEND:
+            DUMP_OBJECT("SEND", t->info.smq);
+            break;
+        case GYROS_TRACE_SMQ_RECEIVE_BLOCKED:
+            DUMP_OBJECT("RECEIVE_BLOCKED", t->info.smq);
+            break;
+        case GYROS_TRACE_SMQ_RECEIVED:
+            DUMP_OBJECT("RECEIVED", t->info.smq);
             break;
 
         case GYROS_TRACE_MUTEX_BLOCKED:

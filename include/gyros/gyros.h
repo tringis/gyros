@@ -50,6 +50,7 @@
 #include <gyros/rwlock.h>
 #include <gyros/sem.h>
 #include <gyros/sleep.h>
+#include <gyros/smq.h>
 #include <gyros/task.h>
 #include <gyros/time.h>
 #include <gyros/timer.h>
