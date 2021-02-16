@@ -35,27 +35,16 @@
 
 #if GYROS_CONFIG_DYNTICK
 
-#ifndef GYROS_CONFIG_STM32_AHB_HZ
-#error GYROS_CONFIG_STM32_AHB_HZ not defined
-#endif
-
-#ifndef GYROS_CONFIG_STM32_APB1_HZ
-#error GYROS_CONFIG_STM32_APB1_HZ not defined
-#endif
-
-#ifndef GYROS_CONFIG_STM32_APB2_HZ
-#error GYROS_CONFIG_STM32_APB2_HZ not defined
-#endif
-
 #ifndef GYROS_CONFIG_STM32_TIMER
+#error GYROS_CONFIG_STM32_TIMER not defined
 #define GYROS_CONFIG_STM32_TIMER               2
 #endif
 
 #ifndef GYROS_CONFIG_STM32_TIMER_HZ
-#define GYROS_CONFIG_STM32_TIMER_HZ            1000000
+#error GYROS_CONFIG_STM32_TIMER_HZ not defined
 #endif
 
-#define GYROS_CONFIG_HZ                        GYROS_CONFIG_STM32_TIMER_HZ
+#define GYROS_CONFIG_HZ                        1000000
 
 #endif /* GYROS_CONFIG_DYNTICK */
 
