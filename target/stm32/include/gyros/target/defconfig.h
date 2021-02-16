@@ -26,9 +26,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDE__gyros_stm32f_context_h__200812301810
-#define INCLUDE__gyros_stm32f_context_h__200812301810
+#ifndef INCLUDED__gyros_stm32_defconfig_h__200901101016
+#define INCLUDED__gyros_stm32_defconfig_h__200901101016
 
-#include <gyros/arch/armv7-m/context.h>
+#ifndef GYROS_CONFIG_DYNTICK
+#define GYROS_CONFIG_DYNTICK                   1
+#endif
+
+#if GYROS_CONFIG_DYNTICK
+
+#ifndef GYROS_CONFIG_STM32_AHB_HZ
+#error GYROS_CONFIG_STM32_AHB_HZ not defined
+#endif
+
+#ifndef GYROS_CONFIG_STM32_APB1_HZ
+#error GYROS_CONFIG_STM32_APB1_HZ not defined
+#endif
+
+#ifndef GYROS_CONFIG_STM32_APB2_HZ
+#error GYROS_CONFIG_STM32_APB2_HZ not defined
+#endif
+
+#ifndef GYROS_CONFIG_STM32_TIMER
+#define GYROS_CONFIG_STM32_TIMER               2
+#endif
+
+#ifndef GYROS_CONFIG_STM32_TIMER_HZ
+#define GYROS_CONFIG_STM32_TIMER_HZ            1000000
+#endif
+
+#define GYROS_CONFIG_HZ                        GYROS_CONFIG_STM32_TIMER_HZ
+
+#endif /* GYROS_CONFIG_DYNTICK */
+
+#include <gyros/arch/armv7-m/defconfig.h>
+#include <gyros/private/defconfig.h>
 
 #endif

@@ -45,26 +45,26 @@
 #   error Both GYROS_CONFIG_STM32F10x and GYROS_CONFIG_STM32F2xx defined.
 #endif
 
-#if GYROS_CONFIG_STM32F_TIMER < 1 || GYROS_CONFIG_STM32F_TIMER > 8
-#   error Unsupported GYROS_CONFIG_STM32F_TIMER value
+#if GYROS_CONFIG_STM32_TIMER < 1 || GYROS_CONFIG_STM32_TIMER > 8
+#   error Unsupported GYROS_CONFIG_STM32_TIMER value
 #endif
 
-#if GYROS_CONFIG_STM32F_TIMER == 1
+#if GYROS_CONFIG_STM32_TIMER == 1
 #   define TIMER_IRQ                      27
 #   define TIMER_ISR                      TIM1_CC_IRQHandler
-#elif GYROS_CONFIG_STM32F_TIMER == 2
+#elif GYROS_CONFIG_STM32_TIMER == 2
 #   define TIMER_IRQ                      28
 #   define TIMER_ISR                      TIM2_IRQHandler
-#elif GYROS_CONFIG_STM32F_TIMER == 3
+#elif GYROS_CONFIG_STM32_TIMER == 3
 #   define TIMER_IRQ                      29
 #   define TIMER_ISR                      TIM3_IRQHandler
-#elif GYROS_CONFIG_STM32F_TIMER == 4
+#elif GYROS_CONFIG_STM32_TIMER == 4
 #   define TIMER_IRQ                      30
 #   define TIMER_ISR                      TIM4_IRQHandler
-#elif GYROS_CONFIG_STM32F_TIMER == 5
+#elif GYROS_CONFIG_STM32_TIMER == 5
 #   define TIMER_IRQ                      50
 #   define TIMER_ISR                      TIM5_IRQHandler
-#elif GYROS_CONFIG_STM32F_TIMER == 8
+#elif GYROS_CONFIG_STM32_TIMER == 8
 #   define TIMER_IRQ                      46
 #   define TIMER_ISR                      TIM8_CC_IRQHandler
 #endif
@@ -75,27 +75,27 @@
 #   define RCC_APB1RSTR                   RCC_REG(0x10)
 #   define RCC_APB2ENR                    RCC_REG(0x18)
 #   define RCC_APB1ENR                    RCC_REG(0x1c)
-#   if GYROS_CONFIG_STM32F_TIMER == 1
+#   if GYROS_CONFIG_STM32_TIMER == 1
 #       define TIMER_ADDR                 0x40012C00
 #       define TIMER_APB2_MASK            (1U << 11)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 10)
-#   elif GYROS_CONFIG_STM32F_TIMER == 2
+#   elif GYROS_CONFIG_STM32_TIMER == 2
 #       define TIMER_ADDR                 0x40000000
 #       define TIMER_APB1_MASK            (1U <<  0)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 11)
-#   elif GYROS_CONFIG_STM32F_TIMER == 3
+#   elif GYROS_CONFIG_STM32_TIMER == 3
 #       define TIMER_ADDR                 0x40000400
 #       define TIMER_APB1_MASK            (1U <<  1)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 12)
-#   elif GYROS_CONFIG_STM32F_TIMER == 4
+#   elif GYROS_CONFIG_STM32_TIMER == 4
 #       define TIMER_ADDR                 0x40000800
 #       define TIMER_APB1_MASK            (1U <<  2)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 13)
-#   elif GYROS_CONFIG_STM32F_TIMER == 5
+#   elif GYROS_CONFIG_STM32_TIMER == 5
 #       define TIMER_ADDR                 0x40000c00
 #       define TIMER_APB1_MASK            (1U <<  3)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 18)
-#   elif GYROS_CONFIG_STM32F_TIMER == 8
+#   elif GYROS_CONFIG_STM32_TIMER == 8
 #       define TIMER_ADDR                 0x40013400
 #       define TIMER_APB2_MASK            (1U << 13)
 #       define TIMER_DBGMCU_CR_MASK       (1U << 17)
@@ -108,26 +108,26 @@
 #   define RCC_APB2RSTR                   RCC_REG(0x24)
 #   define RCC_APB1ENR                    RCC_REG(0x40)
 #   define RCC_APB2ENR                    RCC_REG(0x44)
-#   if GYROS_CONFIG_STM32F_TIMER == 1
+#   if GYROS_CONFIG_STM32_TIMER == 1
 #       define TIMER_ADDR                 0x40010000
 #       define TIMER_APB2_MASK            (1U <<  0)
-#   elif GYROS_CONFIG_STM32F_TIMER == 2
+#   elif GYROS_CONFIG_STM32_TIMER == 2
 #       define TIMER_ADDR                 0x40000000
 #       define TIMER_APB1_MASK            (1U <<  0)
-#   elif GYROS_CONFIG_STM32F_TIMER == 3
+#   elif GYROS_CONFIG_STM32_TIMER == 3
 #       define TIMER_ADDR                 0x40000400
 #       define TIMER_APB1_MASK            (1U <<  1)
-#   elif GYROS_CONFIG_STM32F_TIMER == 4
+#   elif GYROS_CONFIG_STM32_TIMER == 4
 #       define TIMER_ADDR                 0x40000800
 #       define TIMER_APB1_MASK            (1U <<  2)
-#   elif GYROS_CONFIG_STM32F_TIMER == 5
+#   elif GYROS_CONFIG_STM32_TIMER == 5
 #       define TIMER_ADDR                 0x40000c00
 #       define TIMER_APB1_MASK            (1U <<  3)
-#   elif GYROS_CONFIG_STM32F_TIMER == 8
+#   elif GYROS_CONFIG_STM32_TIMER == 8
 #       define TIMER_ADDR                 0x40010400
 #       define TIMER_APB2_MASK            (1U <<  1)
 #   endif
-#   if GYROS_CONFIG_STM32F_TIMER == 2 || GYROS_CONFIG_STM32F_TIMER == 5
+#   if GYROS_CONFIG_STM32_TIMER == 2 || GYROS_CONFIG_STM32_TIMER == 5
 #       define TIMER_BITS                 32
 #   else
 #       define TIMER_BITS                 16
@@ -137,13 +137,13 @@
 #endif
 
 #ifdef TIMER_APB1_MASK
-#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32F_APB1_HZ <         \
-                                        GYROS_CONFIG_STM32F_AHB_HZ ? 2 : 1) * \
-                                       GYROS_CONFIG_STM32F_APB1_HZ)
+#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32_APB1_HZ <         \
+                                        GYROS_CONFIG_STM32_AHB_HZ ? 2 : 1) * \
+                                       GYROS_CONFIG_STM32_APB1_HZ)
 #else
-#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32F_APB2_HZ <         \
-                                        GYROS_CONFIG_STM32F_AHB_HZ ? 2 : 1) * \
-                                       GYROS_CONFIG_STM32F_APB2_HZ)
+#   define TIMER_CLK_HZ               ((GYROS_CONFIG_STM32_APB2_HZ <         \
+                                        GYROS_CONFIG_STM32_AHB_HZ ? 2 : 1) * \
+                                       GYROS_CONFIG_STM32_APB2_HZ)
 #endif
 
 #if TIMER_BITS == 16
@@ -273,7 +273,7 @@ gyros__target_init(void)
     DBGMCU_APB2_FZ |= TIMER_APB2_MASK;
 #endif
 
-    TIMx_PSC = TIMER_CLK_HZ / GYROS_CONFIG_STM32F_TIMER_HZ - 1;
+    TIMx_PSC = TIMER_CLK_HZ / GYROS_CONFIG_STM32_TIMER_HZ - 1;
 #if TIMER_BITS == 16
     TIMx_ARR = 0xffff;
 #else

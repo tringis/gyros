@@ -26,35 +26,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_stm32f_config_h__201004131716
-#define INCLUDED__gyros_stm32f_config_h__201004131716
+#ifndef INCLUDE__gyros_stm32_context_h__200812301810
+#define INCLUDE__gyros_stm32_context_h__200812301810
 
-/*---------------------------------------------------------------------*
- * GyrOS target specific configuration
- *---------------------------------------------------------------------*/
-/* Core clock (HCLK) frequency */
-#define GYROS_CONFIG_CORE_HZ                   72000000
-
-/* Define one of the following to specify the STM32F family. */
-#define GYROS_CONFIG_STM32F10x
-/* #define GYROS_CONFIG_STM32F2xx */
-
-/* AHB frequency (see RCC_CFGR[HPRE]) */
-#define GYROS_CONFIG_STM32F_AHB_HZ             GYROS_CONFIG_CORE_HZ
-
-/* APB1 frequency (see RCC_CFGR[PPRE1]) */
-#define GYROS_CONFIG_STM32F_APB1_HZ            (GYROS_CONFIG_STM32F_AHB_HZ / 2)
-
-/* APB2 frequency (see RCC_CFGR[PPRE2]) */
-#define GYROS_CONFIG_STM32F_APB2_HZ            (GYROS_CONFIG_STM32F_AHB_HZ / 1)
-
-/*---------------------------------------------------------------------*
- * Application specific configuration  (see gyros/target/defconfig.h
- *                                      and gyros/private/defconfig.h)
- *---------------------------------------------------------------------*/
-#define GYROS_CONFIG_DEBUG                     1
-#define GYROS_CONFIG_TRACE                     1
-
-#include <gyros/target/defconfig.h>
+#include <gyros/arch/armv7-m/context.h>
 
 #endif
