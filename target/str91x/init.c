@@ -28,7 +28,7 @@
  **************************************************************************/
 #include <gyros/interrupt.h>
 #include <gyros/private/target.h>
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/time.h>
 
 #include "str91x.h"

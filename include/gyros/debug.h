@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_debug_h__200812221657
 #define INCLUDED__gyros_debug_h__200812221657
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/task.h>
 
 #ifdef __cplusplus
@@ -43,7 +43,7 @@ extern "C" {
   * \defgroup debug_group Debugging support
   *
   * Debugging is enabled by setting \ref GYROS_CONFIG_DEBUG to a
-  * non-zero value in gyros/config.h.  When debugging is
+  * non-zero value in gyros-config.h.  When debugging is
   * enabled, many common invalid uses of the GyrOS API is detected,
   * and more information about the status of each task tracked,
   * e.g. if a task is blocking on a mutex, and if so, which mutex.

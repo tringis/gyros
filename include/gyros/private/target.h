@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_private_target_h__200901072001
 #define INCLUDED__gyros_private_target_h__200901072001
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/task.h>
 #include <gyros/time.h>
 

@@ -36,7 +36,7 @@ extern "C" {
 /** \defgroup config_group Configuration
   *
   * A few aspects of GyrOS can be configured at build time using the
-  * include file \c gyros/config.h.  This file is target specific
+  * include file \c gyros-config.h.  This file is target specific
   * and should be copied from the target's @c example directory,
   * e.g. @c targets/at91sam7s/example/config.h.
   */

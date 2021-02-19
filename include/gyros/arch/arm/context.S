@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 
 /**************************************************************************
  * Macros                                                                 *

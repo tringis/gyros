@@ -31,7 +31,7 @@
 
 #include <gyros/trace.h>
 #include <gyros/compiler.h>
-#include <gyros/config.h>
+#include <gyros-config.h>
 
 #ifdef __cplusplus
 extern "C" {

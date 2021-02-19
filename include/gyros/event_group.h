@@ -45,7 +45,7 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/private/debug.h>
 #include <gyros/task.h>
 

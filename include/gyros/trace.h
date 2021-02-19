@@ -50,7 +50,7 @@ extern "C" {
   * \defgroup trace_group Tracing support
   *
   * Tracing is enabled by setting \ref GYROS_CONFIG_TRACE to a
-  * non-zero value in gyros/config.h.  When tracing is enabled,
+  * non-zero value in gyros-config.h.  When tracing is enabled,
   * task activities such as context switches and synchronization
   * object interactions, e.g. locking and unlocking of mutexes, are
   * logged with time stamps.  These log entries can be recalled to

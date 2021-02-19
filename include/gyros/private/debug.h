@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_private_debug_h__200812022021
 #define INCLUDED__gyros_private_debug_h__200812022021
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 
 #ifdef __cplusplus
 extern "C" {

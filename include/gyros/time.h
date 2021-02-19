@@ -57,7 +57,7 @@
 
 #include <stdbool.h>
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 
 #ifdef __cplusplus
 extern "C" {

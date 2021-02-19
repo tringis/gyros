@@ -52,7 +52,7 @@
 
 #include <stdbool.h>
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/task.h>
 
 #ifdef __cplusplus

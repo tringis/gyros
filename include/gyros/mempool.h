@@ -29,7 +29,7 @@
 #ifndef INCLUDED__gyros_mempool_h__201102072205
 #define INCLUDED__gyros_mempool_h__201102072205
 
-#include <gyros/config.h>
+#include <gyros-config.h>
 #include <gyros/private/debug.h>
 
 #ifdef __cplusplus

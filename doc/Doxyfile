@@ -558,7 +558,7 @@ INPUT                  = Mainpage.dox \
 		         Building.dox \
 		         Porting.dox \
 		         ../include/gyros/ \
-			 gyros/config.h
+			 gyros-config.h
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

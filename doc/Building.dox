@@ -92,7 +92,7 @@ arm-elf-gcc -I $GYROS/include -I $GYROS/target/str91x/include -c file.c
 \subsection building_other_config Configuration file
 
 GyrOS expects to find a configuration include file, included by GyrOS
-internally using the name \c gyros/config.h.  A template for this
+internally using the name \c gyros-config.h.  A template for this
 configuration file is available in the example directory of your
 target port.
 
