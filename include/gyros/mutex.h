@@ -104,6 +104,9 @@ typedef struct
 bool gyros__mutex_try_lock_slow(gyros_mutex_t *m);
 void gyros__mutex_lock_slow(gyros_mutex_t *m);
 void gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule);
+#  if GYROS_CONFIG_DEBUG
+void gyros__mutex_ensure(gyros_mutex_t *m);
+#  endif
 #endif
 
 /** Initialize the mutex @a m.
@@ -165,6 +168,18 @@ static inline void gyros_mutex_unlock(gyros_mutex_t *m)
 }
 
 /*@}*/
+
+/** Ensure that @a m is locked by the current task. Calls
+  * gyros_error() if the mutex is not locked by the current task.
+  *
+  * \param m            Mutex struct pointer.
+  */
+static inline void gyros_mutex_ensure(gyros_mutex_t *m)
+{
+#if GYROS_CONFIG_DEBUG
+    gyros__mutex_ensure(m);
+#endif
+}
 
 #ifdef __cplusplus
 }
