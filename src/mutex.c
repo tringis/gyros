@@ -142,12 +142,23 @@ gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule)
 }
 
 #if GYROS_CONFIG_DEBUG
+
 void
-gyros__mutex_ensure(gyros_mutex_t *m)
+gyros__mutex_assert_owning(gyros_mutex_t *m)
 {
     if (GYROS_UNLIKELY(m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC))
         gyros__error("uninitialized mutex in mutex_lock", m);
     if (GYROS_UNLIKELY(m->owner != gyros.current))
-        gyros__error("mutex_lock deadlock", m);
+        gyros__error("mutex_assert_owning failed", m);
 }
+
+void
+gyros__mutex_assert_not_owning(gyros_mutex_t *m)
+{
+    if (GYROS_UNLIKELY(m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC))
+        gyros__error("uninitialized mutex in mutex_lock", m);
+    if (GYROS_UNLIKELY(m->owner == gyros.current))
+        gyros__error("mutex_assert_not_owning failed", m);
+}
+
 #endif

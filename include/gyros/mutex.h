@@ -105,7 +105,8 @@ bool gyros__mutex_try_lock_slow(gyros_mutex_t *m);
 void gyros__mutex_lock_slow(gyros_mutex_t *m);
 void gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule);
 #  if GYROS_CONFIG_DEBUG
-void gyros__mutex_ensure(gyros_mutex_t *m);
+void gyros__mutex_assert_owning(gyros_mutex_t *m);
+void gyros__mutex_assert_not_owning(gyros_mutex_t *m);
 #  endif
 #endif
 
@@ -167,19 +168,33 @@ static inline void gyros_mutex_unlock(gyros_mutex_t *m)
     gyros__mutex_unlock_slow(m, 1);
 }
 
-/*@}*/
-
-/** Ensure that @a m is locked by the current task. Calls
-  * gyros_error() if the mutex is not locked by the current task.
+/** Ensure that @a m is not locked by the current task. Calls
+  * gyros_error() if the mutex is locked by the current task.  The
+  * test is only performed when GYROS_CONFIG_DEBUG is set.
   *
   * \param m            Mutex struct pointer.
   */
-static inline void gyros_mutex_ensure(gyros_mutex_t *m)
+static inline void gyros_mutex_assert_owning(gyros_mutex_t *m)
 {
 #if GYROS_CONFIG_DEBUG
-    gyros__mutex_ensure(m);
+    gyros__mutex_assert_owning(m);
 #endif
 }
+
+/** Ensure that @a m is locked by the current task. Calls
+  * gyros_error() if the mutex is not locked by the current task.  The
+  * test is only performed when GYROS_CONFIG_DEBUG is set.
+  *
+  * \param m            Mutex struct pointer.
+  */
+static inline void gyros_mutex_assert_not_owning(gyros_mutex_t *m)
+{
+#if GYROS_CONFIG_DEBUG
+    gyros__mutex_assert_not_owning(m);
+#endif
+}
+
+/*@}*/
 
 #ifdef __cplusplus
 }
