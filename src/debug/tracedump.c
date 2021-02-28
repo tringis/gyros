@@ -112,7 +112,7 @@ trace_kind_type(enum gyros_trace_kind kind)
 }
 
 static void
-print_abstime(void (*printf_func)(void *arg, char *fmt, ...), void *printf_arg,
+print_abstime(void (*printf_func)(void *arg, const char *fmt, ...), void *printf_arg,
              gyros_abstime_t time)
 {
     unsigned long time_us = gyros_time_to_us(time);
@@ -121,7 +121,7 @@ print_abstime(void (*printf_func)(void *arg, char *fmt, ...), void *printf_arg,
 }
 
 void
-gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
+gyros_debug_trace_dump(void (*printf_func)(void *arg, const char *fmt, ...),
                        void *printf_arg)
 {
     gyros_trace_t *t, *next_t;

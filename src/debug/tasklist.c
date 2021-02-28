@@ -34,7 +34,8 @@
 #if GYROS_CONFIG_ITERATE
 
 void
-gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
+gyros_debug_task_list(void (*printf_func)(void *arg,
+                                          const char *fmt, ...),
                       void *printf_arg)
 {
     gyros_task_t *t;

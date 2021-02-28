@@ -89,7 +89,8 @@ extern "C" {
   * \param printf_func      Pointer to printf function.
   * \param printf_arg       First argument to printf function.
   */
-void gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
+void gyros_debug_task_list(void (*printf_func)(void *arg,
+                                               const char *fmt, ...),
                            void *printf_arg);
 
 /** Print all recorded traces using the supplied printf function @a
@@ -103,7 +104,8 @@ void gyros_debug_task_list(void (*printf_func)(void *arg, char *fmt, ...),
   * \param printf_func      Pointer to printf function.
   * \param printf_arg       First argument to printf function.
   */
-void gyros_debug_trace_dump(void (*printf_func)(void *arg, char *fmt, ...),
+void gyros_debug_trace_dump(void (*printf_func)(void *arg,
+                                                const char *fmt, ...),
                             void *printf_arg);
 
 /** Get the current program counter (PC) for @a task.
