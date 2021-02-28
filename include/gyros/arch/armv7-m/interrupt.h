@@ -101,17 +101,24 @@ gyros__set_basepri_max(unsigned long basepri_max)
 GYROS_ALWAYS_INLINE unsigned long
 gyros_interrupt_disable(void)
 {
-    unsigned long basepri = gyros__get_basepri();
-
+#if GYROS_CONFIG_MAX_IRQ_PRIORITY == 0
+    unsigned long flags = gyros__get_primask();
+    gyros__set_primask(1);
+#else
+    unsigned long flags = gyros__get_basepri();
     gyros__set_basepri_max(GYROS_CONFIG_MAX_IRQ_PRIORITY);
-
-    return basepri;
+#endif
+    return flags;
 }
 
 GYROS_ALWAYS_INLINE void
 gyros_interrupt_restore(unsigned long flags)
 {
+#if GYROS_CONFIG_MAX_IRQ_PRIORITY == 0
+    gyros__set_primask(flags);
+#else
     gyros__set_basepri(flags);
+#endif
 }
 
 GYROS_ALWAYS_INLINE bool

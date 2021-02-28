@@ -41,12 +41,23 @@
 #define GYROS_CONFIG_IDLE_WFI                  1
 #endif
 
+/* The GYROS_CONFIG_MAX_IRQ_PRIORITY configures the highest exception
+ * priority that may call GyrOS functions.
+ *
+ * The default setting of zero means that all exceptions are allowed
+ * to call any GyrOS function (that is interrupts safe of course).  It
+ * also means that GyrOS will temprorarily disable all interrupts for
+ * short periods of time.  Reducing the priority (by increasing the
+ * value) allows the system to run interrupt service routines at a
+ * higher priority than GyrOS to achieve best possible interrupt
+ * latency, at the expense that the ISR must not call GyrOS
+ * functions. */
 #ifndef GYROS_CONFIG_MAX_IRQ_PRIORITY
-#define GYROS_CONFIG_MAX_IRQ_PRIORITY          0x60
+#define GYROS_CONFIG_MAX_IRQ_PRIORITY          0
 #endif
 
 #ifndef GYROS_CONFIG_MIN_IRQ_PRIORITY
-#define GYROS_CONFIG_MIN_IRQ_PRIORITY          0xe0
+#define GYROS_CONFIG_MIN_IRQ_PRIORITY          255
 #endif
 
 #ifndef GYROS_CONFIG_SYSTICK_PRIORITY
