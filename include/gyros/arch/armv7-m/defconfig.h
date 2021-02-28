@@ -46,7 +46,7 @@
 #endif
 
 #ifndef GYROS_CONFIG_MIN_IRQ_PRIORITY
-#define GYROS_CONFIG_MIN_IRQ_PRIORITY          0xdf
+#define GYROS_CONFIG_MIN_IRQ_PRIORITY          0xe0
 #endif
 
 #ifndef GYROS_CONFIG_SYSTICK_PRIORITY
