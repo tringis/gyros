@@ -91,6 +91,17 @@ extern "C" {
       (gyros_task_t*)0,                                                 \
       GYROS__LIST_INITVAL((name).task_list) }
 
+/** Define and initialize a mutex @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_MUTEX(my_mutex);
+  * static GYROS_DEFINE_MUTEX(my_static_mutex);
+  * \endcode
+  *
+  * \param name         Name of the mutex.
+  */
+#define GYROS_DEFINE_MUTEX(name) gyros_mutex_t name = GYROS_MUTEX_INITVAL(name)
+
 /** \brief Mutual exclusion (mutex) object. */
 typedef struct
 {

@@ -70,6 +70,17 @@ extern "C" {
     { GYROS_DEBUG_INFO(GYROS_COND_DEBUG_MAGIC, #name),  \
       GYROS__LIST_INITVAL((name).task_list) }
 
+/** Define and initialize a condition variable @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_COND(my_cond);
+  * static GYROS_DEFINE_COND(my_static_cond);
+  * \endcode
+  *
+  * \param name         Name of the condition variable.
+  */
+#define GYROS_DEFINE_COND(name) gyros_cond_t name = GYROS_COND_INITVAL(name)
+
 /** \brief Condition variable (cond) object. */
 typedef struct
 {

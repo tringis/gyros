@@ -61,7 +61,7 @@ extern "C" {
   * name.  Example:
   *
   * \code
-  * gyros_event_t my_event = GYROS_EVENT_GROUP_INITVAL(my_event);
+  * gyros_event_group_t my_event = GYROS_EVENT_GROUP_INITVAL(my_event);
   * \endcode
   *
   * \param name         Name of the event group variable.
@@ -70,6 +70,18 @@ extern "C" {
     { GYROS_DEBUG_INFO(GYROS_EVENT_GROUP_DEBUG_MAGIC, #name),   \
       0u,                            \
       GYROS__LIST_INITVAL((name).task_list) }
+
+/** Define and initialize a event_group @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_EVENT_GROUP(my_event_group);
+  * static GYROS_DEFINE_EVENT_GROUP(my_static_event_group);
+  * \endcode
+  *
+  * \param name         Name of the event group.
+  */
+#define GYROS_DEFINE_EVENT_GROUP(name) \
+    gyros_event_group_t name = GYROS_EVENT_GROUP_INITVAL(name)
 
 
 /** \brief event group object. */

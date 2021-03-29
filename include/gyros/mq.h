@@ -125,6 +125,17 @@ typedef struct
       GYROS__LIST_INITVAL((name).msg_list),                             \
       GYROS__LIST_INITVAL((name).task_list) }
 
+/** Define and initialize a message queue @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_MQ(my_mq);
+  * static GYROS_DEFINE_MQ(my_static_mq);
+  * \endcode
+  *
+  * \param name         Name of the message queue.
+  */
+#define GYROS_DEFINE_MQ(name) gyros_mq_t name = GYROS_MQ_INITVAL(name)
+
 /** \brief Message queue (mq) object. */
 typedef struct
 {

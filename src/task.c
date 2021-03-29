@@ -56,7 +56,7 @@ gyros_t gyros = {
 };
 
 #if GYROS_CONFIG_ITERATE
-gyros_mutex_t gyros__iterate_mutex = GYROS_MUTEX_INITVAL(gyros__iterate_mutex);
+GYROS_DEFINE_MUTEX(gyros__iterate_mutex);
 #endif
 
 static void

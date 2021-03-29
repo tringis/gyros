@@ -79,6 +79,18 @@ extern "C" {
       GYROS__LIST_INITVAL((name).rd_task_list),             \
       GYROS__LIST_INITVAL((name).wr_task_list) }
 
+/** Define and initialize a rwlock @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_RWLOCK(my_rwlock);
+  * static GYROS_DEFINE_RWLOCK(my_static_rwlock);
+  * \endcode
+  *
+  * \param name         Name of the read/write lock.
+  */
+#define GYROS_DEFINE_RWLOCK(name) \
+    gyros_rwlock_t name = GYROS_RWLOCK_INITVAL(name)
+
 /** \brief Read/write lock (rwlock) object. */
 typedef struct
 {

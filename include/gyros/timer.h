@@ -74,6 +74,19 @@ extern "C" {
       GYROS__LIST_INITVAL((name).list_node),                            \
       0, 0, (callback), (callback_arg) }
 
+/** Define and initialize a timer @a name.  Example:
+  *
+  * \code
+  * void my_callback(struct gyros_timer *timer, gyros_abstime_t now, void *arg);
+  *
+  * GYROS_DEFINE_TIMER(my_timer, my_callback, NULL);
+  * \endcode
+  *
+  * \param name         Name of the timer.
+  */
+#define GYROS_DEFINE_TIMER(name, callback, callback_arg) \
+    gyros_timer_t name = GYROS_TIMER_INITVAL(name, callback, callback_arg)
+
 /** \brief Timer object. */
 typedef struct gyros_timer
 {

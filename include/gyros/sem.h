@@ -88,6 +88,30 @@ extern "C" {
     { GYROS_DEBUG_INFO(GYROS_SEM_DEBUG_MAGIC, #name),   \
       0, 1, GYROS__LIST_INITVAL((name).task_list) }
 
+/** Define and initialize a semaphore @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_SEM(my_sem);
+  * static GYROS_DEFINE_SEM(my_static_sem);
+  * \endcode
+  *
+  * \param name         Name of the semaphore.
+  */
+#define GYROS_DEFINE_SEM(name, start_value)     \
+    gyros_sem_t name = GYROS_SEM_INITVAL(name, start_value)
+
+/** Define and initialize a binary semaphore @a name.  Example:
+  *
+  * \code
+  * GYROS_DEFINE_BINARY_SEM(my_sem);
+  * static GYROS_DEFINE_BINARY_SEM(my_static_sem);
+  * \endcode
+  *
+  * \param name         Name of the semaphore.
+  */
+#define GYROS_DEFINE_BINARY_SEM(name)     \
+    gyros_sem_t name = GYROS_BINARY_SEM_INITVAL(name)
+
 
 /** \brief Semaphore (sem) object. */
 typedef struct
