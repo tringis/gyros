@@ -40,7 +40,7 @@ gyros_task_suspend(gyros_task_t *task)
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros__error("resume non-task", task);
+        gyros__error("uninitialized task in task_suspend", task);
 #endif
 
     gyros__task_suspend(task);
@@ -58,7 +58,7 @@ gyros_task_resume(gyros_task_t *task)
 
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros__error("resume non-task", task);
+        gyros__error("uninitialized task in task_resume", task);
 #endif
 
     gyros__task_move(task, &gyros.running);
