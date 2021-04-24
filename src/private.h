@@ -51,7 +51,7 @@ extern "C" {
 extern gyros_t gyros;
 extern gyros_mutex_t gyros__iterate_mutex;
 
-void gyros__task_zombify(gyros_task_t *task);
+void gyros__task_finish(gyros_task_t *task);
 
 void gyros__task_suspend(gyros_task_t *task);
 

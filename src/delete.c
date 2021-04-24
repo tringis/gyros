@@ -45,7 +45,7 @@ gyros_task_delete(gyros_task_t *task)
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
         gyros__error("delete non-task", task);
 #endif
-    gyros__task_zombify(task);
+    gyros__task_finish(task);
     if (task == gyros.current)
     {
 #if GYROS_CONFIG_ITERATE

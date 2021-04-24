@@ -90,11 +90,6 @@ extern "C" {
 #define GYROS_CONFIG_TIMER 1
 
 /** If defined to a non-zero value, this variable enables support for
-  * gyros_task_wait() and gyros_task_wait_until() at the cost of a few
-  * extra bytes memory usage per task. */
-#define GYROS_CONFIG_WAIT 1
-
-/** If defined to a non-zero value, this variable enables support for
   * \ref trace_group "tracing". */
 #define GYROS_CONFIG_TRACE 0
 

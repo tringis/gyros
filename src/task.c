@@ -49,10 +49,6 @@ gyros_t gyros = {
 #if GYROS_CONFIG_ITERATE
     GYROS__LIST_INITVAL(gyros.tasks),
 #endif
-#if GYROS_CONFIG_WAIT
-    GYROS__LIST_INITVAL(gyros.zombies),
-    GYROS__LIST_INITVAL(gyros.reapers),
-#endif
 };
 
 #if GYROS_CONFIG_ITERATE
@@ -74,21 +70,16 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
 }
 
 void
-gyros__task_zombify(gyros_task_t *task)
+gyros__task_finish(gyros_task_t *task)
 {
     gyros__task_suspend(gyros.current);
     gyros__list_remove(&gyros.current->timeout_list_node);
 #if GYROS_CONFIG_ITERATE
     gyros__list_remove(&gyros.current->task_list_node);
 #endif
-#if GYROS_CONFIG_WAIT
-    gyros__list_insert_before(&task->main_list_node, &gyros.zombies);
-
-    /* Wake the tasks in reverse order to preserve the order of the
-     * tasks (of equal priority) in the list. */
-    while (gyros.reapers.prev != &gyros.reapers)
-        gyros__task_wake(TASK(gyros.reapers.prev));
-#endif
+    task->finished = true;
+    while (!gyros__list_empty(&task->waiter_list))
+        gyros__task_wake(TASK(task->waiter_list.prev));
 }
 
 void
@@ -101,8 +92,8 @@ gyros__task_exit(void)
 #endif
 
     flags = gyros_interrupt_disable();
-    GYROS_DEBUG_SET_STATE(gyros.current, "zombie");
-    gyros__task_zombify(gyros.current);
+    GYROS_DEBUG_SET_STATE(gyros.current, "finished");
+    gyros__task_finish(gyros.current);
 #if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
@@ -199,6 +190,7 @@ gyros_task_create(gyros_task_t *task,
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
 #endif
     GYROS_DEBUG_SET_STATE(task, "running");
+    task->finished = false;
     task->base_priority = priority;
     task->priority = priority;
     task->name = name;
@@ -214,6 +206,7 @@ gyros_task_create(gyros_task_t *task,
 #endif
     add_task_to_list(task, &gyros.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list_node);
+    GYROS__LIST_NODE_INIT(&task->waiter_list);
     if (gyros.current) /* Don't reschedule before gyros_start() */
         gyros__cond_reschedule();
     gyros_interrupt_restore(flags);

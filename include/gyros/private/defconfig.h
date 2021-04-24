@@ -57,10 +57,6 @@
 #define GYROS_CONFIG_TIMER 1
 #endif
 
-#ifndef GYROS_CONFIG_WAIT
-#define GYROS_CONFIG_WAIT 1
-#endif
-
 #ifndef GYROS_CONFIG_CONTEXT_HOOK
 #define GYROS_CONFIG_CONTEXT_HOOK 0
 #endif

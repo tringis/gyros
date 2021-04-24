@@ -48,11 +48,6 @@ typedef struct
 #if GYROS_CONFIG_ITERATE
     struct gyros__list_node tasks;
 #endif
-
-#if GYROS_CONFIG_WAIT
-    struct gyros__list_node zombies;
-    struct gyros__list_node reapers;
-#endif
 } gyros_t;
 
 #ifdef __cplusplus

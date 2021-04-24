@@ -33,12 +33,10 @@
 
 #include "private.h"
 
-#if GYROS_CONFIG_WAIT
-gyros_task_t*
-gyros_task_wait(void)
+void
+gyros_task_wait(gyros_task_t *task)
 {
     unsigned long flags;
-    gyros_task_t *task;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
@@ -49,29 +47,21 @@ gyros_task_wait(void)
 
     flags = gyros_interrupt_disable();
 
-    while (gyros.zombies.next == &gyros.zombies)
+    while (!task->finished)
     {
-        gyros__task_move(gyros.current, &gyros.reapers);
+        gyros__task_move(gyros.current, &task->waiter_list);
         GYROS_DEBUG_SET_STATE(gyros.current, "task_wait");
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
     }
-    task = TASK(gyros.zombies.next);
-    gyros__task_suspend(task);
-#if GYROS_CONFIG_DEBUG
-    task->debug_magic = 0;
-#endif
     gyros_interrupt_restore(flags);
-
-    return task;
 }
 
-gyros_task_t*
-gyros_task_wait_until(gyros_abstime_t timeout)
+bool
+gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout)
 {
     unsigned long flags;
-    gyros_task_t *task;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
@@ -82,32 +72,16 @@ gyros_task_wait_until(gyros_abstime_t timeout)
 
     flags = gyros_interrupt_disable();
 
-    if (gyros__list_empty(&gyros.zombies))
+    if (!gyros__task_set_timeout(timeout))
     {
-        if (!gyros__task_set_timeout(timeout))
-        {
-            gyros_interrupt_restore(flags);
-            return NULL;
-        }
-        gyros__task_move(gyros.current, &gyros.reapers);
-        GYROS_DEBUG_SET_STATE(gyros.current, "task_wait_until");
-        gyros__reschedule();
         gyros_interrupt_restore(flags);
-        flags = gyros_interrupt_disable();
-        if (gyros__list_empty(&gyros.zombies))
-        {
-            gyros_interrupt_restore(flags);
-            return NULL;
-        }
+        return false;
     }
 
-    task = TASK(gyros.zombies.next);
-    gyros__task_suspend(task);
-#if GYROS_CONFIG_DEBUG
-    task->debug_magic = 0;
-#endif
+    gyros__task_move(gyros.current, &task->waiter_list);
+    GYROS_DEBUG_SET_STATE(gyros.current, "task_wait_until");
+    gyros__reschedule();
     gyros_interrupt_restore(flags);
 
-    return task;
+    return task->finished;
 }
-#endif

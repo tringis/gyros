@@ -104,6 +104,8 @@ typedef struct
     struct gyros__list_node timeout_list_node; /**< \internal */
     gyros_abstime_t timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
+    unsigned char finished; /**< \internal */
+    struct gyros__list_node waiter_list; /**< \internal */
 
     unsigned short base_priority; /**< \internal */
     unsigned short priority; /**< \internal */
@@ -174,22 +176,19 @@ void gyros_task_create(gyros_task_t *task,
   */
 void gyros_task_delete(gyros_task_t *task);
 
-/** Wait for any task to finish.  When a task has been returned, all
-  * resources for that task can be safely reclaimed.
+/** Wait for @a task to finish.
   *
-  * \return             Struct pointer to finished task.  Never @c NULL.
+  * \param task         Task struct pointer.
   */
-gyros_task_t *gyros_task_wait(void);
+void gyros_task_wait(gyros_task_t *task);
 
-/** Wait for any task to finish, or until @a timeout is reached.  When
-  *  a task has been returned, all resources for that task can be
-  *  safely reclaimed.
+/** Wait for @a task to finish, or until @a timeout is reached.
   *
   * \param timeout      Timeout.  See gyros_time().
-  * \return             Struct pointer to finished task, or @c NULL
-  *                     if @a timeout was reached.
+  * \return             True if the task has finished, or
+  *                     false if @a timeout was reached.
   */
-gyros_task_t *gyros_task_wait_until(gyros_abstime_t timeout);
+bool gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout);
 
 /** Return struct pointer to current task.  May be called from
   * interrupt context, in which case it returns pointer to the task
