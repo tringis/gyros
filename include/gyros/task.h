@@ -168,6 +168,13 @@ void gyros_task_create(gyros_task_t *task,
                        int stack_size,
                        unsigned short priority);
 
+/** Test is @a task has finished.
+  *
+  * \param task         Task struct pointer.
+  * \return             True if the task has finished, else false.
+  */
+bool gyros_task_finished(gyros_task_t *task);
+
 /** Delete a task.  Deleting a task is dangerous because any
   * synchronization objects locked by the deleted objects will remain
   * locked, likely causing deadlocks later on.

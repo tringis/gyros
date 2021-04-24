@@ -211,3 +211,17 @@ gyros_task_create(gyros_task_t *task,
         gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }
+
+bool
+gyros_task_finished(gyros_task_t *task)
+{
+#if GYROS_CONFIG_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros__error("uninitialized task in task_finished", task);
+#endif
+
+    unsigned long flags = gyros_interrupt_disable();
+    bool finished = task->finished;
+    gyros_interrupt_restore(flags);
+    return finished;
+}
