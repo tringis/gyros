@@ -61,6 +61,10 @@ gyros__context_hook(void)
     if (GYROS_UNLIKELY(s_context_hook != NULL))
         s_context_hook(gyros.current, next);
 #endif
+
+#if GYROS_CONFIG_DEBUG
+    gyros.task_switch_counter++;
+#endif
 }
 #endif
 

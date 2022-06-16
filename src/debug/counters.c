@@ -26,36 +26,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#ifndef INCLUDED__gyros_private_state_h__201004161551
-#define INCLUDED__gyros_private_state_h__201004161551
+#include <gyros/debug.h>
 
-#include <gyros/task.h>
+#include "../private.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct
+unsigned long
+gyros_debug_context_switch_counter(void)
 {
-    gyros_task_t *current;
-    struct gyros__list_node running;
-    struct gyros__list_node timeouts;
-
-#if GYROS_CONFIG_TIMER
-    struct gyros__list_node timers;
-#endif
-
-#if GYROS_CONFIG_ITERATE
-    struct gyros__list_node tasks;
-#endif
-
 #if GYROS_CONFIG_DEBUG
-    unsigned long task_switch_counter;
+    return gyros.task_switch_counter;
+#else
+    return 0;
 #endif
-} gyros_t;
-
-#ifdef __cplusplus
 }
-#endif
 
-#endif

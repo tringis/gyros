@@ -115,6 +115,10 @@ void gyros_debug_trace_dump(void (*printf_func)(void *arg,
   */
 unsigned long gyros_debug_task_pc(gyros_task_t *task);
 
+/** Get the number of context switches.
+  */
+unsigned long gyros_debug_context_switch_counter(void);
+
 /*@}*/
 
 #ifdef __cplusplus

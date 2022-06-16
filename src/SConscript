@@ -1,6 +1,7 @@
 gyros_common_srcs = list(map(File, [ 'alarm_clock.c',
                                      'cond.c',
                                      'current.c',
+                                     'debug/counters.c',
                                      'debug/tasklist.c',
                                      'debug/tracedump.c',
                                      'delete.c',
