@@ -1,4 +1,5 @@
-gyros_common_srcs = list(map(File, [ 'cond.c',
+gyros_common_srcs = list(map(File, [ 'alarm_clock.c',
+                                     'cond.c',
                                      'current.c',
                                      'debug/tasklist.c',
                                      'debug/tracedump.c',

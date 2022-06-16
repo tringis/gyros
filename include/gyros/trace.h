@@ -29,6 +29,7 @@
 #ifndef INCLUDED__gyros_trace_h__200905062204
 #define INCLUDED__gyros_trace_h__200905062204
 
+#include <gyros/alarm_clock.h>
 #include <gyros/cond.h>
 #include <gyros/event_group.h>
 #include <gyros/mq.h>
@@ -109,6 +110,10 @@ enum gyros_trace_kind
     GYROS_TRACE_EVENT_GROUP_SET,     /**< gyros_event_group_set() */
     GYROS_TRACE_EVENT_GROUP_CLEAR,   /**< gyros_event_group_clear() */
 
+    GYROS_TRACE_ALARM_CLOCK_WAIT,   /**< gyros_alarm_clock_wait() blocking */
+    GYROS_TRACE_ALARM_CLOCK_SET,    /**< gyros_alarm_clock_set() */
+    GYROS_TRACE_ALARM_CLOCK_RESET,  /**< gyros_alarm_clock_reset() */
+
     GYROS__TRACE_KIND_COUNT         /**< \internal */
 };
 
@@ -179,6 +184,13 @@ typedef struct
             /** Event group events. */
             unsigned events;
         } event_group;
+        struct gyros_trace_alarm_clock_info
+        {
+            /** The alarm clock. */
+            gyros_alarm_clock_t *alarm_clock;
+            /** Event alarm clock wakeup time. */
+            gyros_abstime_t wakeup_time;
+        } alarm_clock;
     } info;
 } gyros_trace_t;
 

@@ -35,6 +35,7 @@
   * Convenience include file that includes all GyrOS include files.
   */
 
+#include <gyros/alarm_clock.h>
 #include <gyros/atomic.h>
 #include <gyros/compiler.h>
 #include <gyros/cond.h>

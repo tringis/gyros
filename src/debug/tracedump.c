@@ -68,6 +68,10 @@ trace_kind_type(enum gyros_trace_kind kind)
         return "CONTEXT";
     case GYROS_TRACE_WAKE:
         return "WAKE";
+    case GYROS_TRACE_ALARM_CLOCK_WAIT:
+    case GYROS_TRACE_ALARM_CLOCK_SET:
+    case GYROS_TRACE_ALARM_CLOCK_RESET:
+        return "ALARM_CLOCK";
     case GYROS_TRACE_COND_WAIT:
     case GYROS_TRACE_COND_SIGNAL_ONE:
     case GYROS_TRACE_COND_SIGNAL_ALL:
@@ -189,6 +193,19 @@ gyros_debug_trace_dump(void (*printf_func)(void *arg, const char *fmt, ...),
             DUMP_OBJECT("CALLBACK", t->info.timer);
             break;
 #endif
+
+        case GYROS_TRACE_ALARM_CLOCK_WAIT:
+            DUMP_OBJECT("WAIT", t->info.alarm_clock.alarm_clock);
+            break;
+        case GYROS_TRACE_ALARM_CLOCK_SET:
+            DUMP_OBJECT("SET", t->info.alarm_clock.alarm_clock);
+            printf_func(printf_arg, ", wakeup_time=");
+            print_abstime(printf_func, printf_arg,
+                          t->info.alarm_clock.wakeup_time);
+            break;
+        case GYROS_TRACE_ALARM_CLOCK_RESET:
+            DUMP_OBJECT("RESET", t->info.alarm_clock.alarm_clock);
+            break;
 
         case GYROS_TRACE_COND_WAIT:
             DUMP_OBJECT("WAIT", t->info.cond);

@@ -109,6 +109,15 @@ extern int gyros__trace_enabled;
         gyros__t->info.event_group.events = (e)->events;                      \
     }
 
+#define GYROS__TRACE_ALARM_CLOCK(kind, a)                                     \
+    if (GYROS_UNLIKELY(gyros__trace_enabled))                                 \
+    {                                                                         \
+        gyros_trace_t *gyros__t =                                             \
+            gyros__trace(GYROS_TRACE_ALARM_CLOCK_ ## kind);                   \
+        gyros__t->info.alarm_clock.alarm_clock = (a);                         \
+        gyros__t->info.alarm_clock.wakeup_time = (a)->wakeup_time;            \
+    }
+
 #else
 
 #define GYROS__TRACE_TIMER(kind, t)
@@ -120,6 +129,7 @@ extern int gyros__trace_enabled;
 #define GYROS__TRACE_RWLOCK(kind, rwlock)
 #define GYROS__TRACE_SEM(kind, s)
 #define GYROS__TRACE_EVENT_GROUP(kind, s)
+#define GYROS__TRACE_ALARM_CLOCK(kind, a)
 
 #endif
 
