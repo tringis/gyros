@@ -59,13 +59,13 @@ gyros_alarm_clock_wait(gyros_alarm_clock_t *a)
 
     flags = gyros_interrupt_disable();
 
-    if (a->armed && gyros__task_set_timeout(a->wakeup_time))
-        return;
-
-    GYROS__TRACE_ALARM_CLOCK(WAIT, a);
-    gyros__task_move(gyros.current, &a->task_list);
-    GYROS_DEBUG_SET_STATE2(gyros.current, "alarm_clock_wait", a);
-    gyros__reschedule();
+    if (!a->armed || gyros__task_set_timeout(a->wakeup_time))
+    {
+        GYROS__TRACE_ALARM_CLOCK(WAIT, a);
+        gyros__task_move(gyros.current, &a->task_list);
+        GYROS_DEBUG_SET_STATE2(gyros.current, "alarm_clock_wait", a);
+        gyros__reschedule();
+    }
     gyros_interrupt_restore(flags);
 }
 
