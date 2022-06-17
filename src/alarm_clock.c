@@ -79,9 +79,9 @@ gyros_alarm_clock_set(gyros_alarm_clock_t *a, gyros_abstime_t wakeup_time)
         gyros__error("uninitialized alarm_clock in alarm_clock_signal", a);
 #endif
 
-    GYROS__TRACE_ALARM_CLOCK(SET, a);
     a->armed = true;
     a->wakeup_time = wakeup_time;
+    GYROS__TRACE_ALARM_CLOCK(SET, a);
 
     if (!gyros__list_empty(&a->task_list))
     {
