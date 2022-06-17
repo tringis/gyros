@@ -169,7 +169,6 @@ static inline void gyros_mutex_lock(gyros_mutex_t *m)
 static inline void gyros_mutex_unlock(gyros_mutex_t *m)
 {
 #if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
-    extern gyros_t gyros;
     while (GYROS_LIKELY(gyros_ldrex_p(&m->task_list.next) == &m->task_list))
     {
         if (GYROS_LIKELY(gyros_strex_p(&m->owner, NULL)))
