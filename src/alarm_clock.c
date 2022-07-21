@@ -130,11 +130,5 @@ gyros_alarm_clock_reset(gyros_alarm_clock_t *a)
 
     GYROS__TRACE_ALARM_CLOCK(RESET, a);
     a->armed = false;
-    if (!gyros__list_empty(&a->task_list))
-    {
-        while (!gyros__list_empty(&a->task_list))
-            gyros__task_wake(TASK(a->task_list.next));
-        gyros__cond_reschedule();
-    }
     gyros_interrupt_restore(flags);
 }

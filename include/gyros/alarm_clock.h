@@ -102,7 +102,7 @@ typedef struct
   */
 void gyros_alarm_clock_init(gyros_alarm_clock_t *a);
 
-/** Wait for the alarm clock @a a to be signalled.
+/** Wait for the alarm clock @a a to reach the set time.
   *
   * \param a            Alarm Clock struct pointer.
   */
@@ -115,7 +115,8 @@ void gyros_alarm_clock_wait(gyros_alarm_clock_t *a);
   */
 void gyros_alarm_clock_set(gyros_alarm_clock_t *a, gyros_abstime_t wakeup_time);
 
-/** Signal the alarm clock @a a.  May be called from interrupt context.
+/** Reset the time for the alarm clock @a a.  May be called from
+  * interrupt context.
   *
   * \param a            Alarm Clock struct pointer.
   */
