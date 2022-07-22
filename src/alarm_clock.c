@@ -129,6 +129,18 @@ gyros_alarm_clock_reset(gyros_alarm_clock_t *a)
 #endif
 
     GYROS__TRACE_ALARM_CLOCK(RESET, a);
-    a->armed = false;
+    if (a->armed)
+    {
+        a->armed = false;
+        if (!gyros__list_empty(&a->task_list))
+        {
+            struct gyros__list_node *ai;
+            // Remove all tasks from the timeout list...
+            for (ai = a->task_list.next; ai != &a->task_list; ai = ai->next)
+                gyros__list_remove(&TASK(ai)->timeout_list_node);
+            gyros__dyntick_update(gyros_time());
+        }
+    }
+
     gyros_interrupt_restore(flags);
 }
