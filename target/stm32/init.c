@@ -78,7 +78,10 @@
 
 #if defined(GYROS_CONFIG_STM32F1xx)
 #   define TIMER_BITS                     16
-#elif GYROS_CONFIG_STM32_TIMER >= 2 && GYROS_CONFIG_STM32_TIMER <= 5
+#elif GYROS_CONFIG_STM32_TIMER ==  2 || \
+      GYROS_CONFIG_STM32_TIMER ==  5 || \
+      GYROS_CONFIG_STM32_TIMER == 23 || \
+      GYROS_CONFIG_STM32_TIMER == 24
 #   define TIMER_BITS                     32
 #else
 #   define TIMER_BITS                     16
