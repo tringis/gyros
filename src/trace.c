@@ -112,8 +112,8 @@ gyros_trace_running_tasks(void)
     unsigned long flags = gyros_interrupt_disable();
     struct gyros__list_node *i;
 
-    for (i = gyros.running.next;
-         i != &gyros.running;
+    for (i = _gyros.running.next;
+         i != &_gyros.running;
          i = i->next)
     {
         gyros__trace(GYROS_TRACE_STRING)->info.running = TASK(i);
@@ -154,13 +154,13 @@ gyros_trace_t*
 gyros__trace(enum gyros_trace_kind kind)
 {
     return alloc_trace(kind, gyros_in_interrupt() ? NULL
-                                                  : gyros.current);
+                                                  : _gyros.current);
 }
 
 void
 gyros__trace_context(gyros_task_t *next)
 {
-    gyros_trace_t *t = alloc_trace(GYROS_TRACE_CONTEXT, gyros.current);
+    gyros_trace_t *t = alloc_trace(GYROS_TRACE_CONTEXT, _gyros.current);
 
     t->info.context_next = next;
 }

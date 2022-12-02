@@ -59,7 +59,7 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
         gyros__error("rwlock_rdlock called from interrupt", rwlock);
     if (gyros_interrupts_disabled())
         gyros__error("rwlock_rdlock called with interrupts disabled", rwlock);
-    if (rwlock->writer == gyros.current)
+    if (rwlock->writer == _gyros.current)
         gyros__error("rwlock_rdlock deadlock", rwlock);
 #endif
 
@@ -69,8 +69,8 @@ gyros_rwlock_rdlock(gyros_rwlock_t *rwlock)
                           !gyros__list_empty(&rwlock->wr_task_list)))
     {
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
-        gyros__task_move(gyros.current, &rwlock->rd_task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_rdlock", rwlock);
+        gyros__task_move(_gyros.current, &rwlock->rd_task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "rwlock_rdlock", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -131,7 +131,7 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__error("rwlock_rdlock_until called with interrupts disabled",
                      rwlock);
     }
-    if (rwlock->writer == gyros.current)
+    if (rwlock->writer == _gyros.current)
         gyros__error("rwlock_rdlock_until deadlock", rwlock);
 #endif
 
@@ -146,12 +146,12 @@ gyros_rwlock_rdlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
             return false;
         }
         GYROS__TRACE_RWLOCK(RD_BLOCKED, rwlock);
-        gyros__task_move(gyros.current, &rwlock->rd_task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_rdlock_until", rwlock);
+        gyros__task_move(_gyros.current, &rwlock->rd_task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "rwlock_rdlock_until", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
-        if (gyros.current->timed_out)
+        if (_gyros.current->timed_out)
         {
             gyros_interrupt_restore(flags);
             return false;
@@ -177,24 +177,24 @@ gyros_rwlock_wrlock(gyros_rwlock_t *rwlock)
         gyros__error("rwlock_wrlock called from interrupt", rwlock);
     if (gyros_interrupts_disabled())
         gyros__error("rwlock_wrlock called with interrupts disabled", rwlock);
-    if (rwlock->writer == gyros.current)
+    if (rwlock->writer == _gyros.current)
         gyros__error("rwlock_wrlock deadlock", rwlock);
 #endif
 
     flags = gyros_interrupt_disable();
 
     while (GYROS_UNLIKELY((rwlock->writer != 0 &&
-                           rwlock->writer != gyros.current) ||
+                           rwlock->writer != _gyros.current) ||
                           rwlock->readers))
     {
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
-        gyros__task_move(gyros.current, &rwlock->wr_task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_wrlock", rwlock);
+        gyros__task_move(_gyros.current, &rwlock->wr_task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "rwlock_wrlock", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
     }
-    rwlock->writer = gyros.current;
+    rwlock->writer = _gyros.current;
     GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 }
@@ -220,13 +220,13 @@ gyros_rwlock_try_wrlock(gyros_rwlock_t *rwlock)
     flags = gyros_interrupt_disable();
 
     if (GYROS_UNLIKELY((rwlock->writer != 0 &&
-                        rwlock->writer != gyros.current) || rwlock->readers))
+                        rwlock->writer != _gyros.current) || rwlock->readers))
     {
         ret = false;
     }
     else
     {
-        rwlock->writer = gyros.current;
+        rwlock->writer = _gyros.current;
         GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
         ret = true;
     }
@@ -250,14 +250,14 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
         gyros__error("rwlock_wrlock_until called with interrupts disabled",
                      rwlock);
     }
-    if (rwlock->writer == gyros.current)
+    if (rwlock->writer == _gyros.current)
         gyros__error("rwlock_wrlock_until deadlock", rwlock);
 #endif
 
     flags = gyros_interrupt_disable();
 
     while (GYROS_UNLIKELY((rwlock->writer != 0 &&
-                           rwlock->writer != gyros.current) ||
+                           rwlock->writer != _gyros.current) ||
                           rwlock->readers))
     {
         if (!gyros__task_set_timeout(timeout))
@@ -266,19 +266,19 @@ gyros_rwlock_wrlock_until(gyros_rwlock_t *rwlock, gyros_abstime_t timeout)
             return false;
         }
         GYROS__TRACE_RWLOCK(WR_BLOCKED, rwlock);
-        gyros__task_move(gyros.current, &rwlock->wr_task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "rwlock_wrlock_until", rwlock);
+        gyros__task_move(_gyros.current, &rwlock->wr_task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "rwlock_wrlock_until", rwlock);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
-        if (gyros.current->timed_out)
+        if (_gyros.current->timed_out)
         {
             gyros_interrupt_restore(flags);
             return false;
         }
     }
 
-    rwlock->writer = gyros.current;
+    rwlock->writer = _gyros.current;
     GYROS__TRACE_RWLOCK(WR_AQUIRED, rwlock);
     gyros_interrupt_restore(flags);
 
@@ -304,7 +304,7 @@ gyros_rwlock_unlock(gyros_rwlock_t *rwlock)
     if (rwlock->writer)
     {
 #if GYROS_CONFIG_DEBUG
-        if (rwlock->writer != gyros.current)
+        if (rwlock->writer != _gyros.current)
             gyros__error("rwlock_unlock called by non owner task", rwlock);
 #endif
         GYROS__TRACE_RWLOCK(WR_UNLOCK, rwlock);

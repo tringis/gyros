@@ -62,8 +62,8 @@ gyros_alarm_clock_wait(gyros_alarm_clock_t *a)
     if (!a->armed || gyros__task_set_timeout(a->wakeup_time))
     {
         GYROS__TRACE_ALARM_CLOCK(WAIT, a);
-        gyros__task_move(gyros.current, &a->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "alarm_clock_wait", a);
+        gyros__task_move(_gyros.current, &a->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "alarm_clock_wait", a);
         gyros__reschedule();
     }
     gyros_interrupt_restore(flags);
@@ -100,7 +100,9 @@ gyros_alarm_clock_set(gyros_alarm_clock_t *a, gyros_abstime_t wakeup_time)
                 gyros__list_remove(&TASK(ai)->timeout_list_node);
             // ...find where to put the tasks...
             struct gyros__list_node *ti;
-            for (ti = gyros.timeouts.next; ti != &gyros.timeouts; ti = ti->next)
+            for (ti = _gyros.timeouts.next;
+                 ti != &_gyros.timeouts;
+                 ti = ti->next)
             {
                 if ((gyros_reltime_t)(wakeup_time - TIMEOUT(ti)->timeout) < 0)
                     break;

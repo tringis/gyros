@@ -48,10 +48,10 @@ gyros_sleep_until(gyros_abstime_t timeout)
         gyros_interrupt_restore(flags);
         return 1;
     }
-    gyros__task_suspend(gyros.current);
-    GYROS_DEBUG_SET_STATE(gyros.current, "sleep_until");
+    gyros__task_suspend(_gyros.current);
+    GYROS_DEBUG_SET_STATE(_gyros.current, "sleep_until");
     gyros__reschedule();
     gyros_interrupt_restore(flags);
 
-    return gyros.current->timed_out;
+    return _gyros.current->timed_out;
 }

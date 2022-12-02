@@ -55,7 +55,7 @@ gyros__timer_schedule(gyros_timer_t *timer)
 {
     struct gyros__list_node *i;
 
-    for (i = gyros.timers.next; i != &gyros.timers; i = i->next)
+    for (i = _gyros.timers.next; i != &_gyros.timers; i = i->next)
     {
         if ((gyros_reltime_t)(timer->timeout - TIMER(i)->timeout) < 0)
             break;

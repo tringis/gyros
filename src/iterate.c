@@ -38,10 +38,10 @@ gyros_task_iterate(gyros_task_t *previous)
     if (!previous)
     {
         gyros_mutex_lock(&gyros__iterate_mutex);
-        return TASK_LIST_TASK(gyros.tasks.next);
+        return TASK_LIST_TASK(_gyros.tasks.next);
     }
 
-    if (previous->task_list_node.next == &gyros.tasks)
+    if (previous->task_list_node.next == &_gyros.tasks)
     {
         gyros_mutex_unlock(&gyros__iterate_mutex);
         return 0;

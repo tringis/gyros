@@ -49,8 +49,8 @@ gyros_task_wait(gyros_task_t *task)
 
     while (!task->finished)
     {
-        gyros__task_move(gyros.current, &task->waiter_list);
-        GYROS_DEBUG_SET_STATE(gyros.current, "task_wait");
+        gyros__task_move(_gyros.current, &task->waiter_list);
+        GYROS_DEBUG_SET_STATE(_gyros.current, "task_wait");
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -78,8 +78,8 @@ gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout)
         return false;
     }
 
-    gyros__task_move(gyros.current, &task->waiter_list);
-    GYROS_DEBUG_SET_STATE(gyros.current, "task_wait_until");
+    gyros__task_move(_gyros.current, &task->waiter_list);
+    GYROS_DEBUG_SET_STATE(_gyros.current, "task_wait_until");
     gyros__reschedule();
     gyros_interrupt_restore(flags);
 

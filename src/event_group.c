@@ -72,8 +72,8 @@ gyros_event_group_get(gyros_event_group_t *e,
     while (GYROS_UNLIKELY(!event_match(wait_all, wait_events, e->events)))
     {
         GYROS__TRACE_EVENT_GROUP(BLOCKED, e);
-        gyros__task_move(gyros.current, &e->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "event_group_get", e);
+        gyros__task_move(_gyros.current, &e->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "event_group_get", e);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -113,8 +113,8 @@ gyros_event_group_get_until(gyros_event_group_t *e,
             return false;
         }
         GYROS__TRACE_EVENT_GROUP(BLOCKED, e);
-        gyros__task_move(gyros.current, &e->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "event_group_get_until", e);
+        gyros__task_move(_gyros.current, &e->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "event_group_get_until", e);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();

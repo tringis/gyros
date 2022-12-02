@@ -72,8 +72,8 @@ gyros_sem_wait(gyros_sem_t *s)
     while (GYROS_UNLIKELY(s->value == 0))
     {
         GYROS__TRACE_SEM(BLOCKED, s);
-        gyros__task_move(gyros.current, &s->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait", s);
+        gyros__task_move(_gyros.current, &s->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "sem_wait", s);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -107,8 +107,8 @@ gyros_sem_wait_until(gyros_sem_t *s, gyros_abstime_t timeout)
             return false;
         }
         GYROS__TRACE_SEM(BLOCKED, s);
-        gyros__task_move(gyros.current, &s->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "sem_wait_until", s);
+        gyros__task_move(_gyros.current, &s->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "sem_wait_until", s);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();

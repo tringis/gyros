@@ -65,9 +65,9 @@
 #endif
 	/* Load address of gyros to r0 */
 	ldr	r0, =gyros
-	/* Load gyros.running.next to lr */
+	/* Load _gyros.running.next to lr */
 	ldr	r1, [r0, #4]
-	/* Set gyros.current */
+	/* Set _gyros.current */
 	sub	lr, r1, #17*4
 	str	lr, [r0]
 	/* Get the SPSR from the task struct. */ 

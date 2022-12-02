@@ -65,7 +65,7 @@ gyros__mutex_try_lock_slow(gyros_mutex_t *m)
         return false;
     }
 
-    m->owner = gyros.current;
+    m->owner = _gyros.current;
     gyros_interrupt_restore(flags);
 
     return true;
@@ -83,7 +83,7 @@ gyros__mutex_lock_slow(gyros_mutex_t *m)
         gyros__error("mutex_lock called from interrupt", m);
     if (gyros_interrupts_disabled())
         gyros__error("mutex_lock called with interrupts disabled", m);
-    if (m->owner == gyros.current)
+    if (m->owner == _gyros.current)
         gyros__error("mutex_lock deadlock", m);
 #endif
 
@@ -94,12 +94,12 @@ gyros__mutex_lock_slow(gyros_mutex_t *m)
         GYROS__TRACE_MUTEX(BLOCKED, m);
         do
         {
-            gyros__task_move(gyros.current, &m->task_list);
+            gyros__task_move(_gyros.current, &m->task_list);
             /* Implement priority inheritance to prevent priority
              * inversion. */
-            if (m->owner->priority < gyros.current->priority)
-                gyros__set_priority(m->owner, gyros.current->priority);
-            GYROS_DEBUG_SET_STATE2(gyros.current, "mutex_lock", m);
+            if (m->owner->priority < _gyros.current->priority)
+                gyros__set_priority(m->owner, _gyros.current->priority);
+            GYROS_DEBUG_SET_STATE2(_gyros.current, "mutex_lock", m);
             gyros__reschedule();
             gyros_interrupt_restore(flags);
             flags = gyros_interrupt_disable();
@@ -107,7 +107,7 @@ gyros__mutex_lock_slow(gyros_mutex_t *m)
         GYROS__TRACE_MUTEX(AQUIRED, m);
     }
 
-    m->owner = gyros.current;
+    m->owner = _gyros.current;
     gyros_interrupt_restore(flags);
 }
 
@@ -121,15 +121,16 @@ gyros__mutex_unlock_slow(gyros_mutex_t *m, bool reschedule)
         gyros__error("uninitialized mutex in mutex__unlock", m);
     if (m->owner == NULL)
         gyros__error("mutex__unlock called for unlocked mutex", m);
-    if (m->owner != gyros.current)
+    if (m->owner != _gyros.current)
         gyros__error("mutex__unlock called by non owner task", m);
 #endif
 
     m->owner = NULL;
-    if (GYROS_UNLIKELY(gyros.current->priority != gyros.current->base_priority))
+    if (GYROS_UNLIKELY(_gyros.current->priority !=
+                       _gyros.current->base_priority))
     {
-        gyros.current->priority = gyros.current->base_priority;
-        gyros__task_move(gyros.current, gyros.current->main_list);
+        _gyros.current->priority = _gyros.current->base_priority;
+        gyros__task_move(_gyros.current, _gyros.current->main_list);
     }
     if (GYROS_UNLIKELY(!gyros__list_empty(&m->task_list)))
     {
@@ -148,7 +149,7 @@ gyros__mutex_assert_owning(gyros_mutex_t *m)
 {
     if (GYROS_UNLIKELY(m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC))
         gyros__error("uninitialized mutex in mutex_lock", m);
-    if (GYROS_UNLIKELY(m->owner != gyros.current))
+    if (GYROS_UNLIKELY(m->owner != _gyros.current))
         gyros__error("mutex_assert_owning failed", m);
 }
 
@@ -157,7 +158,7 @@ gyros__mutex_assert_not_owning(gyros_mutex_t *m)
 {
     if (GYROS_UNLIKELY(m->debug_info.magic != GYROS_MUTEX_DEBUG_MAGIC))
         gyros__error("uninitialized mutex in mutex_lock", m);
-    if (GYROS_UNLIKELY(m->owner == gyros.current))
+    if (GYROS_UNLIKELY(m->owner == _gyros.current))
         gyros__error("mutex_assert_not_owning failed", m);
 }
 

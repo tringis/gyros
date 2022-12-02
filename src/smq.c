@@ -72,8 +72,8 @@ gyros_smq_send(gyros_smq_t *smq, const void *msg, bool block)
             return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
-        gyros__task_move(gyros.current, &smq->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "smq_receive", smq);
+        gyros__task_move(_gyros.current, &smq->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "smq_receive", smq);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -117,8 +117,8 @@ gyros_smq_receive(gyros_smq_t *smq, void *msg)
             return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
-        gyros__task_move(gyros.current, &smq->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "smq_receive", smq);
+        gyros__task_move(_gyros.current, &smq->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "smq_receive", smq);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -160,8 +160,8 @@ gyros_smq_receive_until(gyros_smq_t *smq,
             return false;
         }
         GYROS__TRACE_SMQ(RECEIVE_BLOCKED, smq);
-        gyros__task_move(gyros.current, &smq->task_list);
-        GYROS_DEBUG_SET_STATE2(gyros.current, "smq_receive_until", smq);
+        gyros__task_move(_gyros.current, &smq->task_list);
+        GYROS_DEBUG_SET_STATE2(_gyros.current, "smq_receive_until", smq);
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();

@@ -135,10 +135,10 @@ void gyros_mutex_init(gyros_mutex_t *m);
 static inline bool gyros_mutex_try_lock(gyros_mutex_t *m)
 {
 #if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
-    extern gyros_t gyros;
+    extern gyros_t _gyros;
     while (GYROS_LIKELY(gyros_ldrex_p(&m->owner) == NULL))
     {
-        if (GYROS_LIKELY(gyros_strex_p(&m->owner, gyros.current)))
+        if (GYROS_LIKELY(gyros_strex_p(&m->owner, _gyros.current)))
             return true;
     }
 #endif
@@ -152,10 +152,10 @@ static inline bool gyros_mutex_try_lock(gyros_mutex_t *m)
 static inline void gyros_mutex_lock(gyros_mutex_t *m)
 {
 #if defined(GYROS_HAS_LDREX_STREX) && !GYROS_CONFIG_DEBUG
-    extern gyros_t gyros;
+    extern gyros_t _gyros;
     while (GYROS_LIKELY(gyros_ldrex_p(&m->owner) == NULL))
     {
-        if (GYROS_LIKELY(gyros_strex_p(&m->owner, gyros.current)))
+        if (GYROS_LIKELY(gyros_strex_p(&m->owner, _gyros.current)))
             return;
     }
 #endif

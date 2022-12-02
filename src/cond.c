@@ -59,8 +59,8 @@ gyros_cond_wait(gyros_cond_t *c, gyros_mutex_t *m)
 
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock_slow(m, 0);
-    gyros__task_move(gyros.current, &c->task_list);
-    GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait", c);
+    gyros__task_move(_gyros.current, &c->task_list);
+    GYROS_DEBUG_SET_STATE2(_gyros.current, "cond_wait", c);
     gyros__reschedule();
     gyros_interrupt_restore(flags);
 
@@ -92,14 +92,14 @@ gyros_cond_wait_until(gyros_cond_t *c, gyros_mutex_t *m,
 
     GYROS__TRACE_COND(WAIT, c);
     gyros__mutex_unlock_slow(m, 0);
-    gyros__task_move(gyros.current, &c->task_list);
-    GYROS_DEBUG_SET_STATE2(gyros.current, "cond_wait_until", c);
+    gyros__task_move(_gyros.current, &c->task_list);
+    GYROS_DEBUG_SET_STATE2(_gyros.current, "cond_wait_until", c);
     gyros__reschedule();
     gyros_interrupt_restore(flags);
 
     gyros_mutex_lock(m);
 
-    return !gyros.current->timed_out;
+    return !_gyros.current->timed_out;
 }
 
 void

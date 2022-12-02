@@ -46,7 +46,7 @@ gyros_task_delete(gyros_task_t *task)
         gyros__error("uninitialized task in task_delete", task);
 #endif
     gyros__task_finish(task);
-    if (task == gyros.current)
+    if (task == _gyros.current)
     {
 #if GYROS_CONFIG_ITERATE
         gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);

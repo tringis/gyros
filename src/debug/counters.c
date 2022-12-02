@@ -34,7 +34,7 @@ unsigned long
 gyros_debug_context_switch_counter(void)
 {
 #if GYROS_CONFIG_DEBUG
-    return gyros.task_switch_counter;
+    return _gyros.task_switch_counter;
 #else
     return 0;
 #endif

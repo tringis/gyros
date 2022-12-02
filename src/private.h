@@ -48,7 +48,7 @@ extern "C" {
 #define TIMEOUT(t)  GYROS__LIST_CONTAINER(t, gyros_task_t, timeout_list_node)
 #define TIMER(t)    GYROS__LIST_CONTAINER(t, gyros_timer_t, list_node)
 
-extern gyros_t gyros;
+extern gyros_t _gyros;
 extern gyros_mutex_t gyros__iterate_mutex;
 
 void gyros__task_finish(gyros_task_t *task);

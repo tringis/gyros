@@ -44,15 +44,15 @@ PendSV_Handler:
 #endif
 	mrs	r3, psp
 	stmdb	r3, {r4-r11}	     /* Write registers to task stack. */
-	ldr	r0, =gyros	     /* r0 = &gyros.current */
-	ldr	r1, [r0]	     /* r1 = gyros.current */
-	str	r3, [r1]	     /* gyros.current->context.sp = PSP */
+	ldr	r0, =_gyros	     /* r0 = &_gyros.current */
+	ldr	r1, [r0]	     /* r1 = _gyros.current */
+	str	r3, [r1]	     /* _gyros.current->context.sp = PSP */
 
 	cpsid	i		     /* disable exceptions */
 
-	ldr	r2, [r0, #4]	     /* r2 = gyros.running.next */
-	subs	r2, r2, #4	     /* r2 = TASK(gyros.running.next) */
-	str	r2, [r0]	     /* gyros.current = r2 */
+	ldr	r2, [r0, #4]	     /* r2 = _gyros.running.next */
+	subs	r2, r2, #4	     /* r2 = TASK(_gyros.running.next) */
+	str	r2, [r0]	     /* _gyros.current = r2 */
 
 	cpsie	i		     /* reenable exceptions */
 

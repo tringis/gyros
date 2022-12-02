@@ -37,29 +37,29 @@ void
 gyros__dyntick_update(gyros_abstime_t now)
 {
 #if GYROS_CONFIG_TIMER
-    if (gyros__list_empty(&gyros.timeouts))
+    if (gyros__list_empty(&_gyros.timeouts))
     {
-        if (gyros__list_empty(&gyros.timers))
+        if (gyros__list_empty(&_gyros.timers))
             gyros__dyntick_suspend();
         else
-            gyros__dyntick_set(now, TIMER(gyros.timers.next)->timeout);
+            gyros__dyntick_set(now, TIMER(_gyros.timers.next)->timeout);
     }
     else
     {
-        if (gyros__list_empty(&gyros.timers) ||
-            (gyros_reltime_t)(TIMEOUT(gyros.timeouts.next)->timeout -
-                              TIMER(gyros.timers.next)->timeout) < 0)
+        if (gyros__list_empty(&_gyros.timers) ||
+            (gyros_reltime_t)(TIMEOUT(_gyros.timeouts.next)->timeout -
+                              TIMER(_gyros.timers.next)->timeout) < 0)
         {
-            gyros__dyntick_set(now, TIMEOUT(gyros.timeouts.next)->timeout);
+            gyros__dyntick_set(now, TIMEOUT(_gyros.timeouts.next)->timeout);
         }
         else
-            gyros__dyntick_set(now, TIMER(gyros.timers.next)->timeout);
+            gyros__dyntick_set(now, TIMER(_gyros.timers.next)->timeout);
     }
 #else
-    if (gyros__list_empty(&gyros.timeouts))
+    if (gyros__list_empty(&_gyros.timeouts))
         gyros__dyntick_suspend();
     else
-        gyros__dyntick_set(now, TIMEOUT(gyros.timeouts.next)->timeout);
+        gyros__dyntick_set(now, TIMEOUT(_gyros.timeouts.next)->timeout);
 #endif
 }
 #endif
@@ -72,14 +72,14 @@ gyros__task_set_timeout(gyros_abstime_t timeout)
         return 0;
 
     struct gyros__list_node *i;
-    for (i = gyros.timeouts.next; i != &gyros.timeouts; i = i->next)
+    for (i = _gyros.timeouts.next; i != &_gyros.timeouts; i = i->next)
     {
         if ((gyros_reltime_t)(timeout - TIMEOUT(i)->timeout) < 0)
             break;
     }
-    gyros__list_insert_before(&gyros.current->timeout_list_node, i);
-    gyros.current->timeout = timeout;
-    gyros.current->timed_out = 0;
+    gyros__list_insert_before(&_gyros.current->timeout_list_node, i);
+    _gyros.current->timeout = timeout;
+    _gyros.current->timed_out = 0;
     gyros__dyntick_update(now);
     return 1;
 }
@@ -90,9 +90,9 @@ gyros__tick(gyros_abstime_t now)
     unsigned long flags = gyros_interrupt_disable();
     int reschedule = 0;
 
-    while (!gyros__list_empty(&gyros.timeouts))
+    while (!gyros__list_empty(&_gyros.timeouts))
     {
-        gyros_task_t *task = TIMEOUT(gyros.timeouts.next);
+        gyros_task_t *task = TIMEOUT(_gyros.timeouts.next);
 
         if ((gyros_reltime_t)(now - task->timeout) < 0)
             break;
@@ -106,9 +106,9 @@ gyros__tick(gyros_abstime_t now)
         gyros__tick_reschedule();
 
 #if GYROS_CONFIG_TIMER
-    while (!gyros__list_empty(&gyros.timers))
+    while (!gyros__list_empty(&_gyros.timers))
     {
-        gyros_timer_t *timer = TIMER(gyros.timers.next);
+        gyros_timer_t *timer = TIMER(_gyros.timers.next);
 
         if ((gyros_reltime_t)(now - timer->timeout) < 0)
             break;

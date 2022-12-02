@@ -39,15 +39,15 @@
 
 static gyros_task_t s_idle_task;
 
-gyros_t gyros = {
+gyros_t _gyros = {
     NULL,
-    GYROS__LIST_INITVAL(gyros.running),
-    GYROS__LIST_INITVAL(gyros.timeouts),
+    GYROS__LIST_INITVAL(_gyros.running),
+    GYROS__LIST_INITVAL(_gyros.timeouts),
 #if GYROS_CONFIG_TIMER
-    GYROS__LIST_INITVAL(gyros.timers),
+    GYROS__LIST_INITVAL(_gyros.timers),
 #endif
 #if GYROS_CONFIG_ITERATE
-    GYROS__LIST_INITVAL(gyros.tasks),
+    GYROS__LIST_INITVAL(_gyros.tasks),
 #endif
 };
 
@@ -72,10 +72,10 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_finish(gyros_task_t *task)
 {
-    gyros__task_suspend(gyros.current);
-    gyros__list_remove(&gyros.current->timeout_list_node);
+    gyros__task_suspend(_gyros.current);
+    gyros__list_remove(&_gyros.current->timeout_list_node);
 #if GYROS_CONFIG_ITERATE
-    gyros__list_remove(&gyros.current->task_list_node);
+    gyros__list_remove(&_gyros.current->task_list_node);
 #endif
     task->finished = true;
     while (!gyros__list_empty(&task->waiter_list))
@@ -92,21 +92,21 @@ gyros__task_exit(void)
 #endif
 
     flags = gyros_interrupt_disable();
-    GYROS_DEBUG_SET_STATE(gyros.current, "finished");
-    gyros__task_finish(gyros.current);
+    GYROS_DEBUG_SET_STATE(_gyros.current, "finished");
+    gyros__task_finish(_gyros.current);
 #if GYROS_CONFIG_ITERATE
     gyros__mutex_unlock_slow(&gyros__iterate_mutex, 0);
 #endif
     gyros__reschedule();
     gyros_interrupt_restore(flags);
-    gyros__error("task exit with interrupts disabled", gyros.current);
+    gyros__error("task exit with interrupts disabled", _gyros.current);
 }
 
 void
 gyros__task_suspend(gyros_task_t *task)
 {
     gyros__list_remove(&task->main_list_node);
-    gyros.current->main_list = NULL;
+    _gyros.current->main_list = NULL;
 }
 
 void
@@ -126,7 +126,7 @@ gyros__task_wake(gyros_task_t *task)
 
     GYROS_DEBUG_SET_STATE(task, "running");
     gyros__list_remove(&task->timeout_list_node);
-    gyros__task_move(task, &gyros.running);
+    gyros__task_move(task, &_gyros.running);
 }
 
 void
@@ -140,7 +140,7 @@ gyros__set_priority(gyros_task_t *task, unsigned short priority)
 void
 gyros__cond_reschedule(void)
 {
-    if (GYROS_UNLIKELY(TASK(gyros.running.next) != gyros.current))
+    if (GYROS_UNLIKELY(TASK(_gyros.running.next) != _gyros.current))
         gyros__reschedule();
 }
 
@@ -159,10 +159,10 @@ gyros_start(void)
     s_idle_task.stack_size = 0;
 
 #if GYROS_CONFIG_ITERATE
-    gyros__list_insert_before(&s_idle_task.task_list_node, gyros.tasks.next);
+    gyros__list_insert_before(&s_idle_task.task_list_node, _gyros.tasks.next);
 #endif
-    add_task_to_list(&s_idle_task, &gyros.running);
-    gyros.current = &s_idle_task;
+    add_task_to_list(&s_idle_task, &_gyros.running);
+    _gyros.current = &s_idle_task;
     GYROS__LIST_NODE_INIT(&s_idle_task.timeout_list_node);
 
     gyros__target_init();
@@ -202,12 +202,12 @@ gyros_task_create(gyros_task_t *task,
 
     flags = gyros_interrupt_disable();
 #if GYROS_CONFIG_ITERATE
-    gyros__list_insert_before(&task->task_list_node, &gyros.tasks);
+    gyros__list_insert_before(&task->task_list_node, &_gyros.tasks);
 #endif
-    add_task_to_list(task, &gyros.running);
+    add_task_to_list(task, &_gyros.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list_node);
     GYROS__LIST_NODE_INIT(&task->waiter_list);
-    if (gyros.current) /* Don't reschedule before gyros_start() */
+    if (_gyros.current) /* Don't reschedule before gyros_start() */
         gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }
