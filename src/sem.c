@@ -53,6 +53,33 @@ gyros_sem_init_binary(gyros_sem_t *s)
     GYROS__LIST_NODE_INIT(&s->task_list);
 }
 
+bool
+gyros_sem_try_wait(gyros_sem_t *s)
+{
+    unsigned long flags;
+
+#if GYROS_CONFIG_DEBUG
+    if (s->debug_info.magic != GYROS_SEM_DEBUG_MAGIC)
+        gyros__error("uninitialized sem in sem_try_wait", s);
+    if (gyros_in_interrupt())
+        gyros__error("sem_try_wait called from interrupt", s);
+    if (gyros_interrupts_disabled())
+        gyros__error("sem_try_wait called with interrupts disabled", s);
+#endif
+
+    flags = gyros_interrupt_disable();
+    if (GYROS_UNLIKELY(s->value == 0))
+    {
+        gyros_interrupt_restore(flags);
+        return false;
+    }
+    s->value--;
+    GYROS__TRACE_SEM(AQUIRED, s);
+    gyros_interrupt_restore(flags);
+
+    return true;
+}
+
 void
 gyros_sem_wait(gyros_sem_t *s)
 {

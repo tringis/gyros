@@ -138,6 +138,13 @@ void gyros_sem_init(gyros_sem_t *s, int start_value);
   */
 void gyros_sem_init_binary(gyros_sem_t *s);
 
+/** Get semaphore @a s if signalled. Does not block.
+  *
+  * \param s            Semaphore struct pointer.
+  * \return             True if semaphore was signalled, else false.
+  */
+bool gyros_sem_try_wait(gyros_sem_t *s);
+
 /** Wait for the semaphore @a s to be signalled.
   *
   * \param s            Semaphore struct pointer.
