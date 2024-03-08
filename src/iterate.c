@@ -26,6 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
+#include <gyros/interrupt.h>
+
 #include "private.h"
 
 #if GYROS_CONFIG_ITERATE
@@ -37,13 +39,15 @@ gyros_task_iterate(gyros_task_t *previous)
 {
     if (!previous)
     {
-        gyros_mutex_lock(&gyros__iterate_mutex);
+        if (!gyros_in_interrupt() && !gyros_interrupts_disabled())
+            gyros_mutex_lock(&gyros__iterate_mutex);
         return TASK_LIST_TASK(_gyros.tasks.next);
     }
 
     if (previous->task_list_node.next == &_gyros.tasks)
     {
-        gyros_mutex_unlock(&gyros__iterate_mutex);
+        if (!gyros_in_interrupt() && !gyros_interrupts_disabled())
+            gyros_mutex_unlock(&gyros__iterate_mutex);
         return 0;
     }
 

@@ -53,7 +53,7 @@ extern "C" {
   * NULL is returned.  This function locks task creation and deletion
   * during the iteration (causing calls to gyros_task_create and
   * gyros_task_delete to block), and must therefore always be called
-  * until it returns @c NULL.
+  * until it returns @c NULL. May be called from interrupt context.
   *
   * \param previous     Task struct pointer.
   * \return             Task struct pointer of next task, or @c NULL
