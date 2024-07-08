@@ -43,7 +43,7 @@ GYROS_ALWAYS_INLINE void *gyros_ldrex_p(void *addr)
   
     __asm__ volatile(
         "ldrex   %0, [%1]"
-        : "=r" (result) : "r" (addr));
+        : "=&r" (result) : "r" (addr));
 
     return result;
 }
@@ -54,7 +54,7 @@ GYROS_ALWAYS_INLINE int gyros_strex_p(void *addr, void *value)
   
     __asm__ volatile(
         "strex   %0, %2, [%1]"
-        : "=r" (result) : "r" (addr), "r" (value));
+        : "=&r" (result) : "r" (addr), "r" (value));
 
     return !result;
 }
