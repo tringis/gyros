@@ -72,6 +72,14 @@
 #   define TIMx                           TIM8
 #   define TIMER_IRQ                      TIM8_CC_IRQn
 #   define TIMER_ISR                      TIM8_CC_IRQHandler
+#elif GYROS_CONFIG_STM32_TIMER == 23
+#   define TIMx                           TIM23
+#   define TIMER_IRQ                      TIM23_IRQn
+#   define TIMER_ISR                      TIM23_IRQHandler
+#elif GYROS_CONFIG_STM32_TIMER == 24
+#   define TIMx                           TIM24
+#   define TIMER_IRQ                      TIM24_IRQn
+#   define TIMER_ISR                      TIM24_IRQHandler
 #else
 #   error Unsupported GYROS_CONFIG_STM32_TIMER value
 #endif
