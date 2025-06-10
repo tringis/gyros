@@ -34,23 +34,23 @@
 #include "private.h"
 
 void
-gyros_task_wait(gyros_task_t *task)
+gyros_task_join(gyros_task_t *task)
 {
     unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros__error("task_wait called from interrupt", NULL);
+        gyros__error("task_join called from interrupt", NULL);
     if (gyros_interrupts_disabled())
-        gyros__error("task_wait called with interrupts disabled", NULL);
+        gyros__error("task_join called with interrupts disabled", NULL);
 #endif
 
     flags = gyros_interrupt_disable();
 
-    while (!task->finished)
+    while (task->joinable)
     {
-        gyros__task_move(_gyros.current, &task->waiter_list);
-        GYROS_DEBUG_SET_STATE(_gyros.current, "task_wait");
+        gyros__task_move(_gyros.current, &task->joiner_list);
+        GYROS_DEBUG_SET_STATE(_gyros.current, "task_join");
         gyros__reschedule();
         gyros_interrupt_restore(flags);
         flags = gyros_interrupt_disable();
@@ -59,15 +59,15 @@ gyros_task_wait(gyros_task_t *task)
 }
 
 bool
-gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout)
+gyros_task_join_until(gyros_task_t *task, gyros_abstime_t timeout)
 {
     unsigned long flags;
 
 #if GYROS_CONFIG_DEBUG
     if (gyros_in_interrupt())
-        gyros__error("task_wait_until called from interrupt", NULL);
+        gyros__error("task_join_until called from interrupt", NULL);
     if (gyros_interrupts_disabled())
-        gyros__error("task_wait_until called with interrupts disabled", NULL);
+        gyros__error("task_join_until called with interrupts disabled", NULL);
 #endif
 
     flags = gyros_interrupt_disable();
@@ -78,10 +78,11 @@ gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout)
         return false;
     }
 
-    gyros__task_move(_gyros.current, &task->waiter_list);
-    GYROS_DEBUG_SET_STATE(_gyros.current, "task_wait_until");
+    gyros__task_move(_gyros.current, &task->joiner_list);
+    GYROS_DEBUG_SET_STATE(_gyros.current, "task_join_until");
     gyros__reschedule();
+    bool joinable = task->joinable;
     gyros_interrupt_restore(flags);
 
-    return task->finished;
+    return !joinable;
 }

@@ -9,6 +9,7 @@ gyros_common_srcs = list(map(File, [ 'alarm_clock.c',
                                      'event_group.c',
                                      'hooks.c',
                                      'iterate.c',
+                                     'join.c',
                                      'mempool.c',
                                      'mq.c',
                                      'mutex.c',
@@ -23,7 +24,6 @@ gyros_common_srcs = list(map(File, [ 'alarm_clock.c',
                                      'timer.c',
                                      'trace.c',
                                      'udelay.c',
-                                     'wait.c',
                                      'yield.c' ]))
 
 Return("gyros_common_srcs")

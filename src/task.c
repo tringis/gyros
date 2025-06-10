@@ -77,9 +77,9 @@ gyros__task_finish(gyros_task_t *task)
 #if GYROS_CONFIG_ITERATE
     gyros__list_remove(&_gyros.current->task_list_node);
 #endif
-    task->finished = true;
-    while (!gyros__list_empty(&task->waiter_list))
-        gyros__task_wake(TASK(task->waiter_list.prev));
+    task->joinable = false;
+    while (!gyros__list_empty(&task->joiner_list))
+        gyros__task_wake(TASK(task->joiner_list.prev));
 }
 
 void
@@ -183,7 +183,7 @@ gyros_task_init(gyros_task_t *task,
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
 #endif
     GYROS_DEBUG_SET_STATE(_gyros.current, "initalized");
-    task->finished = true;
+    task->joinable = false;
     task->name = name;
 }
 
@@ -203,7 +203,7 @@ gyros_task_create(gyros_task_t *task,
     unsigned long flags;
 
     GYROS_DEBUG_SET_STATE(task, "running");
-    task->finished = false;
+    task->joinable = true;
     task->base_priority = priority;
     task->priority = priority;
     task->stack = stack;
@@ -218,22 +218,22 @@ gyros_task_create(gyros_task_t *task,
 #endif
     add_task_to_list(task, &_gyros.running);
     GYROS__LIST_NODE_INIT(&task->timeout_list_node);
-    GYROS__LIST_NODE_INIT(&task->waiter_list);
+    GYROS__LIST_NODE_INIT(&task->joiner_list);
     if (_gyros.current) /* Don't reschedule before gyros_start() */
         gyros__cond_reschedule();
     gyros_interrupt_restore(flags);
 }
 
 bool
-gyros_task_finished(gyros_task_t *task)
+gyros_task_joinable(const gyros_task_t *task)
 {
 #if GYROS_CONFIG_DEBUG
     if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
-        gyros__error("uninitialized task in task_finished", task);
+        gyros__error("uninitialized task in task_joinable", task);
 #endif
 
     unsigned long flags = gyros_interrupt_disable();
-    bool finished = task->finished;
+    bool joinable = task->joinable;
     gyros_interrupt_restore(flags);
-    return finished;
+    return joinable;
 }

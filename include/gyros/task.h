@@ -38,7 +38,7 @@
   * Tasks are described by a task struct called gyros_task_t which is
   * initialized by gyros_task_create().  The task struct is used to
   * store the state of the task when it is not running.  Tasks can be
-  * created, suspended, resumed, deleted, and waited for.  Every task
+  * created, suspended, resumed, deleted, and joined.  Every task
   * has a main function, and if the task returns from this function it
   * will be deleted automatically.  That is the normal way for a task
   * to be deleted.
@@ -104,8 +104,8 @@ typedef struct
     struct gyros__list_node timeout_list_node; /**< \internal */
     gyros_abstime_t timeout; /**< \internal */
     unsigned char timed_out; /**< \internal */
-    unsigned char finished; /**< \internal */
-    struct gyros__list_node waiter_list; /**< \internal */
+    unsigned char joinable; /**< \internal */
+    struct gyros__list_node joiner_list; /**< \internal */
 
     unsigned short base_priority; /**< \internal */
     unsigned short priority; /**< \internal */
@@ -173,12 +173,12 @@ void gyros_task_create(gyros_task_t *task,
                        int stack_size,
                        unsigned short priority);
 
-/** Test is @a task has finished.
+/** Test is @a task has joinable.
   *
   * \param task         Task struct pointer.
-  * \return             True if the task has finished, else false.
+  * \return             True if the task is joinable, else false.
   */
-bool gyros_task_finished(gyros_task_t *task);
+bool gyros_task_joinable(const gyros_task_t *task);
 
 /** Delete a task.  Deleting a task is dangerous because any
   * synchronization objects locked by the deleted objects will remain
@@ -192,7 +192,7 @@ void gyros_task_delete(gyros_task_t *task);
   *
   * \param task         Task struct pointer.
   */
-void gyros_task_wait(gyros_task_t *task);
+void gyros_task_join(gyros_task_t *task);
 
 /** Wait for @a task to finish, or until @a timeout is reached.
   *
@@ -200,7 +200,7 @@ void gyros_task_wait(gyros_task_t *task);
   * \return             True if the task has finished, or
   *                     false if @a timeout was reached.
   */
-bool gyros_task_wait_until(gyros_task_t *task, gyros_abstime_t timeout);
+bool gyros_task_join_until(gyros_task_t *task, gyros_abstime_t timeout);
 
 /** Return struct pointer to current task.  May be called from
   * interrupt context, in which case it returns pointer to the task
