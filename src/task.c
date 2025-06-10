@@ -176,24 +176,36 @@ gyros_start(void)
 }
 
 void
+gyros_task_init(gyros_task_t *task,
+                const char *name)
+{
+#if GYROS_CONFIG_DEBUG
+    task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
+#endif
+    GYROS_DEBUG_SET_STATE(_gyros.current, "initalized");
+    task->finished = true;
+    task->name = name;
+}
+
+void
 gyros_task_create(gyros_task_t *task,
-                  const char *name,
                   void (*entry)(void *arg),
                   void *arg,
                   void *stack,
                   int stack_size,
                   unsigned short priority)
 {
+#if GYROS_CONFIG_DEBUG
+    if (task->debug_magic != GYROS_TASK_DEBUG_MAGIC)
+        gyros__error("uninitialized task in task_create", task);
+#endif
+
     unsigned long flags;
 
-#if GYROS_CONFIG_DEBUG
-    task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
-#endif
     GYROS_DEBUG_SET_STATE(task, "running");
     task->finished = false;
     task->base_priority = priority;
     task->priority = priority;
-    task->name = name;
     task->stack = stack;
     task->stack_size = stack_size;
 

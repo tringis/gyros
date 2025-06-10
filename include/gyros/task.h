@@ -143,16 +143,22 @@ typedef struct
   */
 void gyros_start(void);
 
-/** Create a new task.  If the new task has higher priority than the
-  * current task, the current task will be preempted even before
-  * returning from this function.
-  *
-  * This is the only function that may be called before gyros_start().
+/** Initialize a task.
   *
   * \param task         Task struct pointer.
   * \param name         Task name.  The pointer is stored, not the
   *                     string data, so the pointer must remain valid
   *                     during the lifetime of the process.
+  */
+void gyros_task_init(gyros_task_t *task, const char *name);
+
+/** Create a new task.  If the new task has higher priority than the
+  * current task, the current task will be preempted even before
+  * returning from this function.
+  *
+  * May be called before gyros_start().
+  *
+  * \param task         Task struct pointer.
   * \param entry        Address to task main function.  The task will
   *                     be deleted when exiting the function.
   * \param arg          Entry point argument.
@@ -161,7 +167,6 @@ void gyros_start(void);
   * \param priority     Priority.  Should be greater than zero.
   */
 void gyros_task_create(gyros_task_t *task,
-                       const char *name,
                        void (*entry)(void *arg),
                        void *arg,
                        void *stack,
