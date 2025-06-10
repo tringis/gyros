@@ -73,7 +73,7 @@ void gyros__dyntick_update(gyros_abstime_t now);
 
 void gyros__cond_reschedule(void);
 
-void gyros__error(const char *msg, void *object);
+void gyros__error(const char *msg, const void *object);
 
 #ifdef __cplusplus
 }

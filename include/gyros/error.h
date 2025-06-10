@@ -67,7 +67,8 @@ extern "C" {
   *
   * \param handler          Error handler function pointer.
   */
-void gyros_set_error_handler(void (*handler)(const char *msg, void *object));
+void gyros_set_error_handler(void (*handler)(const char *msg,
+                                             const void *object));
 
 /*@}*/
 

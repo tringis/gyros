@@ -31,10 +31,10 @@
 
 #include "private.h"
 
-static void (*s_handler)(const char *msg, void *object);
+static void (*s_handler)(const char *msg, const void *object);
 
 void
-gyros_set_error_handler(void (*handler)(const char *msg, void *object))
+gyros_set_error_handler(void (*handler)(const char *msg, const void *object))
 {
     unsigned long flags = gyros_interrupt_disable();
 
@@ -43,7 +43,7 @@ gyros_set_error_handler(void (*handler)(const char *msg, void *object))
 }
 
 void
-gyros__error(const char *msg, void *object)
+gyros__error(const char *msg, const void *object)
 {
     gyros_interrupt_disable();
 
