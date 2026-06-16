@@ -72,10 +72,10 @@ add_task_to_list(gyros_task_t *task, struct gyros__list_node *list)
 void
 gyros__task_finish(gyros_task_t *task)
 {
-    gyros__task_suspend(_gyros.current);
-    gyros__list_remove(&_gyros.current->timeout_list_node);
+    gyros__task_suspend(task);
+    gyros__list_remove(&task->timeout_list_node);
 #if GYROS_CONFIG_ITERATE
-    gyros__list_remove(&_gyros.current->task_list_node);
+    gyros__list_remove(&task->task_list_node);
 #endif
     task->joinable = false;
     while (!gyros__list_empty(&task->joiner_list))
@@ -106,7 +106,7 @@ void
 gyros__task_suspend(gyros_task_t *task)
 {
     gyros__list_remove(&task->main_list_node);
-    _gyros.current->main_list = NULL;
+    task->main_list = NULL;
 }
 
 void
@@ -182,7 +182,7 @@ gyros_task_init(gyros_task_t *task,
 #if GYROS_CONFIG_DEBUG
     task->debug_magic = GYROS_TASK_DEBUG_MAGIC;
 #endif
-    GYROS_DEBUG_SET_STATE(_gyros.current, "initalized");
+    GYROS_DEBUG_SET_STATE(task, "initialized");
     task->joinable = false;
     task->name = name;
 }

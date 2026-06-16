@@ -67,7 +67,8 @@
   * 
   * void create_task(void)
   * {
-  *     gyros_task_create(&task1, "task1", task1_main, 0,
+  *     gyros_task_init(&task1, "task1");
+  *     gyros_task_create(&task1, task1_main, 0,
   *                       task1_stack, sizeof(task1_stack), 1);
   * }
   * \endcode
@@ -208,7 +209,7 @@ bool gyros_task_join_until(gyros_task_t *task, gyros_abstime_t timeout);
   *
   * \return             Struct pointer to current task.
   */
-gyros_task_t *gyros_current(void) __attribute__((__const__));
+gyros_task_t *gyros_current(void);
 
 /** Get the priority of @a task.  May be called from interrupt
   * context.
